@@ -3,24 +3,17 @@
 <head>
   <meta charset="utf-8">
   
-  <title>彼岸-未来</title>
+  <title>Tag: CSS | 彼岸-未来</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Android解析XML格式数据XML在各种开发中都广泛应用，Android也不例外。作为承载数据的一个重要角色，如何读写XML成为Android开发中一项重要的技能。今天就由我向大家介绍一下在Android平台下几种常见的XML解析和创建的方法。
-在Android中，常见的XML解析器分别为SAX解析器、DOM解析器和PULL解析器，下面，我将一一向大家详细介绍。
-SAX解析器：SAX(Simp">
-<meta property="og:type" content="article">
+  <meta name="description" content="学习总结 思考感悟 知识管理">
+<meta property="og:type" content="website">
 <meta property="og:title" content="彼岸-未来">
-<meta property="og:url" content="http://science09.github.io/2015/09/08/Android解析XML格式数据/index.html">
+<meta property="og:url" content="http://science09.github.io/tags/CSS/index.html">
 <meta property="og:site_name" content="彼岸-未来">
-<meta property="og:description" content="Android解析XML格式数据XML在各种开发中都广泛应用，Android也不例外。作为承载数据的一个重要角色，如何读写XML成为Android开发中一项重要的技能。今天就由我向大家介绍一下在Android平台下几种常见的XML解析和创建的方法。
-在Android中，常见的XML解析器分别为SAX解析器、DOM解析器和PULL解析器，下面，我将一一向大家详细介绍。
-SAX解析器：SAX(Simp">
-<meta property="og:updated_time" content="2015-01-31T15:41:15.000Z">
+<meta property="og:description" content="学习总结 思考感悟 知识管理">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="彼岸-未来">
-<meta name="twitter:description" content="Android解析XML格式数据XML在各种开发中都广泛应用，Android也不例外。作为承载数据的一个重要角色，如何读写XML成为Android开发中一项重要的技能。今天就由我向大家介绍一下在Android平台下几种常见的XML解析和创建的方法。
-在Android中，常见的XML解析器分别为SAX解析器、DOM解析器和PULL解析器，下面，我将一一向大家详细介绍。
-SAX解析器：SAX(Simp">
+<meta name="twitter:description" content="学习总结 思考感悟 知识管理">
   
     <link rel="alternative" href="/atom.xml" title="彼岸-未来" type="application/atom+xml">
   
@@ -201,97 +194,53 @@ SAX解析器：SAX(Simp">
 		</header>				
 	</div>
 </nav>
-      <div class="body-wrap"><article id="post-Android解析XML格式数据" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap">
   
-    <div class="article-meta">
-      <a href="/2015/09/08/Android解析XML格式数据/" class="article-date">
-  	<time datetime="2015-09-08T14:02:54.000Z" itemprop="datePublished">2015-09-08</time>
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2015" class="archive-year">2015</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-9个目前流行的material">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2015/09/08/Design前端框架-md/" class="archive-article-date">
+  	<time datetime="2015-09-08T14:06:36.000Z" itemprop="datePublished">9月 8</time>
 </a>
-    </div>
+        </div>
+    	 
   
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="Android解析XML格式数据">Android解析XML格式数据</h1><p>XML在各种开发中都广泛应用，Android也不例外。作为承载数据的一个重要角色，如何读写XML成为Android开发中一项重要的技能。今天就由我向大家介绍一下在Android平台下几种常见的XML解析和创建的方法。</p>
-<p>在Android中，常见的XML解析器分别为SAX解析器、DOM解析器和PULL解析器，下面，我将一一向大家详细介绍。</p>
-<h3 id="SAX解析器：">SAX解析器：</h3><p>SAX(Simple API for XML)解析器是一种基于事件的解析器，它的核心是事件处理模式，主要是围绕着事件源以及事件处理器来工作的。当事件源产生事件后，调用事件处理器相应的处理方法，一个事件就可以得到处理。在事件源调用事件处理器中特定方法的时候，还要传递给事件处理器相应事件的状态信息，这样事件处理器才能够根据提供的事件信息来决定自己的行为。</p>
-<p>SAX解析器的优点是解析速度快，占用内存少。非常适合在Android移动设备中使用。</p>
-<h3 id="DOM解析器：">DOM解析器：</h3><p>DOM是基于树形结构的的节点或信息片段的集合，允许开发人员使用DOM API遍历XML树、检索所需数据。分析该结构通常需要加载整个文档和构造树形结构，然后才可以检索和更新节点信息。</p>
-<p>由于DOM在内存中以树形结构存放，因此检索和更新效率会更高。但是对于特别大的文档，解析和加载整个文档将会很耗资源。</p>
-<h3 id="PULL解析器：">PULL解析器：</h3><p>PULL解析器的运行方式和SAX类似，都是基于事件的模式。不同的是，在PULL解析过程中，我们需要自己获取产生的事件然后做相应的操作，而不像SAX那样由处理器触发一种事件的方法，执行我们的代码。PULL解析器小巧轻便，解析速度快，简单易用，非常适合在Android移动设备中使用，Android系统内部在解析各种XML时也是用PULL解析器。</p>
-<p>以上三种解析器，都是非常实用的解析器，我将会一一介绍。我们将会使用这三种解析技术完成一项共同的任务。</p>
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2015/09/08/Design前端框架-md/">9个目前流行的Material Design前端框架</a>
+    </h1>
+  
 
-      
-    </div>
-    
-  </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/2015/09/08/Android面试题/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          (no title)
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2015/09/08/Android 常用工具类库/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title"></div>
-      <strong class="article-nav-caption">></strong>
-    </a>
-  
-</nav>
-
-  
-</article>
-
-
-<div class="share">
-	<!-- JiaThis Button BEGIN -->
-	<div class="jiathis_style">
-		<span class="jiathis_txt">分享到：</span>
-		<a class="jiathis_button_tsina"></a>
-		<a class="jiathis_button_cqq"></a>
-		<a class="jiathis_button_douban"></a>
-		<a class="jiathis_button_weixin"></a>
-		<a class="jiathis_button_tumblr"></a>
-		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+        <div class="article-info info-on-right">
+          
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSS/">CSS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Material/">Material</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/前端框架/">前端框架</a></li></ul>
 	</div>
-	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
-	<!-- JiaThis Button END -->
-</div>
 
+          
 
+        </div>
+        <div class="clearfix"></div>
+    </header>
+  </div>
+</article>
+  
+  
+    </div></section>
+  
 
-<div class="duoshuo">
-	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="Android解析XML格式数据" data-title="" data-url="http://science09.github.io/2015/09/08/Android解析XML格式数据/"></div>
-	<!-- 多说评论框 end -->
-	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-	<script type="text/javascript">
-	var duoshuoQuery = {short_name:"true"};
-	(function() {
-		var ds = document.createElement('script');
-		ds.type = 'text/javascript';ds.async = true;
-		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-		ds.charset = 'UTF-8';
-		(document.getElementsByTagName('head')[0] 
-		 || document.getElementsByTagName('body')[0]).appendChild(ds);
-	})();
-	</script>
-	<!-- 多说公共JS代码 end -->
-</div>
-
-
-
+    
 
 </div>
       <footer id="footer">
@@ -317,9 +266,9 @@ SAX解析器：SAX(Simp">
 		mathjax: true,
 		animate: true,
 		isHome: false,
-		isPost: true,
+		isPost: false,
 		isArchive: false,
-		isTag: false,
+		isTag: true,
 		isCategory: false,
 		open_in_new: false
 	}
