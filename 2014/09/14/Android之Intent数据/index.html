@@ -1,884 +1,376 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta charset="utf-8">
-
+  
   <title>Android之Intent数据传递 | 彼岸-未来的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Intent（意图）主要是解决Android应用的各项组件之间的通讯。Intent负责对应用中一次操作的动作、动作涉及数据、附加数据进行描述，Android则根据此Intent的描述，负责找到对应的组件，将
-  Intent传递给调用的组件，并完成组件的调用。因此，Intent在这里起着一个媒体中介的作用，专门提供组件互相调用的相关信息，实现调用者与被调用者之间的解耦。">
-  <meta property="og:type" content="article">
-  <meta property="og:title" content="Android之Intent数据传递">
-  <meta property="og:url" content="http://science09.github.io/2014/09/14/Android之Intent数据/index.html">
-  <meta property="og:site_name" content="彼岸-未来的博客">
-  <meta property="og:description" content="Intent（意图）主要是解决Android应用的各项组件之间的通讯。Intent负责对应用中一次操作的动作、动作涉及数据、附加数据进行描述，Android则根据此Intent的描述，负责找到对应的组件，将
-  Intent传递给调用的组件，并完成组件的调用。因此，Intent在这里起着一个媒体中介的作用，专门提供组件互相调用的相关信息，实现调用者与被调用者之间的解耦。">
-  <meta property="og:updated_time" content="2015-09-10T13:26:51.000Z">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Android之Intent数据传递">
-  <meta name="twitter:description" content="Intent（意图）主要是解决Android应用的各项组件之间的通讯。Intent负责对应用中一次操作的动作、动作涉及数据、附加数据进行描述，Android则根据此Intent的描述，负责找到对应的组件，将
-  Intent传递给调用的组件，并完成组件的调用。因此，Intent在这里起着一个媒体中介的作用，专门提供组件互相调用的相关信息，实现调用者与被调用者之间的解耦。">
-
-  <link rel="alternative" href="/atom.xml" title="彼岸-未来的博客" type="application/atom+xml">
-
-  <link rel="icon" href="/favicon.ico" type="image/x-ico">
-
+  <meta name="description" content="Intent（意图）主要是解决Android应用的各项组件之间的通讯。Intent负责对应用中一次操作的动作、动作涉及数据、附加数据进行描述，Android则根据此Intent的描述，负责找到对应的组件，将 Intent传递给调用的组件，并完成组件的调用。因此，Intent在这里起着一个媒体中介的作用，专门提供组件互相调用的相关信息，实现调用者与被调用者之间的解耦。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android之Intent数据传递">
+<meta property="og:url" content="http://science09.github.io/2014/09/14/Android之Intent数据/index.html">
+<meta property="og:site_name" content="彼岸-未来的博客">
+<meta property="og:description" content="Intent（意图）主要是解决Android应用的各项组件之间的通讯。Intent负责对应用中一次操作的动作、动作涉及数据、附加数据进行描述，Android则根据此Intent的描述，负责找到对应的组件，将 Intent传递给调用的组件，并完成组件的调用。因此，Intent在这里起着一个媒体中介的作用，专门提供组件互相调用的相关信息，实现调用者与被调用者之间的解耦。">
+<meta property="og:updated_time" content="2015-09-10T13:26:51.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android之Intent数据传递">
+<meta name="twitter:description" content="Intent（意图）主要是解决Android应用的各项组件之间的通讯。Intent负责对应用中一次操作的动作、动作涉及数据、附加数据进行描述，Android则根据此Intent的描述，负责找到对应的组件，将 Intent传递给调用的组件，并完成组件的调用。因此，Intent在这里起着一个媒体中介的作用，专门提供组件互相调用的相关信息，实现调用者与被调用者之间的解耦。">
+  
+    <link rel="alternative" href="/atom.xml" title="彼岸-未来的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico" type="image/x-ico">
+  
   <link rel="stylesheet" href="/css/style.css" type="text/css">
   <script>
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?ae9c0d06cbefcb5fa4d7988f4c49cb6c";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-
-  </script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?ae9c0d06cbefcb5fa4d7988f4c49cb6c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
 </head>
-
 <body>
   <div id="container">
     <div class="left-col">
-      <div class="overlay"></div>
-      <div class="intrude-less">
-        <header id="header" class="inner">
-          <a href="/" class="profilepic">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://tp2.sinaimg.cn/2445097485/180/5736689505/1" class="js-avatar">
+			
+		</a>
 
-            <img lazy-src="http://tp2.sinaimg.cn/2445097485/180/5736689505/1" class="js-avatar">
+		<hgroup>
+		  <h1 class="header-author"><a href="/">science09</a></h1>
+		</hgroup>
 
-          </a>
+		
+		<p class="header-subtitle">一分耕耘一分收获</p>
+		
 
-          <hgroup>
-            <h1 class="header-author">
-              <a href="/">science09</a>
-            </h1>
-          </hgroup>
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
 
-          <p class="header-subtitle">一分耕耘一分收获</p>
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/science09" title="github">github</a>
+					        
+								<a class="weibo" target="_blank" href="http://weibo.com/u/2445097485" title="weibo">weibo</a>
+					        
+								<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+					        
+								<a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/Android库/" style="font-size: 10px;">Android库</a> <a href="/tags/Android开发/" style="font-size: 10px;">Android开发</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Express/" style="font-size: 10px;">Express</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Intent/" style="font-size: 10px;">Intent</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Material/" style="font-size: 10px;">Material</a> <a href="/tags/MongoDB/" style="font-size: 10px;">MongoDB</a> <a href="/tags/Node-js/" style="font-size: 15px;">Node.js</a> <a href="/tags/Parcelable/" style="font-size: 10px;">Parcelable</a> <a href="/tags/Volley/" style="font-size: 10px;">Volley</a> <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a> <a href="/tags/XMLRequest/" style="font-size: 10px;">XMLRequest</a> <a href="/tags/XML解析/" style="font-size: 10px;">XML解析</a> <a href="/tags/app/" style="font-size: 10px;">app</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/ionic/" style="font-size: 10px;">ionic</a> <a href="/tags/java/" style="font-size: 10px;">java</a> <a href="/tags/swift/" style="font-size: 10px;">swift</a> <a href="/tags/webview/" style="font-size: 10px;">webview</a> <a href="/tags/免费域名/" style="font-size: 10px;">免费域名</a> <a href="/tags/内存泄露/" style="font-size: 10px;">内存泄露</a> <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a> <a href="/tags/前端框架/" style="font-size: 10px;">前端框架</a> <a href="/tags/博客/" style="font-size: 10px;">博客</a> <a href="/tags/反编译/" style="font-size: 10px;">反编译</a> <a href="/tags/开发/" style="font-size: 10px;">开发</a> <a href="/tags/性能优化/" style="font-size: 10px;">性能优化</a> <a href="/tags/攻击/" style="font-size: 10px;">攻击</a> <a href="/tags/缓冲区溢出/" style="font-size: 10px;">缓冲区溢出</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a> <a href="/tags/邮件/" style="font-size: 10px;">邮件</a> <a href="/tags/面试/" style="font-size: 15px;">面试</a>
+					</div>
+				</section>
+				
+				
+				
 
-          <div class="switch-btn">
-            <div class="icon">
-              <div class="icon-ctn">
-                <div class="icon-wrap icon-house" data-idx="0">
-                  <div class="birdhouse"></div>
-                  <div class="birdhouse_holes"></div>
-                </div>
-                <div class="icon-wrap icon-ribbon hide" data-idx="1">
-                  <div class="ribbon"></div>
-                </div>
-
-                <div class="icon-wrap icon-me hide" data-idx="3">
-                  <div class="user"></div>
-                  <div class="shoulder"></div>
-                </div>
-
-              </div>
-
-            </div>
-            <div class="tips-box hide">
-              <div class="tips-arrow"></div>
-              <ul class="tips-inner">
-                <li>菜单</li>
-                <li>标签</li>
-
-                <li>关于我</li>
-
-              </ul>
-            </div>
-          </div>
-
-          <div class="switch-area">
-            <div class="switch-wrap">
-              <section class="switch-part switch-part1">
-                <nav class="header-menu">
-                  <ul>
-
-                    <li>
-                      <a href="/">主页</a>
-                    </li>
-
-                    <li>
-                      <a href="/archives">所有文章</a>
-                    </li>
-
-                  </ul>
-                </nav>
-                <nav class="header-nav">
-                  <div class="social">
-
-                    <a class="github" target="_blank" href="https://github.com/science09" title="github">github</a>
-
-                    <a class="weibo" target="_blank" href="http://weibo.com/u/2445097485" title="weibo">weibo</a>
-
-                    <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
-
-                    <a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
-
-                  </div>
-                </nav>
-              </section>
-
-              <section class="switch-part switch-part2">
-                <div class="widget tagcloud" id="js-tagcloud">
-                  <a href="/tags/Android/" style="font-size: 20px;">Android</a>
-                  <a href="/tags/Android库/" style="font-size: 10px;">Android库</a>
-                  <a href="/tags/Android开发/" style="font-size: 10px;">Android开发</a>
-                  <a href="/tags/CSS/" style="font-size: 10px;">CSS</a>
-                  <a href="/tags/Express/" style="font-size: 10px;">Express</a>
-                  <a href="/tags/HTML/" style="font-size: 10px;">HTML</a>
-                  <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a>
-                  <a href="/tags/Intent/" style="font-size: 10px;">Intent</a>
-                  <a href="/tags/Java/" style="font-size: 15px;">Java</a>
-                  <a href="/tags/Linux/" style="font-size: 10px;">Linux</a>
-                  <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a>
-                  <a href="/tags/Material/" style="font-size: 10px;">Material</a>
-                  <a href="/tags/MongoDB/" style="font-size: 10px;">MongoDB</a>
-                  <a href="/tags/Node-js/" style="font-size: 15px;">Node.js</a>
-                  <a href="/tags/Parcelable/" style="font-size: 10px;">Parcelable</a>
-                  <a href="/tags/Volley/" style="font-size: 10px;">Volley</a>
-                  <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a>
-                  <a href="/tags/XMLRequest/" style="font-size: 10px;">XMLRequest</a>
-                  <a href="/tags/XML解析/" style="font-size: 10px;">XML解析</a>
-                  <a href="/tags/app/" style="font-size: 10px;">app</a>
-                  <a href="/tags/git/" style="font-size: 10px;">git</a>
-                  <a href="/tags/github/" style="font-size: 15px;">github</a>
-                  <a href="/tags/ionic/" style="font-size: 10px;">ionic</a>
-                  <a href="/tags/java/" style="font-size: 10px;">java</a>
-                  <a href="/tags/swift/" style="font-size: 10px;">swift</a>
-                  <a href="/tags/webview/" style="font-size: 10px;">webview</a>
-                  <a href="/tags/免费域名/" style="font-size: 10px;">免费域名</a>
-                  <a href="/tags/内存泄露/" style="font-size: 10px;">内存泄露</a>
-                  <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a>
-                  <a href="/tags/前端框架/" style="font-size: 10px;">前端框架</a>
-                  <a href="/tags/博客/" style="font-size: 10px;">博客</a>
-                  <a href="/tags/反编译/" style="font-size: 10px;">反编译</a>
-                  <a href="/tags/开发/" style="font-size: 10px;">开发</a>
-                  <a href="/tags/性能优化/" style="font-size: 10px;">性能优化</a>
-                  <a href="/tags/攻击/" style="font-size: 10px;">攻击</a>
-                  <a href="/tags/缓冲区溢出/" style="font-size: 10px;">缓冲区溢出</a>
-                  <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
-                  <a href="/tags/邮件/" style="font-size: 10px;">邮件</a>
-                  <a href="/tags/面试/" style="font-size: 15px;">面试</a>
-                </div>
-              </section>
-
-              <section class="switch-part switch-part3">
-
-                <div id="js-aboutme">我就是我，不一样的烟火!</div>
-              </section>
-
-            </div>
-          </div>
-        </header>
-      </div>
-
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">我就是我，不一样的烟火!</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
     </div>
     <div class="mid-col">
       <nav id="mobile-nav">
-        <div class="overlay">
-          <div class="slider-trigger"></div>
-          <h1 class="header-author js-mobile-header hide">science09</h1>
-        </div>
-        <div class="intrude-less">
-          <header id="header" class="inner">
-            <div class="profilepic">
-              <img lazy-src="http://tp2.sinaimg.cn/2445097485/180/5736689505/1" class="js-avatar">
-            </div>
-            <hgroup>
-              <h1 class="header-author">science09</h1>
-            </hgroup>
-
-            <p class="header-subtitle">一分耕耘一分收获</p>
-
-            <nav class="header-menu">
-              <ul>
-
-                <li>
-                  <a href="/">主页</a>
-                </li>
-
-                <li>
-                  <a href="/archives">所有文章</a>
-                </li>
-
-                <div class="clearfix"></div>
-              </ul>
-            </nav>
-            <nav class="header-nav">
-              <div class="social">
-
-                <a class="github" target="_blank" href="https://github.com/science09" title="github">github</a>
-
-                <a class="weibo" target="_blank" href="http://weibo.com/u/2445097485" title="weibo">weibo</a>
-
-                <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
-
-                <a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
-
-              </div>
-            </nav>
-          </header>
-        </div>
-      </nav>
-
-      <div class="body-wrap">
-        <article id="post-Android之Intent数据" class="article article-type-post" itemscope
-        itemprop="blogPost">
-
-          <div class="article-meta">
-            <a href="/2014/09/14/Android之Intent数据/" class="article-date">
-              <time datetime="2014-09-14T05:26:16.000Z" itemprop="datePublished">2014-09-14</time>
-            </a>
-
-          </div>
-
-          <div class="article-inner">
-
-            <input type="hidden" class="isFancy" />
-
-            <header class="article-header">
-              <h1 class="article-title" itemprop="name">
-                Android之Intent数据传递
-              </h1>
-
-            </header>
-
-            <div class="article-info article-info-post">
-              <div class="article-tag tagcloud">
-                <ul class="article-tag-list">
-                  <li class="article-tag-list-item">
-                    <a class="article-tag-list-link" href="/tags/Android/">Android</a>
-                  </li>
-                  <li class="article-tag-list-item">
-                    <a class="article-tag-list-link" href="/tags/Intent/">Intent</a>
-                  </li>
-                </ul>
-              </div>
-
-              <div class="article-category tagcloud">
-                <a class="article-category-link" href="/categories/Android/">Android</a>
-              </div>
-
-              <div class="clearfix"></div>
-            </div>
-
-            <div class="article-entry" itemprop="articleBody">
-
-              <p>Intent（意图）主要是解决Android应用的各项组件之间的通讯。Intent负责对应用中一次操作的动作、动作涉及数据、附加数据进行描述，Android则根据此Intent的描述，负责找到对应的组件，将
-                Intent传递给调用的组件，并完成组件的调用。因此，Intent在这里起着一个媒体中介的作用，专门提供组件互相调用的相关信息，实现调用者与被调用者之间的解耦。
-                <br>
-                <a id="more"></a>
-                <br>例如，在一个联系人维护的应用中，当我们在一个联系人列表屏幕(假设对应的Activity为listActivity)上，点击某个联系人后，希望能够跳出此联系人的详细信息屏幕(假设对应的Activity为detailActivity)</p>
-              <p>为了实现这个目的，listActivity需要构造一个 Intent，这个Intent用于告诉系统，我们要做“查看”动作，此动作对应的查看对象是“某联系人”，然后调用startActivity
-                (Intent intent)，将构造的Intent传入，系统会根据此Intent中的描述，到ManiFest中找到满足此Intent要求的Activity，系统会调用找到的
-                Activity，即为detailActivity，最终传入Intent，detailActivity则会根据此Intent中的描述，执行相应的操作。
-              </p>
-              <h2 id="Intent的使用">Intent的使用</h2>
-              <h4 id="1-_Activity的简单跳转">1. Activity的简单跳转</h4>
-              <p>Activity的切换一般是通过Intent来实现的，Intent是一个Activity到达另一个Activity的引路者，它描述了起点（当前Activity）和终点（目标Activity）。一个简单Intent实现如下：
-                <br>
-                <figure class="highlight java">
-                  <table>
-                    <tr>
-                      <td class="gutter">
-                        <pre>
-                          <span class="line">1</span>
-                          <br>
-                          <span class="line">2</span>
-                          <br>
-                          <span class="line">3</span>
-                          <br>
-                        </pre>
-                      </td>
-                      <td class="code">
-                        <pre>
-                          <span class="line">Intent intent =
-                            <span class="keyword">new</span> Intent();
-                            <span class="comment">//创建一个Intent对象</span>
-                          </span>
-                          <br>
-                          <span class="line">intent.setClass(activityA.
-                            <span class="keyword">this</span>, activityB.class);
-                            <span class="comment">//描述起点和目标</span>
-                          </span>
-                          <br>
-                          <span class="line">startActivity(intent);
-                            <span class="comment">//开始跳转</span>
-                          </span>
-                          <br>
-                        </pre>
-                      </td>
-                    </tr>
-                  </table>
-                </figure>
-              </p>
-              <h4 id="2-包含数据传递的跳转">2.包含数据传递的跳转</h4>
-              <p>通常，我们在Activity的切换中，希望把前一个Activity的某些数据传递给下一个Activity。这时，我们可以借助Bundle来实现。Bundle，相当于数据存储包，用于存放我们想要转达的数据。打个比方，Intent就像一封邮件，里面有送信人地址（原始Activity），也有收信人地址（目标Activity），而Bundle就是附件也可看做是信件内容。下面是它的简单实现：</p>
-              <p> A、ActivityA发送：</p>
-              <figure class="highlight java">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">Intent intent =
-                          <span class="keyword">new</span> Intent();</span>
-                        <br>
-                        <span class="line">intent.setClass(activityA.
-                          <span class="keyword">this</span>, activityB.class);
-                          <span class="comment">//描述起点和目标</span>
-                        </span>
-                        <br>
-                        <span class="line">Bundle bundle =
-                          <span class="keyword">new</span> Bundle();
-                          <span class="comment">//创建Bundle对象</span>
-                        </span>
-                        <br>
-                        <span class="line">bundle.putString(
-                          <span class="string">"data"</span>,
-                          <span class="string">"ActivityA发来的数据"</span>);
-                          <span class="comment">//装入数据</span>
-                        </span>
-                        <br>
-                        <span class="line">intent.putExtras(bundle);
-                          <span class="comment">//把Bundle塞入Intent里面</span>
-                        </span>
-                        <br>
-                        <span class="line">startActivity(intent);
-                          <span class="comment">//开始切换</span>
-                        </span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p>B、ActivityB接受从ActivityA发来的数据：</p>
-              <figure class="highlight java">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">Intent intent =
-                          <span class="keyword">this</span>.getIntent();
-                          <span class="comment">//获取已有的intent对象</span>
-                        </span>
-                        <br>
-                        <span class="line">Bundle bundle = intent.getExtras();
-                          <span class="comment">//获取intent里面的bundle对象</span>
-                        </span>
-                        <br>
-                        <span class="line">string = bundle.getString(
-                          <span class="string">"data"</span>);
-                          <span class="comment">//获取Bundle里面的字符串</span>
-                        </span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <h4 id="3-_接受目标Activity返回的结果">3. 接受目标Activity返回的结果</h4>
-              <p>解决了如何传递数据问题，那么下一个问题是如何接受从目标Activity返回的处理结果。这里有两种方式，一是在onRestart方法（onRestrart表示重启Activity时激发的事件，具体看上一篇的生命周期）里面接受处理结果，方法实现和ActivityB接受从ActivityA发来的数据处理一样。另一种方式，是采用应答模式切换。这里，主要下第二种方式。应答模式切换和普通的切换不同在于，普通的是有去没回，应答则是有来有往。代码实现也不一样：</p>
-              <p>1、从ActivityA切换到ActivityB：startActivityForResult(intent,0);
-                <br>2、从ActivityB返回到ActivityA：setResult(RESULT_OK, intent)；
-                <br>3、接受返回结果：protected void onActivityResult()。
-                <br>具体代码如下;</p>
-              <p>A、从ActivityA切换到ActivityB：</p>
-              <figure class="highlight java">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                        <span class="line">7</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">Intent intent =
-                          <span class="keyword">new</span> Intent(); </span>
-                        <br>
-                        <span class="line">intent = intent.setClass(ActivityIntent.
-                          <span class="keyword">this</span>, AnotherActivity.class);</span>
-                        <br>
-                        <span class="line">Bundle bundle =
-                          <span class="keyword">new</span> Bundle(); </span>
-                        <br>
-                        <span class="line">bundle.putString(
-                          <span class="string">"string"</span>, et_string.getText().toString());</span>
-                        <br>
-                        <span class="line">intent.putExtras(bundle);</span>
-                        <br>
-                        <span class="line">startActivityForResult(intent,
-                          <span class="number">0</span>);
-                          <span class="comment">//只有这里不同 </span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="comment">//ActivityIntent.this.finish(); //不能用finish，会触发onDestroy();</span>
-                        </span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p>B、从ActivityB返回到ActivityA：</p>
-              <figure class="highlight java">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                        <span class="line">7</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">Intent intent =
-                          <span class="keyword">new</span> Intent();</span>
-                        <br>
-                        <span class="line">intent = intent.setClass(AnotherActivity.
-                          <span class="keyword">this</span>, ActivityIntent.class);</span>
-                        <br>
-                        <span class="line">Bundle bundle =
-                          <span class="keyword">new</span> Bundle();</span>
-                        <br>
-                        <span class="line">bundle.putInt(
-                          <span class="string">"result"</span>,
-                          <span class="string">"ActivityB的处理结果"</span>);</span>
-                        <br>
-                        <span class="line">intent.putExtras(bundle);</span>
-                        <br>
-                        <span class="line">AnotherActivity.
-                          <span class="keyword">this</span>.setResult(RESULT_OK, intent);
-                          <span class="comment">//RESULT_OK是返回状态码</span>
-                        </span>
-                        <br>
-                        <span class="line">AnotherActivity.
-                          <span class="keyword">this</span>.finish();
-                          <span class="comment">//会触发onDestroy();</span>
-                        </span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p>C、ActivityA接受ActivityB的返回结果：</p>
-              <figure class="highlight java">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                        <span class="line">7</span>
-                        <br>
-                        <span class="line">8</span>
-                        <br>
-                        <span class="line">9</span>
-                        <br>
-                        <span class="line">10</span>
-                        <br>
-                        <span class="line">11</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">
-                          <span class="function">
-                            <span class="keyword">protected</span>
-                            <span class="keyword">void</span>
-                            <span class="title">onActivityResult</span>
-                            <span class="params">(
-                              <span class="keyword">int</span> requestCode,
-                              <span class="keyword">int</span> resultCode, Intent data)</span>
-                          </span>&#123;</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">super</span>.onActivityResult(requestCode, resultCode,
-                          data);</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">switch</span>(resultCode) &#123;
-                          <span class="comment">//根据状态码，处理返回结果</span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">case</span> RESULT_OK:</span>
-                        <br>
-                        <span class="line"> Bundle bundle =data.getExtras();
-                          <span class="comment">//获取intent里面的bundle对象</span>
-                        </span>
-                        <br>
-                        <span class="line"> String result = bundle.getInt(
-                          <span class="string">"result"</span>);</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">break</span>;</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">default</span>:</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">break</span>;</span>
-                        <br>
-                        <span class="line"> &#125;</span>
-                        <br>
-                        <span class="line">&#125;</span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <h4 id="4-_Activity状态保留">4. Activity状态保留</h4>
-              <p>从ActivityB中返回到ActivityA（在ActivityA切换到ActivityB时，调用了finish方法），你会发现你在ActivityA以前的数据全没了，简单的说就是数据被没有保留下来。因为finish方法，会触发onDestroy()，使得ActivityA销毁。下一次再来到ActivityA时，是全新的ActivityA，以往的数据当然不在。如果想保留切换前的状态，可以采用两种方式：</p>
-              <p>1、切换时，不调用finish()方法。
-                <br>2、采用SharedPreferences来保存数据。SharedPreferences 是一个轻量级存储类，主要用于保存一些窗体的状态，如文本框值、按钮状态等等，类似于Session。一般在onPause()方法里面保存数据，在onResume()里面提取数据。实现如下：</p>
-              <p>A、保存数据</p>
-              <figure class="highlight java">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                        <span class="line">7</span>
-                        <br>
-                        <span class="line">8</span>
-                        <br>
-                        <span class="line">9</span>
-                        <br>
-                        <span class="line">10</span>
-                        <br>
-                        <span class="line">11</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">
-                          <span class="comment">//暂停：onStart()-&gt;onResume()-&gt;onPause()</span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="annotation">@Override</span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="function">
-                            <span class="keyword">protected</span>
-                            <span class="keyword">void</span>
-                            <span class="title">onPause</span>
-                            <span class="params">()</span>
-                          </span>&#123;</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">super</span>.onPause();</span>
-                        <br>
-                        <span class="line"> Log.e(
-                          <span class="string">"Lifecycle_Activity1"</span>,
-                          <span class="string">"onPause()"</span>);</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">
-                          <span class="comment">//把数据保存到类似于Session之类的存储集合里面</span>
-                        </span>
-                        <br>
-                        <span class="line"> SharedPreferences.Editor saveData = getPreferences(
-                          <span class="number">0</span>).edit();</span>
-                        <br>
-                        <span class="line"> saveData.putString(
-                          <span class="string">"value"</span>, et_string.getText().toString());</span>
-                        <br>
-                        <span class="line"> saveData.commit();</span>
-                        <br>
-                        <span class="line"> &#125;</span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p>B、提取数据</p>
-              <figure class="highlight java">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                        <span class="line">7</span>
-                        <br>
-                        <span class="line">8</span>
-                        <br>
-                        <span class="line">9</span>
-                        <br>
-                        <span class="line">10</span>
-                        <br>
-                        <span class="line">11</span>
-                        <br>
-                        <span class="line">12</span>
-                        <br>
-                        <span class="line">13</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">
-                          <span class="comment">//重启：onStart()-&gt;onResume()</span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="annotation">@Override</span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="function">
-                            <span class="keyword">protected</span>
-                            <span class="keyword">void</span>
-                            <span class="title">onResume</span>
-                            <span class="params">()</span>
-                          </span>&#123;</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">super</span>.onResume();</span>
-                        <br>
-                        <span class="line"> Log.e(
-                          <span class="string">"Lifecycle_Activity1"</span>,
-                          <span class="string">"onResume()"</span>);</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">
-                          <span class="comment">//从共享数据存储对象中获取所需的数据 </span>
-                        </span>
-                        <br>
-                        <span class="line"> SharedPreferences getData = getPreferences(
-                          <span class="number">0</span>);</span>
-                        <br>
-                        <span class="line"> String value = getData.getString(
-                          <span class="string">"value"</span>,
-                          <span class="keyword">null</span>);</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">if</span>(value !=
-                          <span class="keyword">null</span>) &#123;</span>
-                        <br>
-                        <span class="line"> et_string.setText(value);</span>
-                        <br>
-                        <span class="line"> &#125;</span>
-                        <br>
-                        <span class="line"> &#125;</span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-
-            </div>
-
-          </div>
-
-          <nav id="article-nav">
-
-            <a href="/2014/10/29/使用ionic框架构建Android-APP/" id="article-nav-newer" class="article-nav-link-wrap">
-              <strong class="article-nav-caption">
-                <</strong>
-                  <div class="article-nav-title">
-
-                    使用ionic框架构建Android APP
-
-                  </div>
-            </a>
-
-            <a href="/2014/09/10/Markdown入门指南/" id="article-nav-older" class="article-nav-link-wrap">
-              <div class="article-nav-title">Markdown——入门指南</div>
-              <strong class="article-nav-caption">></strong>
-            </a>
-
-          </nav>
-
-        </article>
-
-        <div class="share">
-          <!-- JiaThis Button BEGIN -->
-          <div class="jiathis_style">
-            <span class="jiathis_txt">分享到：</span>
-            <a class="jiathis_button_tsina"></a>
-            <a class="jiathis_button_cqq"></a>
-            <a class="jiathis_button_douban"></a>
-            <a class="jiathis_button_weixin"></a>
-            <a class="jiathis_button_tumblr"></a>
-            <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis"
-            target="_blank"></a>
-          </div>
-          <script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953"
-          charset="utf-8"></script>
-          <!-- JiaThis Button END -->
-        </div>
-
-        <div class="duoshuo">
-          <!-- 多说评论框 start -->
-          <div class="ds-thread" data-thread-key="Android之Intent数据" data-title="Android之Intent数据传递"
-          data-url="http://science09.github.io/2014/09/14/Android之Intent数据/"></div>
-          <!-- 多说评论框 end -->
-          <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-          <script type="text/javascript">
-            var duoshuoQuery = {
-              short_name: "true"
-            };
-            (function() {
-              var ds = document.createElement('script');
-              ds.type = 'text/javascript';
-              ds.async = true;
-              ds.src = (document.location.protocol == 'https:' ? 'https:' :
-                  'http:') +
-                '//static.duoshuo.com/embed.js';
-              ds.charset = 'UTF-8';
-              (document.getElementsByTagName('head')[0] || document.getElementsByTagName(
-                'body')[0]).appendChild(ds);
-            })();
-
-          </script>
-          <!-- 多说公共JS代码 end -->
-        </div>
-      </div>
-      <footer id="footer">
-        <div class="outer">
-          <div id="footer-info">
-            <div class="footer-left">
-              &copy; 2015 science09
-            </div>
-            <div class="footer-right">
-              <a href="http://hexo.io/" target="_blank">Hexo</a> Theme
-              <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
-            </div>
-          </div>
-        </div>
-      </footer>
-
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">science09</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://tp2.sinaimg.cn/2445097485/180/5736689505/1" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">science09</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">一分耕耘一分收获</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/science09" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://weibo.com/u/2445097485" title="weibo">weibo</a>
+			        
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+			        
+						<a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android之Intent数据" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2014/09/14/Android之Intent数据/" class="article-date">
+  	<time datetime="2014-09-14T05:26:16.000Z" itemprop="datePublished">2014-09-14</time>
+</a>
     </div>
-    <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android之Intent数据传递
+    </h1>
+  
 
-    <script>
-      var yiliaConfig = {
-        fancybox: true,
-        mathjax: true,
-        animate: true,
-        isHome: false,
-        isPost: true,
-        isArchive: false,
-        isTag: false,
-        isCategory: false,
-        open_in_new: false
-      }
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Intent/">Intent</a></li></ul>
+	</div>
 
-    </script>
-    <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
-    <script src="/js/main.js" type="text/javascript"></script>
-
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes:
-      true, skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      } }); MathJax.Hub.Queue(function() { var all = MathJax.Hub.getAllJax(), i;
-      for(i=0; i
-      < all.length; i +=1 ) { all[i].SourceElement().parentNode.className +=' has-jax'
-      ; } }); </script>
-
-        <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android/">Android</a>
+	</div>
 
 
-        </script>
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Intent（意图）主要是解决Android应用的各项组件之间的通讯。Intent负责对应用中一次操作的动作、动作涉及数据、附加数据进行描述，Android则根据此Intent的描述，负责找到对应的组件，将 Intent传递给调用的组件，并完成组件的调用。因此，Intent在这里起着一个媒体中介的作用，专门提供组件互相调用的相关信息，实现调用者与被调用者之间的解耦。<br><a id="more"></a><br>例如，在一个联系人维护的应用中，当我们在一个联系人列表屏幕(假设对应的Activity为listActivity)上，点击某个联系人后，希望能够跳出此联系人的详细信息屏幕(假设对应的Activity为detailActivity)</p>
+<p>为了实现这个目的，listActivity需要构造一个 Intent，这个Intent用于告诉系统，我们要做“查看”动作，此动作对应的查看对象是“某联系人”，然后调用startActivity (Intent intent)，将构造的Intent传入，系统会根据此Intent中的描述，到ManiFest中找到满足此Intent要求的Activity，系统会调用找到的 Activity，即为detailActivity，最终传入Intent，detailActivity则会根据此Intent中的描述，执行相应的操作。</p>
+<h2 id="Intent的使用">Intent的使用</h2><h4 id="1-_Activity的简单跳转">1. Activity的简单跳转</h4><p>Activity的切换一般是通过Intent来实现的，Intent是一个Activity到达另一个Activity的引路者，它描述了起点（当前Activity）和终点（目标Activity）。一个简单Intent实现如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Intent intent = <span class="keyword">new</span> Intent();                           <span class="comment">//创建一个Intent对象</span></span><br><span class="line">intent.setClass(activityA.<span class="keyword">this</span>, activityB.class);    <span class="comment">//描述起点和目标</span></span><br><span class="line">startActivity(intent);                                       <span class="comment">//开始跳转</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="2-包含数据传递的跳转">2.包含数据传递的跳转</h4><p>通常，我们在Activity的切换中，希望把前一个Activity的某些数据传递给下一个Activity。这时，我们可以借助Bundle来实现。Bundle，相当于数据存储包，用于存放我们想要转达的数据。打个比方，Intent就像一封邮件，里面有送信人地址（原始Activity），也有收信人地址（目标Activity），而Bundle就是附件也可看做是信件内容。下面是它的简单实现：</p>
+<p> A、ActivityA发送：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Intent intent = <span class="keyword">new</span> Intent();</span><br><span class="line">intent.setClass(activityA.<span class="keyword">this</span>, activityB.class);   <span class="comment">//描述起点和目标</span></span><br><span class="line">Bundle bundle = <span class="keyword">new</span> Bundle();                           <span class="comment">//创建Bundle对象</span></span><br><span class="line">bundle.putString(<span class="string">"data"</span>, <span class="string">"ActivityA发来的数据"</span>);     <span class="comment">//装入数据</span></span><br><span class="line">intent.putExtras(bundle);                                <span class="comment">//把Bundle塞入Intent里面</span></span><br><span class="line">startActivity(intent);                                     <span class="comment">//开始切换</span></span><br></pre></td></tr></table></figure>
+<p>B、ActivityB接受从ActivityA发来的数据：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Intent intent = <span class="keyword">this</span>.getIntent();        <span class="comment">//获取已有的intent对象</span></span><br><span class="line">Bundle bundle = intent.getExtras();    <span class="comment">//获取intent里面的bundle对象</span></span><br><span class="line">string = bundle.getString(<span class="string">"data"</span>);    <span class="comment">//获取Bundle里面的字符串</span></span><br></pre></td></tr></table></figure>
+<h4 id="3-_接受目标Activity返回的结果">3. 接受目标Activity返回的结果</h4><p>解决了如何传递数据问题，那么下一个问题是如何接受从目标Activity返回的处理结果。这里有两种方式，一是在onRestart方法（onRestrart表示重启Activity时激发的事件，具体看上一篇的生命周期）里面接受处理结果，方法实现和ActivityB接受从ActivityA发来的数据处理一样。另一种方式，是采用应答模式切换。这里，主要下第二种方式。应答模式切换和普通的切换不同在于，普通的是有去没回，应答则是有来有往。代码实现也不一样：</p>
+<p>1、从ActivityA切换到ActivityB：startActivityForResult(intent,0);<br>2、从ActivityB返回到ActivityA：setResult(RESULT_OK, intent)；<br>3、接受返回结果：protected void onActivityResult()。<br>具体代码如下;</p>
+<p>A、从ActivityA切换到ActivityB：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Intent intent = <span class="keyword">new</span> Intent();    </span><br><span class="line">intent = intent.setClass(ActivityIntent.<span class="keyword">this</span>, AnotherActivity.class);</span><br><span class="line">Bundle bundle = <span class="keyword">new</span> Bundle();    </span><br><span class="line">bundle.putString(<span class="string">"string"</span>, et_string.getText().toString());</span><br><span class="line">intent.putExtras(bundle);</span><br><span class="line">startActivityForResult(intent,<span class="number">0</span>);       <span class="comment">//只有这里不同 </span></span><br><span class="line"> <span class="comment">//ActivityIntent.this.finish();  //不能用finish，会触发onDestroy();</span></span><br></pre></td></tr></table></figure>
+<p>B、从ActivityB返回到ActivityA：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Intent intent = <span class="keyword">new</span> Intent();</span><br><span class="line">intent = intent.setClass(AnotherActivity.<span class="keyword">this</span>, ActivityIntent.class);</span><br><span class="line">Bundle bundle = <span class="keyword">new</span> Bundle();</span><br><span class="line">bundle.putInt(<span class="string">"result"</span>, <span class="string">"ActivityB的处理结果"</span>);</span><br><span class="line">intent.putExtras(bundle);</span><br><span class="line">AnotherActivity.<span class="keyword">this</span>.setResult(RESULT_OK, intent);   <span class="comment">//RESULT_OK是返回状态码</span></span><br><span class="line">AnotherActivity.<span class="keyword">this</span>.finish(); <span class="comment">//会触发onDestroy();</span></span><br></pre></td></tr></table></figure>
+<p>C、ActivityA接受ActivityB的返回结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onActivityResult</span><span class="params">(<span class="keyword">int</span> requestCode, <span class="keyword">int</span> resultCode, Intent data)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onActivityResult(requestCode, resultCode, data);</span><br><span class="line">    <span class="keyword">switch</span>(resultCode) &#123; <span class="comment">//根据状态码，处理返回结果</span></span><br><span class="line">        <span class="keyword">case</span> RESULT_OK:</span><br><span class="line">        Bundle bundle =data.getExtras();   <span class="comment">//获取intent里面的bundle对象</span></span><br><span class="line">        String result = bundle.getInt(<span class="string">"result"</span>);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="4-_Activity状态保留">4. Activity状态保留</h4><p>从ActivityB中返回到ActivityA（在ActivityA切换到ActivityB时，调用了finish方法），你会发现你在ActivityA以前的数据全没了，简单的说就是数据被没有保留下来。因为finish方法，会触发onDestroy()，使得ActivityA销毁。下一次再来到ActivityA时，是全新的ActivityA，以往的数据当然不在。如果想保留切换前的状态，可以采用两种方式：</p>
+<p>1、切换时，不调用finish()方法。<br>2、采用SharedPreferences来保存数据。SharedPreferences 是一个轻量级存储类，主要用于保存一些窗体的状态，如文本框值、按钮状态等等，类似于Session。一般在onPause()方法里面保存数据，在onResume()里面提取数据。实现如下：</p>
+<p>A、保存数据</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//暂停：onStart()-&gt;onResume()-&gt;onPause()</span></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onPause</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onPause();</span><br><span class="line">        Log.e(<span class="string">"Lifecycle_Activity1"</span>, <span class="string">"onPause()"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//把数据保存到类似于Session之类的存储集合里面</span></span><br><span class="line">        SharedPreferences.Editor saveData = getPreferences(<span class="number">0</span>).edit();</span><br><span class="line">        saveData.putString(<span class="string">"value"</span>, et_string.getText().toString());</span><br><span class="line">        saveData.commit();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>B、提取数据</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//重启：onStart()-&gt;onResume()</span></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onResume</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onResume();</span><br><span class="line">        Log.e(<span class="string">"Lifecycle_Activity1"</span>, <span class="string">"onResume()"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//从共享数据存储对象中获取所需的数据 </span></span><br><span class="line">        SharedPreferences getData = getPreferences(<span class="number">0</span>);</span><br><span class="line">        String value = getData.getString(<span class="string">"value"</span>, <span class="keyword">null</span>);</span><br><span class="line">        <span class="keyword">if</span>(value != <span class="keyword">null</span>) &#123;</span><br><span class="line">            et_string.setText(value);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2014/10/29/使用ionic框架构建Android-APP/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          使用ionic框架构建Android APP 
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2014/09/10/Markdown入门指南/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Markdown——入门指南</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android之Intent数据" data-title="Android之Intent数据传递" data-url="http://science09.github.io/2014/09/14/Android之Intent数据/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 science09
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
 
   </div>
 </body>
-
 </html>

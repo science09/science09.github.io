@@ -1,776 +1,380 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta charset="utf-8">
-
+  
   <title>Android WebView内存泄漏 | 彼岸-未来的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="在这次开发过程中，需要用到webview展示一些界面，但是加载的页面如果有很多图片就会发现内存占用暴涨，并且在退出该界面后，即使在包含该 webview的Activity的destroy()方法中，使用webview.destroy();webview=null;对内存占回收用还是没有任何效果。有人说，一旦在你的xml布局中引用了webview甚至没有使用过，都会阻碍重新进入Application">
-  <meta property="og:type" content="article">
-  <meta property="og:title" content="Android WebView内存泄漏">
-  <meta property="og:url" content="http://science09.github.io/2014/07/31/Android-WebView内存泄漏/index.html">
-  <meta property="og:site_name" content="彼岸-未来的博客">
-  <meta property="og:description" content="在这次开发过程中，需要用到webview展示一些界面，但是加载的页面如果有很多图片就会发现内存占用暴涨，并且在退出该界面后，即使在包含该 webview的Activity的destroy()方法中，使用webview.destroy();webview=null;对内存占回收用还是没有任何效果。有人说，一旦在你的xml布局中引用了webview甚至没有使用过，都会阻碍重新进入Application">
-  <meta property="og:updated_time" content="2015-09-10T13:17:52.000Z">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Android WebView内存泄漏">
-  <meta name="twitter:description" content="在这次开发过程中，需要用到webview展示一些界面，但是加载的页面如果有很多图片就会发现内存占用暴涨，并且在退出该界面后，即使在包含该 webview的Activity的destroy()方法中，使用webview.destroy();webview=null;对内存占回收用还是没有任何效果。有人说，一旦在你的xml布局中引用了webview甚至没有使用过，都会阻碍重新进入Application">
-
-  <link rel="alternative" href="/atom.xml" title="彼岸-未来的博客" type="application/atom+xml">
-
-  <link rel="icon" href="/favicon.ico" type="image/x-ico">
-
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android WebView内存泄漏">
+<meta property="og:url" content="http://science09.github.io/2014/07/31/Android-WebView内存泄漏/index.html">
+<meta property="og:site_name" content="彼岸-未来的博客">
+<meta property="og:description" content="在这次开发过程中，需要用到webview展示一些界面，但是加载的页面如果有很多图片就会发现内存占用暴涨，并且在退出该界面后，即使在包含该 webview的Activity的destroy()方法中，使用webview.destroy();webview=null;对内存占回收用还是没有任何效果。有人说，一旦在你的xml布局中引用了webview甚至没有使用过，都会阻碍重新进入Application">
+<meta property="og:updated_time" content="2015-09-10T13:17:52.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android WebView内存泄漏">
+<meta name="twitter:description" content="在这次开发过程中，需要用到webview展示一些界面，但是加载的页面如果有很多图片就会发现内存占用暴涨，并且在退出该界面后，即使在包含该 webview的Activity的destroy()方法中，使用webview.destroy();webview=null;对内存占回收用还是没有任何效果。有人说，一旦在你的xml布局中引用了webview甚至没有使用过，都会阻碍重新进入Application">
+  
+    <link rel="alternative" href="/atom.xml" title="彼岸-未来的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico" type="image/x-ico">
+  
   <link rel="stylesheet" href="/css/style.css" type="text/css">
   <script>
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?ae9c0d06cbefcb5fa4d7988f4c49cb6c";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-
-  </script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?ae9c0d06cbefcb5fa4d7988f4c49cb6c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
 </head>
-
 <body>
   <div id="container">
     <div class="left-col">
-      <div class="overlay"></div>
-      <div class="intrude-less">
-        <header id="header" class="inner">
-          <a href="/" class="profilepic">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://tp2.sinaimg.cn/2445097485/180/5736689505/1" class="js-avatar">
+			
+		</a>
 
-            <img lazy-src="http://tp2.sinaimg.cn/2445097485/180/5736689505/1" class="js-avatar">
+		<hgroup>
+		  <h1 class="header-author"><a href="/">science09</a></h1>
+		</hgroup>
 
-          </a>
+		
+		<p class="header-subtitle">一分耕耘一分收获</p>
+		
 
-          <hgroup>
-            <h1 class="header-author">
-              <a href="/">science09</a>
-            </h1>
-          </hgroup>
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
 
-          <p class="header-subtitle">一分耕耘一分收获</p>
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/science09" title="github">github</a>
+					        
+								<a class="weibo" target="_blank" href="http://weibo.com/u/2445097485" title="weibo">weibo</a>
+					        
+								<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+					        
+								<a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/Android库/" style="font-size: 10px;">Android库</a> <a href="/tags/Android开发/" style="font-size: 10px;">Android开发</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Express/" style="font-size: 10px;">Express</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Intent/" style="font-size: 10px;">Intent</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Material/" style="font-size: 10px;">Material</a> <a href="/tags/MongoDB/" style="font-size: 10px;">MongoDB</a> <a href="/tags/Node-js/" style="font-size: 15px;">Node.js</a> <a href="/tags/Parcelable/" style="font-size: 10px;">Parcelable</a> <a href="/tags/Volley/" style="font-size: 10px;">Volley</a> <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a> <a href="/tags/XMLRequest/" style="font-size: 10px;">XMLRequest</a> <a href="/tags/XML解析/" style="font-size: 10px;">XML解析</a> <a href="/tags/app/" style="font-size: 10px;">app</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/ionic/" style="font-size: 10px;">ionic</a> <a href="/tags/java/" style="font-size: 10px;">java</a> <a href="/tags/swift/" style="font-size: 10px;">swift</a> <a href="/tags/webview/" style="font-size: 10px;">webview</a> <a href="/tags/免费域名/" style="font-size: 10px;">免费域名</a> <a href="/tags/内存泄露/" style="font-size: 10px;">内存泄露</a> <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a> <a href="/tags/前端框架/" style="font-size: 10px;">前端框架</a> <a href="/tags/博客/" style="font-size: 10px;">博客</a> <a href="/tags/反编译/" style="font-size: 10px;">反编译</a> <a href="/tags/开发/" style="font-size: 10px;">开发</a> <a href="/tags/性能优化/" style="font-size: 10px;">性能优化</a> <a href="/tags/攻击/" style="font-size: 10px;">攻击</a> <a href="/tags/缓冲区溢出/" style="font-size: 10px;">缓冲区溢出</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a> <a href="/tags/邮件/" style="font-size: 10px;">邮件</a> <a href="/tags/面试/" style="font-size: 15px;">面试</a>
+					</div>
+				</section>
+				
+				
+				
 
-          <div class="switch-btn">
-            <div class="icon">
-              <div class="icon-ctn">
-                <div class="icon-wrap icon-house" data-idx="0">
-                  <div class="birdhouse"></div>
-                  <div class="birdhouse_holes"></div>
-                </div>
-                <div class="icon-wrap icon-ribbon hide" data-idx="1">
-                  <div class="ribbon"></div>
-                </div>
-
-                <div class="icon-wrap icon-me hide" data-idx="3">
-                  <div class="user"></div>
-                  <div class="shoulder"></div>
-                </div>
-
-              </div>
-
-            </div>
-            <div class="tips-box hide">
-              <div class="tips-arrow"></div>
-              <ul class="tips-inner">
-                <li>菜单</li>
-                <li>标签</li>
-
-                <li>关于我</li>
-
-              </ul>
-            </div>
-          </div>
-
-          <div class="switch-area">
-            <div class="switch-wrap">
-              <section class="switch-part switch-part1">
-                <nav class="header-menu">
-                  <ul>
-
-                    <li>
-                      <a href="/">主页</a>
-                    </li>
-
-                    <li>
-                      <a href="/archives">所有文章</a>
-                    </li>
-
-                  </ul>
-                </nav>
-                <nav class="header-nav">
-                  <div class="social">
-
-                    <a class="github" target="_blank" href="https://github.com/science09" title="github">github</a>
-
-                    <a class="weibo" target="_blank" href="http://weibo.com/u/2445097485" title="weibo">weibo</a>
-
-                    <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
-
-                    <a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
-
-                  </div>
-                </nav>
-              </section>
-
-              <section class="switch-part switch-part2">
-                <div class="widget tagcloud" id="js-tagcloud">
-                  <a href="/tags/Android/" style="font-size: 20px;">Android</a>
-                  <a href="/tags/Android库/" style="font-size: 10px;">Android库</a>
-                  <a href="/tags/Android开发/" style="font-size: 10px;">Android开发</a>
-                  <a href="/tags/CSS/" style="font-size: 10px;">CSS</a>
-                  <a href="/tags/Express/" style="font-size: 10px;">Express</a>
-                  <a href="/tags/HTML/" style="font-size: 10px;">HTML</a>
-                  <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a>
-                  <a href="/tags/Intent/" style="font-size: 10px;">Intent</a>
-                  <a href="/tags/Java/" style="font-size: 15px;">Java</a>
-                  <a href="/tags/Linux/" style="font-size: 10px;">Linux</a>
-                  <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a>
-                  <a href="/tags/Material/" style="font-size: 10px;">Material</a>
-                  <a href="/tags/MongoDB/" style="font-size: 10px;">MongoDB</a>
-                  <a href="/tags/Node-js/" style="font-size: 15px;">Node.js</a>
-                  <a href="/tags/Parcelable/" style="font-size: 10px;">Parcelable</a>
-                  <a href="/tags/Volley/" style="font-size: 10px;">Volley</a>
-                  <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a>
-                  <a href="/tags/XMLRequest/" style="font-size: 10px;">XMLRequest</a>
-                  <a href="/tags/XML解析/" style="font-size: 10px;">XML解析</a>
-                  <a href="/tags/app/" style="font-size: 10px;">app</a>
-                  <a href="/tags/git/" style="font-size: 10px;">git</a>
-                  <a href="/tags/github/" style="font-size: 15px;">github</a>
-                  <a href="/tags/ionic/" style="font-size: 10px;">ionic</a>
-                  <a href="/tags/java/" style="font-size: 10px;">java</a>
-                  <a href="/tags/swift/" style="font-size: 10px;">swift</a>
-                  <a href="/tags/webview/" style="font-size: 10px;">webview</a>
-                  <a href="/tags/免费域名/" style="font-size: 10px;">免费域名</a>
-                  <a href="/tags/内存泄露/" style="font-size: 10px;">内存泄露</a>
-                  <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a>
-                  <a href="/tags/前端框架/" style="font-size: 10px;">前端框架</a>
-                  <a href="/tags/博客/" style="font-size: 10px;">博客</a>
-                  <a href="/tags/反编译/" style="font-size: 10px;">反编译</a>
-                  <a href="/tags/开发/" style="font-size: 10px;">开发</a>
-                  <a href="/tags/性能优化/" style="font-size: 10px;">性能优化</a>
-                  <a href="/tags/攻击/" style="font-size: 10px;">攻击</a>
-                  <a href="/tags/缓冲区溢出/" style="font-size: 10px;">缓冲区溢出</a>
-                  <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
-                  <a href="/tags/邮件/" style="font-size: 10px;">邮件</a>
-                  <a href="/tags/面试/" style="font-size: 15px;">面试</a>
-                </div>
-              </section>
-
-              <section class="switch-part switch-part3">
-
-                <div id="js-aboutme">我就是我，不一样的烟火!</div>
-              </section>
-
-            </div>
-          </div>
-        </header>
-      </div>
-
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">我就是我，不一样的烟火!</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
     </div>
     <div class="mid-col">
       <nav id="mobile-nav">
-        <div class="overlay">
-          <div class="slider-trigger"></div>
-          <h1 class="header-author js-mobile-header hide">science09</h1>
-        </div>
-        <div class="intrude-less">
-          <header id="header" class="inner">
-            <div class="profilepic">
-              <img lazy-src="http://tp2.sinaimg.cn/2445097485/180/5736689505/1" class="js-avatar">
-            </div>
-            <hgroup>
-              <h1 class="header-author">science09</h1>
-            </hgroup>
-
-            <p class="header-subtitle">一分耕耘一分收获</p>
-
-            <nav class="header-menu">
-              <ul>
-
-                <li>
-                  <a href="/">主页</a>
-                </li>
-
-                <li>
-                  <a href="/archives">所有文章</a>
-                </li>
-
-                <div class="clearfix"></div>
-              </ul>
-            </nav>
-            <nav class="header-nav">
-              <div class="social">
-
-                <a class="github" target="_blank" href="https://github.com/science09" title="github">github</a>
-
-                <a class="weibo" target="_blank" href="http://weibo.com/u/2445097485" title="weibo">weibo</a>
-
-                <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
-
-                <a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
-
-              </div>
-            </nav>
-          </header>
-        </div>
-      </nav>
-
-      <div class="body-wrap">
-        <article id="post-Android-WebView内存泄漏" class="article article-type-post" itemscope
-        itemprop="blogPost">
-
-          <div class="article-meta">
-            <a href="/2014/07/31/Android-WebView内存泄漏/" class="article-date">
-              <time datetime="2014-07-31T15:59:14.000Z" itemprop="datePublished">2014-07-31</time>
-            </a>
-
-          </div>
-
-          <div class="article-inner">
-
-            <input type="hidden" class="isFancy" />
-
-            <header class="article-header">
-              <h1 class="article-title" itemprop="name">
-                Android WebView内存泄漏
-              </h1>
-
-            </header>
-
-            <div class="article-info article-info-post">
-              <div class="article-tag tagcloud">
-                <ul class="article-tag-list">
-                  <li class="article-tag-list-item">
-                    <a class="article-tag-list-link" href="/tags/Android/">Android</a>
-                  </li>
-                  <li class="article-tag-list-item">
-                    <a class="article-tag-list-link" href="/tags/webview/">webview</a>
-                  </li>
-                  <li class="article-tag-list-item">
-                    <a class="article-tag-list-link" href="/tags/内存泄露/">内存泄露</a>
-                  </li>
-                </ul>
-              </div>
-
-              <div class="article-category tagcloud">
-                <a class="article-category-link" href="/categories/Android/">Android</a>
-              </div>
-
-              <div class="clearfix"></div>
-            </div>
-
-            <div class="article-entry" itemprop="articleBody">
-
-              <p>在这次开发过程中，需要用到webview展示一些界面，但是加载的页面如果有很多图片就会发现内存占用暴涨，并且在退出该界面后，即使在包含该
-                webview的Activity的destroy()方法中，使用webview.destroy();webview=null;对内存占回收用还是没有任何效果。有人说，一旦在你的xml布局中引用了webview甚至没有使用过，都会阻碍重新进入Application之后对内存的gc。包括使用
-                MapView有时一会引发OOM，几经周折在网上看到各种解决办法，在这里跟大家分享一下。但是到目前为止还没有找到根本的解决办法，网上也有说是
-                sdk的bug。但是不管怎么样，我们还是需要使用的。
-                <br>
-                <a id="more"></a>
-                <br>要使用WebView不造成内存泄漏，首先应该做的就是不能在xml中定义webview节点，而是在需要的时候动态生成。即：可以在使用WebView
-                的地方放置一个LinearLayout类似ViewGroup的节点，然后在要使用WebView的时候，动态生成即：
-              </p>
-              <figure class="highlight java">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">WebView mWebView =
-                          <span class="keyword">new</span> WebView(getApplicationgContext()); </span>
-                        <br>
-                        <span class="line">LinearLayout mll = findViewById(R.id.xxx); </span>
-                        <br>
-                        <span class="line">mll.addView(mWebView);</span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p>然后一定要在onDestroy()方法中显式的调用</p>
-              <figure class="highlight java">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">
-                          <span class="function">
-                            <span class="keyword">protected</span>
-                            <span class="keyword">void</span>
-                            <span class="title">onDestroy</span>
-                            <span class="params">()</span>
-                          </span>&#123;</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">super</span>.onDestroy();</span>
-                        <br>
-                        <span class="line"> mWebView.removeAllViews();</span>
-                        <br>
-                        <span class="line"> mWebView.destroy()</span>
-                        <br>
-                        <span class="line">&#125;</span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p>注意： new WebView(getApplicationgContext()) ;必须传入ApplicationContext如果传入Activity的
-                Context的话，对内存的引用会一直被保持着。有人用这个方法解决了当Activity被消除后依然保持引用的问题。但是你会发现，如果你需要在
-                WebView中打开链接或者你打开的页面带有flash，获得你的WebView想弹出一个dialog，都会导致从 ApplicationContext到ActivityContext的强制类型转换错误，从而导致你应用崩溃。这是因为在加载flash的时候，系统
-                会首先把你的WebView作为父控件，然后在该控件上绘制flash，他想找一个Activity的Context来绘制他，但是你传入的是
-                ApplicationContext。后果，你可以晓得了哈。</p>
-              <p>于是大牛们就Activity销毁后还保持引用这个问题，提供了另一种解决办法：既然你不能给我删除引用，那么我就自己来吧。于是下面的这种方法诞生了：</p>
-              <p>（作者说这个方法是依赖android.webkit implementation有可能在最近的版本中失败）</p>
-              <figure class="highlight java">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                        <span class="line">7</span>
-                        <br>
-                        <span class="line">8</span>
-                        <br>
-                        <span class="line">9</span>
-                        <br>
-                        <span class="line">10</span>
-                        <br>
-                        <span class="line">11</span>
-                        <br>
-                        <span class="line">12</span>
-                        <br>
-                        <span class="line">13</span>
-                        <br>
-                        <span class="line">14</span>
-                        <br>
-                        <span class="line">15</span>
-                        <br>
-                        <span class="line">16</span>
-                        <br>
-                        <span class="line">17</span>
-                        <br>
-                        <span class="line">18</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">
-                          <span class="function">
-                            <span class="keyword">public</span>
-                            <span class="keyword">void</span>
-                            <span class="title">setConfigCallback</span>
-                            <span class="params">(WindowManager windowManager)</span>
-                          </span>&#123; </span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">try</span> &#123;</span>
-                        <br>
-                        <span class="line"> Field field = WebView.class.getDeclaredField(
-                          <span class="string">"mWebViewCore"</span>); </span>
-                        <br>
-                        <span class="line"> field = field.getType().getDeclaredField(
-                          <span class="string">"mBrowserFrame"</span>); </span>
-                        <br>
-                        <span class="line"> field = field.getType().getDeclaredField(
-                          <span class="string">"sConfigCallback"</span>); </span>
-                        <br>
-                        <span class="line"> field.setAccessible(
-                          <span class="keyword">true</span>); </span>
-                        <br>
-                        <span class="line"> Object configCallback = field.get(
-                          <span class="keyword">null</span>); </span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">if</span> (
-                          <span class="keyword">null</span> == configCallback) &#123; </span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">return</span>; </span>
-                        <br>
-                        <span class="line"> &#125;</span>
-                        <br>
-                        <span class="line"></span>
-                        <br>
-                        <span class="line"> field = field.getType().getDeclaredField(
-                          <span class="string">"mWindowManager"</span>); </span>
-                        <br>
-                        <span class="line"> field.setAccessible(
-                          <span class="keyword">true</span>); </span>
-                        <br>
-                        <span class="line"> field.set(configCallback, windowManager); </span>
-                        <br>
-                        <span class="line"> &#125;
-                          <span class="keyword">catch</span>(Exception e) &#123; </span>
-                        <br>
-                        <span class="line"> &#125;</span>
-                        <br>
-                        <span class="line">&#125;</span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p>然后在Activity中调用上面的方法：</p>
-              <figure class="highlight java">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                        <span class="line">7</span>
-                        <br>
-                        <span class="line">8</span>
-                        <br>
-                        <span class="line">9</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">
-                          <span class="function">
-                            <span class="keyword">public</span>
-                            <span class="keyword">void</span>
-                            <span class="title">onCreate</span>
-                            <span class="params">(Bundle savedInstanceState)</span>
-                          </span>&#123; </span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">super</span>.onCreate(savedInstanceState); </span>
-                        <br>
-                        <span class="line"> setConfigCallback((WindowManager)getApplicationContext().getSystemService(Context.WINDOW_SERVICE));
-                        </span>
-                        <br>
-                        <span class="line">&#125; </span>
-                        <br>
-                        <span class="line"> </span>
-                        <br>
-                        <span class="line">
-                          <span class="function">
-                            <span class="keyword">public</span>
-                            <span class="keyword">void</span>
-                            <span class="title">onDestroy</span>
-                            <span class="params">()</span>
-                          </span>&#123;</span>
-                        <br>
-                        <span class="line"> setConfigCallback(
-                          <span class="keyword">null</span>);</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">super</span>.onDestroy(); </span>
-                        <br>
-                        <span class="line">&#125;</span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p>该反射方法在我的实验中（2.3.6）确实有些用处，在应用内存占用到70M左右的时候会明显释放到50M或者60M然后的释放就有些缓慢，其实就是看不出来了。之前在没使用该方法的时候可能达到120M。</p>
-              <p>但是！！！我们的应用要求占用内存更低啊，这肿么拌？凉拌么？No。在各种纠结之后，终于找到了终极解决办法！！！该办法适用于我们的需求，在退出
-                WebView的界面之后，迅速回收内存。要问这个方法是什么，不要9999，不要8999，只要你仔细看好下面一句话：那就是为加载WebView的界
-                面开启新进程，在该页面退出之后关闭这个进程。
-              </p>
-              <p>这一点说了之后，你懂了吧？
-                <br>但是在这个其中，杀死自己进程的时候又遇到了问题，网上介绍的各种方法都不好使，
-                <br>killBackgroundProcesses(getPackageName());各种不好用，最后使用System.exit(0);直接退出虚拟机（Android为每一个进程创建一个虚拟机的）。这个肯定不用纠结了，一旦退出，内存里面释放。听涛哥说QQ也是这么做。</p>
-              <p>最后英雄要问出处，附上大牛解说引起该问题的出处</p>
-              <p>这个泄漏出现在external/webkit/Source/WebKit/android/WebCoreSupport/UrlInterceptResponse.cpp.中。具体我自己真心没有深入研究。大家有兴趣的话，可以看看哈。</p>
-              <figure class="highlight java">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                        <span class="line">7</span>
-                        <br>
-                        <span class="line">8</span>
-                        <br>
-                        <span class="line">9</span>
-                        <br>
-                        <span class="line">10</span>
-                        <br>
-                        <span class="line">11</span>
-                        <br>
-                        <span class="line">12</span>
-                        <br>
-                        <span class="line">13</span>
-                        <br>
-                        <span class="line">14</span>
-                        <br>
-                        <span class="line">15</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">--- a/Source/WebKit/android/WebCoreSupport/UrlInterceptResponse.cpp
-                        </span>
-                        <br>
-                        <span class="line">+++ b/Source/WebKit/android/WebCoreSupport/UrlInterceptResponse.cpp
-                        </span>
-                        <br>
-                        <span class="line">@@ -
-                          <span class="number">63</span>,
-                          <span class="number">10</span> +
-                          <span class="number">63</span>,
-                          <span class="number">10</span> @@
-                          <span class="keyword">public</span>: </span>
-                        <br>
-                        <span class="line"> JNIEnv* env = JSC::Bindings::getJNIEnv(); </span>
-                        <br>
-                        <span class="line">
-                          <span class="comment">// Initialize our read buffer to the capacity of out. </span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">if</span> (!m_buffer) &#123; </span>
-                        <br>
-                        <span class="line">- m_buffer = env-&gt;NewByteArray(out-&gt;capacity()); </span>
-                        <br>
-                        <span class="line">- m_buffer = (jbyteArray) env-&gt;NewGlobalRef(m_buffer);
-                          </span>
-                        <br>
-                        <span class="line">+
-                          <span class="function">ScopedLocalRef&lt;jbyteArray&gt;
-                            <span class="title">buffer_local</span>
-                            <span class="params">(env, env-&gt;NewByteArray(out-&gt;capacity()</span>))</span>;
-                        </span>
-                        <br>
-                        <span class="line">+ m_buffer = static_cast&lt;jbyteArray&gt;(env-&gt;NewGlobalRef(buffer_local.get()));
-                        </span>
-                        <br>
-                        <span class="line"> &#125; </span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">int</span> size = (
-                          <span class="keyword">int</span>) env-&gt;CallIntMethod(m_inputStream, m_read,
-                          m_buffer);
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">if</span> (checkException(env) || size &lt;
-                          <span class="number">0</span>) </span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">return</span>; </span>
-                        <br>
-                        <span class="line">
-                          <span class="comment">// Copy from m_buffer to out.</span>
-                        </span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p>而且从这里了解
-                <a href="https://github.com/android/platform_external_webkit/commit/1e3e46a731730c02d916ea805ec4b20191509282"
-                target="_blank" rel="external">这个bug的解决状态</a> 。</p>
-              <p>还有一个问题要说的，也是在WebView使用的时候出现的问题：WebView 中包含一个ZoomButtonsController，当使用
-                web.getSettings().setBuiltInZoomControls(true);启用该设置后，用户一旦触摸屏幕，就会出现缩放控制图
-                标。这个图标过上几秒会自动消失，但在3.0系统以上上，如果图标自动消失前退出当前Activity的话，就会发生ZoomButton找不到依附的
-                Window而造成程序崩溃，解决办法很简单就是在Activity的ondestory方法中调用 web.setVisibility(View.GONE);方法，手动将其隐藏，就不会崩溃了。在3.0一下系统上不会出现该崩溃问题，真是各种崩溃，
-                防不胜防啊！
-              </p>
-              <p>最后还有内存泄漏的一些个建议：</p>
-              <p>In summary, to avoid context-related memory leaks, remember the following:</p>
-              <ul>
-                <li>Do not keep long-lived references to a context-activity (a reference
-                  to an activity should have the same life cycle as the activity
-                  itself)</li>
-                <li>Try using the context-application instead of a context-activity</li>
-                <li>Avoid non-static inner classes in an activity if you don’t control
-                  their life cycle, use a static inner class and make a weak reference
-                  to the activity inside
-                </li>
-                <li>And remember that a garbage collector is not an insurance against
-                  memory leaks. Last but not least, we try to make such leaks harder
-                  to make happen whenever we can.</li>
-              </ul>
-
-            </div>
-
-          </div>
-
-          <nav id="article-nav">
-
-            <a href="/2014/08/01/Android内存管理之道/" id="article-nav-newer" class="article-nav-link-wrap">
-              <strong class="article-nav-caption">
-                <</strong>
-                  <div class="article-nav-title">
-
-                    Android内存管理之道
-
-                  </div>
-            </a>
-
-            <a href="/2014/07/31/缓冲区溢出攻击/" id="article-nav-older" class="article-nav-link-wrap">
-              <div class="article-nav-title">缓冲区溢出攻击</div>
-              <strong class="article-nav-caption">></strong>
-            </a>
-
-          </nav>
-
-        </article>
-
-        <div class="share">
-          <!-- JiaThis Button BEGIN -->
-          <div class="jiathis_style">
-            <span class="jiathis_txt">分享到：</span>
-            <a class="jiathis_button_tsina"></a>
-            <a class="jiathis_button_cqq"></a>
-            <a class="jiathis_button_douban"></a>
-            <a class="jiathis_button_weixin"></a>
-            <a class="jiathis_button_tumblr"></a>
-            <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis"
-            target="_blank"></a>
-          </div>
-          <script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953"
-          charset="utf-8"></script>
-          <!-- JiaThis Button END -->
-        </div>
-
-        <div class="duoshuo">
-          <!-- 多说评论框 start -->
-          <div class="ds-thread" data-thread-key="Android-WebView内存泄漏" data-title="Android WebView内存泄漏"
-          data-url="http://science09.github.io/2014/07/31/Android-WebView内存泄漏/"></div>
-          <!-- 多说评论框 end -->
-          <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-          <script type="text/javascript">
-            var duoshuoQuery = {
-              short_name: "true"
-            };
-            (function() {
-              var ds = document.createElement('script');
-              ds.type = 'text/javascript';
-              ds.async = true;
-              ds.src = (document.location.protocol == 'https:' ? 'https:' :
-                  'http:') +
-                '//static.duoshuo.com/embed.js';
-              ds.charset = 'UTF-8';
-              (document.getElementsByTagName('head')[0] || document.getElementsByTagName(
-                'body')[0]).appendChild(ds);
-            })();
-
-          </script>
-          <!-- 多说公共JS代码 end -->
-        </div>
-      </div>
-      <footer id="footer">
-        <div class="outer">
-          <div id="footer-info">
-            <div class="footer-left">
-              &copy; 2015 science09
-            </div>
-            <div class="footer-right">
-              <a href="http://hexo.io/" target="_blank">Hexo</a> Theme
-              <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
-            </div>
-          </div>
-        </div>
-      </footer>
-
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">science09</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://tp2.sinaimg.cn/2445097485/180/5736689505/1" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">science09</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">一分耕耘一分收获</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/science09" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://weibo.com/u/2445097485" title="weibo">weibo</a>
+			        
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+			        
+						<a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android-WebView内存泄漏" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2014/07/31/Android-WebView内存泄漏/" class="article-date">
+  	<time datetime="2014-07-31T15:59:14.000Z" itemprop="datePublished">2014-07-31</time>
+</a>
     </div>
-    <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android WebView内存泄漏
+    </h1>
+  
 
-    <script>
-      var yiliaConfig = {
-        fancybox: true,
-        mathjax: true,
-        animate: true,
-        isHome: false,
-        isPost: true,
-        isArchive: false,
-        isTag: false,
-        isCategory: false,
-        open_in_new: false
-      }
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/webview/">webview</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内存泄露/">内存泄露</a></li></ul>
+	</div>
 
-    </script>
-    <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
-    <script src="/js/main.js" type="text/javascript"></script>
-
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes:
-      true, skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      } }); MathJax.Hub.Queue(function() { var all = MathJax.Hub.getAllJax(), i;
-      for(i=0; i
-      < all.length; i +=1 ) { all[i].SourceElement().parentNode.className +=' has-jax'
-      ; } }); </script>
-
-        <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android/">Android</a>
+	</div>
 
 
-        </script>
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在这次开发过程中，需要用到webview展示一些界面，但是加载的页面如果有很多图片就会发现内存占用暴涨，并且在退出该界面后，即使在包含该 webview的Activity的destroy()方法中，使用webview.destroy();webview=null;对内存占回收用还是没有任何效果。有人说，一旦在你的xml布局中引用了webview甚至没有使用过，都会阻碍重新进入Application之后对内存的gc。包括使用 MapView有时一会引发OOM，几经周折在网上看到各种解决办法，在这里跟大家分享一下。但是到目前为止还没有找到根本的解决办法，网上也有说是 sdk的bug。但是不管怎么样，我们还是需要使用的。<br><a id="more"></a><br>要使用WebView不造成内存泄漏，首先应该做的就是不能在xml中定义webview节点，而是在需要的时候动态生成。即：可以在使用WebView 的地方放置一个LinearLayout类似ViewGroup的节点，然后在要使用WebView的时候，动态生成即：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">WebView      mWebView = <span class="keyword">new</span> WebView(getApplicationgContext()); </span><br><span class="line">LinearLayout mll      = findViewById(R.id.xxx); </span><br><span class="line">mll.addView(mWebView);</span><br></pre></td></tr></table></figure>
+<p>然后一定要在onDestroy()方法中显式的调用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">super</span>.onDestroy();</span><br><span class="line">      mWebView.removeAllViews();</span><br><span class="line">      mWebView.destroy()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意： new  WebView(getApplicationgContext()) ;必须传入ApplicationContext如果传入Activity的 Context的话，对内存的引用会一直被保持着。有人用这个方法解决了当Activity被消除后依然保持引用的问题。但是你会发现，如果你需要在 WebView中打开链接或者你打开的页面带有flash，获得你的WebView想弹出一个dialog，都会导致从 ApplicationContext到ActivityContext的强制类型转换错误，从而导致你应用崩溃。这是因为在加载flash的时候，系统 会首先把你的WebView作为父控件，然后在该控件上绘制flash，他想找一个Activity的Context来绘制他，但是你传入的是 ApplicationContext。后果，你可以晓得了哈。</p>
+<p>于是大牛们就Activity销毁后还保持引用这个问题，提供了另一种解决办法：既然你不能给我删除引用，那么我就自己来吧。于是下面的这种方法诞生了：</p>
+<p>（作者说这个方法是依赖android.webkit implementation有可能在最近的版本中失败）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setConfigCallback</span><span class="params">(WindowManager windowManager)</span> </span>&#123; </span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Field field = WebView.class.getDeclaredField(<span class="string">"mWebViewCore"</span>); </span><br><span class="line">        field = field.getType().getDeclaredField(<span class="string">"mBrowserFrame"</span>); </span><br><span class="line">        field = field.getType().getDeclaredField(<span class="string">"sConfigCallback"</span>); </span><br><span class="line">        field.setAccessible(<span class="keyword">true</span>); </span><br><span class="line">        Object configCallback = field.get(<span class="keyword">null</span>); </span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> == configCallback) &#123; </span><br><span class="line">            <span class="keyword">return</span>; </span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        field = field.getType().getDeclaredField(<span class="string">"mWindowManager"</span>); </span><br><span class="line">        field.setAccessible(<span class="keyword">true</span>); </span><br><span class="line">        field.set(configCallback, windowManager); </span><br><span class="line">    &#125; <span class="keyword">catch</span>(Exception e) &#123; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后在Activity中调用上面的方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123; </span><br><span class="line">    <span class="keyword">super</span>.onCreate(savedInstanceState); </span><br><span class="line">    setConfigCallback((WindowManager)getApplicationContext().getSystemService(Context.WINDOW_SERVICE)); </span><br><span class="line">&#125; </span><br><span class="line">  </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    setConfigCallback(<span class="keyword">null</span>);</span><br><span class="line">    <span class="keyword">super</span>.onDestroy(); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该反射方法在我的实验中（2.3.6）确实有些用处，在应用内存占用到70M左右的时候会明显释放到50M或者60M然后的释放就有些缓慢，其实就是看不出来了。之前在没使用该方法的时候可能达到120M。</p>
+<p>但是！！！我们的应用要求占用内存更低啊，这肿么拌？凉拌么？No。在各种纠结之后，终于找到了终极解决办法！！！该办法适用于我们的需求，在退出 WebView的界面之后，迅速回收内存。要问这个方法是什么，不要9999，不要8999，只要你仔细看好下面一句话：那就是为加载WebView的界 面开启新进程，在该页面退出之后关闭这个进程。</p>
+<p>这一点说了之后，你懂了吧？<br>但是在这个其中，杀死自己进程的时候又遇到了问题，网上介绍的各种方法都不好使，<br>killBackgroundProcesses(getPackageName());各种不好用，最后使用System.exit(0);直接退出虚拟机（Android为每一个进程创建一个虚拟机的）。这个肯定不用纠结了，一旦退出，内存里面释放。听涛哥说QQ也是这么做。</p>
+<p>最后英雄要问出处，附上大牛解说引起该问题的出处</p>
+<p>这个泄漏出现在external/webkit/Source/WebKit/android/WebCoreSupport/UrlInterceptResponse.cpp.中。具体我自己真心没有深入研究。大家有兴趣的话，可以看看哈。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">--- a/Source/WebKit/android/WebCoreSupport/UrlInterceptResponse.cpp </span><br><span class="line">+++ b/Source/WebKit/android/WebCoreSupport/UrlInterceptResponse.cpp </span><br><span class="line">@@ -<span class="number">63</span>,<span class="number">10</span> +<span class="number">63</span>,<span class="number">10</span> @@ <span class="keyword">public</span>: </span><br><span class="line">         JNIEnv* env = JSC::Bindings::getJNIEnv(); </span><br><span class="line">         <span class="comment">// Initialize our read buffer to the capacity of out. </span></span><br><span class="line">         <span class="keyword">if</span> (!m_buffer) &#123; </span><br><span class="line">-            m_buffer = env-&gt;NewByteArray(out-&gt;capacity()); </span><br><span class="line">-            m_buffer = (jbyteArray) env-&gt;NewGlobalRef(m_buffer); </span><br><span class="line">+            <span class="function">ScopedLocalRef&lt;jbyteArray&gt; <span class="title">buffer_local</span><span class="params">(env, env-&gt;NewByteArray(out-&gt;capacity()</span>))</span>; </span><br><span class="line">+            m_buffer = static_cast&lt;jbyteArray&gt;(env-&gt;NewGlobalRef(buffer_local.get())); </span><br><span class="line">         &#125; </span><br><span class="line">         <span class="keyword">int</span> size = (<span class="keyword">int</span>) env-&gt;CallIntMethod(m_inputStream, m_read, m_buffer); </span><br><span class="line">         <span class="keyword">if</span> (checkException(env) || size &lt; <span class="number">0</span>) </span><br><span class="line">             <span class="keyword">return</span>; </span><br><span class="line">         <span class="comment">// Copy from m_buffer to out.</span></span><br></pre></td></tr></table></figure>
+<p>而且从这里了解 <a href="https://github.com/android/platform_external_webkit/commit/1e3e46a731730c02d916ea805ec4b20191509282" target="_blank" rel="external">这个bug的解决状态</a> 。</p>
+<p>还有一个问题要说的，也是在WebView使用的时候出现的问题：WebView 中包含一个ZoomButtonsController，当使用 web.getSettings().setBuiltInZoomControls(true);启用该设置后，用户一旦触摸屏幕，就会出现缩放控制图 标。这个图标过上几秒会自动消失，但在3.0系统以上上，如果图标自动消失前退出当前Activity的话，就会发生ZoomButton找不到依附的 Window而造成程序崩溃，解决办法很简单就是在Activity的ondestory方法中调用 web.setVisibility(View.GONE);方法，手动将其隐藏，就不会崩溃了。在3.0一下系统上不会出现该崩溃问题，真是各种崩溃， 防不胜防啊！</p>
+<p>最后还有内存泄漏的一些个建议：</p>
+<p>In summary, to avoid context-related memory leaks, remember the following:</p>
+<ul>
+<li>Do not keep long-lived references to a context-activity (a reference to an activity should have the same life cycle as the activity itself)</li>
+<li>Try using the context-application instead of a context-activity</li>
+<li>Avoid non-static inner classes in an activity if you don’t control their life cycle, use a static inner class and make a weak reference to the activity inside</li>
+<li>And remember that a garbage collector is not an insurance against memory leaks. Last but not least, we try to make such leaks harder to make happen whenever we can.</li>
+</ul>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2014/08/01/Android内存管理之道/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Android内存管理之道
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2014/07/31/缓冲区溢出攻击/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">缓冲区溢出攻击</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android-WebView内存泄漏" data-title="Android WebView内存泄漏" data-url="http://science09.github.io/2014/07/31/Android-WebView内存泄漏/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 science09
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
 
   </div>
 </body>
-
 </html>

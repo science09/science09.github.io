@@ -1,850 +1,401 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta charset="utf-8">
-
+  
   <title>Java中的单例模式 | 彼岸-未来的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="什么是单例模式
-数学与逻辑学中，singleton定义为“有且仅有一个元素的集合”。单例模式最初的定义出现于《设计模式》（艾迪生维斯理, 1994）：“保证一个类仅有一个实例，并提供一个访问它的全局访问点。”
-  Java中单例模式定义：“一个类有且仅有一个实例，并且自行实例化向整个系统提供。”">
-  <meta property="og:type" content="article">
-  <meta property="og:title" content="Java中的单例模式">
-  <meta property="og:url" content="http://science09.github.io/2015/01/31/Java单例模式/index.html">
-  <meta property="og:site_name" content="彼岸-未来的博客">
-  <meta property="og:description" content="什么是单例模式
-数学与逻辑学中，singleton定义为“有且仅有一个元素的集合”。单例模式最初的定义出现于《设计模式》（艾迪生维斯理, 1994）：“保证一个类仅有一个实例，并提供一个访问它的全局访问点。”
-  Java中单例模式定义：“一个类有且仅有一个实例，并且自行实例化向整个系统提供。”">
-  <meta property="og:updated_time" content="2015-09-10T14:15:11.000Z">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Java中的单例模式">
-  <meta name="twitter:description" content="什么是单例模式
-数学与逻辑学中，singleton定义为“有且仅有一个元素的集合”。单例模式最初的定义出现于《设计模式》（艾迪生维斯理, 1994）：“保证一个类仅有一个实例，并提供一个访问它的全局访问点。”
-  Java中单例模式定义：“一个类有且仅有一个实例，并且自行实例化向整个系统提供。”">
-
-  <link rel="alternative" href="/atom.xml" title="彼岸-未来的博客" type="application/atom+xml">
-
-  <link rel="icon" href="/favicon.ico" type="image/x-ico">
-
+  <meta name="description" content="什么是单例模式数学与逻辑学中，singleton定义为“有且仅有一个元素的集合”。单例模式最初的定义出现于《设计模式》（艾迪生维斯理, 1994）：“保证一个类仅有一个实例，并提供一个访问它的全局访问点。” Java中单例模式定义：“一个类有且仅有一个实例，并且自行实例化向整个系统提供。”">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java中的单例模式">
+<meta property="og:url" content="http://science09.github.io/2015/01/31/Java单例模式/index.html">
+<meta property="og:site_name" content="彼岸-未来的博客">
+<meta property="og:description" content="什么是单例模式数学与逻辑学中，singleton定义为“有且仅有一个元素的集合”。单例模式最初的定义出现于《设计模式》（艾迪生维斯理, 1994）：“保证一个类仅有一个实例，并提供一个访问它的全局访问点。” Java中单例模式定义：“一个类有且仅有一个实例，并且自行实例化向整个系统提供。”">
+<meta property="og:updated_time" content="2015-09-10T14:15:11.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java中的单例模式">
+<meta name="twitter:description" content="什么是单例模式数学与逻辑学中，singleton定义为“有且仅有一个元素的集合”。单例模式最初的定义出现于《设计模式》（艾迪生维斯理, 1994）：“保证一个类仅有一个实例，并提供一个访问它的全局访问点。” Java中单例模式定义：“一个类有且仅有一个实例，并且自行实例化向整个系统提供。”">
+  
+    <link rel="alternative" href="/atom.xml" title="彼岸-未来的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico" type="image/x-ico">
+  
   <link rel="stylesheet" href="/css/style.css" type="text/css">
   <script>
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?ae9c0d06cbefcb5fa4d7988f4c49cb6c";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-
-  </script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?ae9c0d06cbefcb5fa4d7988f4c49cb6c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
 </head>
-
 <body>
   <div id="container">
     <div class="left-col">
-      <div class="overlay"></div>
-      <div class="intrude-less">
-        <header id="header" class="inner">
-          <a href="/" class="profilepic">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://tp2.sinaimg.cn/2445097485/180/5736689505/1" class="js-avatar">
+			
+		</a>
 
-            <img lazy-src="http://tp2.sinaimg.cn/2445097485/180/5736689505/1" class="js-avatar">
+		<hgroup>
+		  <h1 class="header-author"><a href="/">science09</a></h1>
+		</hgroup>
 
-          </a>
+		
+		<p class="header-subtitle">一分耕耘一分收获</p>
+		
 
-          <hgroup>
-            <h1 class="header-author">
-              <a href="/">science09</a>
-            </h1>
-          </hgroup>
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
 
-          <p class="header-subtitle">一分耕耘一分收获</p>
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/science09" title="github">github</a>
+					        
+								<a class="weibo" target="_blank" href="http://weibo.com/u/2445097485" title="weibo">weibo</a>
+					        
+								<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+					        
+								<a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/Android库/" style="font-size: 10px;">Android库</a> <a href="/tags/Android开发/" style="font-size: 10px;">Android开发</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Express/" style="font-size: 10px;">Express</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Intent/" style="font-size: 10px;">Intent</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Material/" style="font-size: 10px;">Material</a> <a href="/tags/MongoDB/" style="font-size: 10px;">MongoDB</a> <a href="/tags/Node-js/" style="font-size: 15px;">Node.js</a> <a href="/tags/Parcelable/" style="font-size: 10px;">Parcelable</a> <a href="/tags/Volley/" style="font-size: 10px;">Volley</a> <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a> <a href="/tags/XMLRequest/" style="font-size: 10px;">XMLRequest</a> <a href="/tags/XML解析/" style="font-size: 10px;">XML解析</a> <a href="/tags/app/" style="font-size: 10px;">app</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/ionic/" style="font-size: 10px;">ionic</a> <a href="/tags/java/" style="font-size: 10px;">java</a> <a href="/tags/swift/" style="font-size: 10px;">swift</a> <a href="/tags/webview/" style="font-size: 10px;">webview</a> <a href="/tags/免费域名/" style="font-size: 10px;">免费域名</a> <a href="/tags/内存泄露/" style="font-size: 10px;">内存泄露</a> <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a> <a href="/tags/前端框架/" style="font-size: 10px;">前端框架</a> <a href="/tags/博客/" style="font-size: 10px;">博客</a> <a href="/tags/反编译/" style="font-size: 10px;">反编译</a> <a href="/tags/开发/" style="font-size: 10px;">开发</a> <a href="/tags/性能优化/" style="font-size: 10px;">性能优化</a> <a href="/tags/攻击/" style="font-size: 10px;">攻击</a> <a href="/tags/缓冲区溢出/" style="font-size: 10px;">缓冲区溢出</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a> <a href="/tags/邮件/" style="font-size: 10px;">邮件</a> <a href="/tags/面试/" style="font-size: 15px;">面试</a>
+					</div>
+				</section>
+				
+				
+				
 
-          <div class="switch-btn">
-            <div class="icon">
-              <div class="icon-ctn">
-                <div class="icon-wrap icon-house" data-idx="0">
-                  <div class="birdhouse"></div>
-                  <div class="birdhouse_holes"></div>
-                </div>
-                <div class="icon-wrap icon-ribbon hide" data-idx="1">
-                  <div class="ribbon"></div>
-                </div>
-
-                <div class="icon-wrap icon-me hide" data-idx="3">
-                  <div class="user"></div>
-                  <div class="shoulder"></div>
-                </div>
-
-              </div>
-
-            </div>
-            <div class="tips-box hide">
-              <div class="tips-arrow"></div>
-              <ul class="tips-inner">
-                <li>菜单</li>
-                <li>标签</li>
-
-                <li>关于我</li>
-
-              </ul>
-            </div>
-          </div>
-
-          <div class="switch-area">
-            <div class="switch-wrap">
-              <section class="switch-part switch-part1">
-                <nav class="header-menu">
-                  <ul>
-
-                    <li>
-                      <a href="/">主页</a>
-                    </li>
-
-                    <li>
-                      <a href="/archives">所有文章</a>
-                    </li>
-
-                  </ul>
-                </nav>
-                <nav class="header-nav">
-                  <div class="social">
-
-                    <a class="github" target="_blank" href="https://github.com/science09" title="github">github</a>
-
-                    <a class="weibo" target="_blank" href="http://weibo.com/u/2445097485" title="weibo">weibo</a>
-
-                    <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
-
-                    <a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
-
-                  </div>
-                </nav>
-              </section>
-
-              <section class="switch-part switch-part2">
-                <div class="widget tagcloud" id="js-tagcloud">
-                  <a href="/tags/Android/" style="font-size: 20px;">Android</a>
-                  <a href="/tags/Android库/" style="font-size: 10px;">Android库</a>
-                  <a href="/tags/Android开发/" style="font-size: 10px;">Android开发</a>
-                  <a href="/tags/CSS/" style="font-size: 10px;">CSS</a>
-                  <a href="/tags/Express/" style="font-size: 10px;">Express</a>
-                  <a href="/tags/HTML/" style="font-size: 10px;">HTML</a>
-                  <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a>
-                  <a href="/tags/Intent/" style="font-size: 10px;">Intent</a>
-                  <a href="/tags/Java/" style="font-size: 15px;">Java</a>
-                  <a href="/tags/Linux/" style="font-size: 10px;">Linux</a>
-                  <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a>
-                  <a href="/tags/Material/" style="font-size: 10px;">Material</a>
-                  <a href="/tags/MongoDB/" style="font-size: 10px;">MongoDB</a>
-                  <a href="/tags/Node-js/" style="font-size: 15px;">Node.js</a>
-                  <a href="/tags/Parcelable/" style="font-size: 10px;">Parcelable</a>
-                  <a href="/tags/Volley/" style="font-size: 10px;">Volley</a>
-                  <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a>
-                  <a href="/tags/XMLRequest/" style="font-size: 10px;">XMLRequest</a>
-                  <a href="/tags/XML解析/" style="font-size: 10px;">XML解析</a>
-                  <a href="/tags/app/" style="font-size: 10px;">app</a>
-                  <a href="/tags/git/" style="font-size: 10px;">git</a>
-                  <a href="/tags/github/" style="font-size: 15px;">github</a>
-                  <a href="/tags/ionic/" style="font-size: 10px;">ionic</a>
-                  <a href="/tags/java/" style="font-size: 10px;">java</a>
-                  <a href="/tags/swift/" style="font-size: 10px;">swift</a>
-                  <a href="/tags/webview/" style="font-size: 10px;">webview</a>
-                  <a href="/tags/免费域名/" style="font-size: 10px;">免费域名</a>
-                  <a href="/tags/内存泄露/" style="font-size: 10px;">内存泄露</a>
-                  <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a>
-                  <a href="/tags/前端框架/" style="font-size: 10px;">前端框架</a>
-                  <a href="/tags/博客/" style="font-size: 10px;">博客</a>
-                  <a href="/tags/反编译/" style="font-size: 10px;">反编译</a>
-                  <a href="/tags/开发/" style="font-size: 10px;">开发</a>
-                  <a href="/tags/性能优化/" style="font-size: 10px;">性能优化</a>
-                  <a href="/tags/攻击/" style="font-size: 10px;">攻击</a>
-                  <a href="/tags/缓冲区溢出/" style="font-size: 10px;">缓冲区溢出</a>
-                  <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
-                  <a href="/tags/邮件/" style="font-size: 10px;">邮件</a>
-                  <a href="/tags/面试/" style="font-size: 15px;">面试</a>
-                </div>
-              </section>
-
-              <section class="switch-part switch-part3">
-
-                <div id="js-aboutme">我就是我，不一样的烟火!</div>
-              </section>
-
-            </div>
-          </div>
-        </header>
-      </div>
-
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">我就是我，不一样的烟火!</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
     </div>
     <div class="mid-col">
       <nav id="mobile-nav">
-        <div class="overlay">
-          <div class="slider-trigger"></div>
-          <h1 class="header-author js-mobile-header hide">science09</h1>
-        </div>
-        <div class="intrude-less">
-          <header id="header" class="inner">
-            <div class="profilepic">
-              <img lazy-src="http://tp2.sinaimg.cn/2445097485/180/5736689505/1" class="js-avatar">
-            </div>
-            <hgroup>
-              <h1 class="header-author">science09</h1>
-            </hgroup>
-
-            <p class="header-subtitle">一分耕耘一分收获</p>
-
-            <nav class="header-menu">
-              <ul>
-
-                <li>
-                  <a href="/">主页</a>
-                </li>
-
-                <li>
-                  <a href="/archives">所有文章</a>
-                </li>
-
-                <div class="clearfix"></div>
-              </ul>
-            </nav>
-            <nav class="header-nav">
-              <div class="social">
-
-                <a class="github" target="_blank" href="https://github.com/science09" title="github">github</a>
-
-                <a class="weibo" target="_blank" href="http://weibo.com/u/2445097485" title="weibo">weibo</a>
-
-                <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
-
-                <a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
-
-              </div>
-            </nav>
-          </header>
-        </div>
-      </nav>
-
-      <div class="body-wrap">
-        <article id="post-Java单例模式" class="article article-type-post" itemscope itemprop="blogPost">
-
-          <div class="article-meta">
-            <a href="/2015/01/31/Java单例模式/" class="article-date">
-              <time datetime="2015-01-31T08:09:06.000Z" itemprop="datePublished">2015-01-31</time>
-            </a>
-
-          </div>
-
-          <div class="article-inner">
-
-            <input type="hidden" class="isFancy" />
-
-            <header class="article-header">
-              <h1 class="article-title" itemprop="name">
-                Java中的单例模式
-              </h1>
-
-            </header>
-
-            <div class="article-info article-info-post">
-              <div class="article-tag tagcloud">
-                <ul class="article-tag-list">
-                  <li class="article-tag-list-item">
-                    <a class="article-tag-list-link" href="/tags/java/">java</a>
-                  </li>
-                  <li class="article-tag-list-item">
-                    <a class="article-tag-list-link" href="/tags/设计模式/">设计模式</a>
-                  </li>
-                </ul>
-              </div>
-
-              <div class="article-category tagcloud">
-                <a class="article-category-link" href="/categories/Android/">Android</a>
-              </div>
-
-              <div class="clearfix"></div>
-            </div>
-
-            <div class="article-entry" itemprop="articleBody">
-
-              <h2 id="什么是单例模式">什么是单例模式</h2>
-              <p>数学与逻辑学中，singleton定义为“有且仅有一个元素的集合”。单例模式最初的定义出现于《设计模式》（艾迪生维斯理, 1994）：“保证一个类仅有一个实例，并提供一个访问它的全局访问点。”
-                Java中单例模式定义：“一个类有且仅有一个实例，并且自行实例化向整个系统提供。”
-                <br>
-                <a id="more"></a>
-                <br>单例模式是设计模式中最简单的形式之一。这一模式的目的是使得类的一个对象成为系统中的唯一实例。要实现这一点，可以从客户端对其进行实例化开始。因此需要用一种只允许生成对象类的唯一实例的机制，“阻止”所有想要生成对象的访问。使用工厂方法来限制实例化过程。这个方法应该是静态方法（类方法），因为让类的实例去生成另一个唯一实例毫无意义。</p>
-              <h2 id="案例">案例</h2>
-              <p>当一个类的实例可以有且只可以一个的时候就需要用到了。为什么只需要有一个呢？有人说是为了节约内存，但这只是单例模式带来的一个好处。只有一个实例确实减少内存占用，可是我认为这不是使用单例模式的理由。我认为使用单例模式的时机是当实例存在多个会引起程序逻辑错误的时候。比如类似有序的号码生成器这样的东西，怎么可以允许一个应用上存在多个呢？</p>
-              <p>Singleton模式主要作用是保证在Java应用程序中，一个类Class只有一个实例存在。</p>
-              <ul>
-                <li>1 懒汉式实现(线程安全)：</li>
-              </ul>
-              <figure class="highlight java">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                        <span class="line">7</span>
-                        <br>
-                        <span class="line">8</span>
-                        <br>
-                        <span class="line">9</span>
-                        <br>
-                        <span class="line">10</span>
-                        <br>
-                        <span class="line">11</span>
-                        <br>
-                        <span class="line">12</span>
-                        <br>
-                        <span class="line">13</span>
-                        <br>
-                        <span class="line">14</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">
-                          <span class="keyword">public</span>
-                          <span class="class">
-                            <span class="keyword">class</span>
-                            <span class="title">SingletonClass</span>
-                          </span>&#123;</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">private</span>
-                          <span class="keyword">static</span> SingletonClass instance=
-                          <span class="keyword">null</span>;</span>
-                        <br>
-                        <span class="line">
-                          <span class="function">
-                            <span class="keyword">public</span>
-                            <span class="keyword">static</span> SingletonClass
-                            <span class="title">getInstance</span>
-                            <span class="params">()</span>
-                          </span>&#123;</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">if</span>(instance ==
-                          <span class="keyword">null</span>) &#123;</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">synchronized</span>(SingletonClass.class) &#123;</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">if</span>(instance ==
-                          <span class="keyword">null</span>)</span>
-                        <br>
-                        <span class="line"> instance =
-                          <span class="keyword">new</span> SingletonClass();</span>
-                        <br>
-                        <span class="line"> &#125;</span>
-                        <br>
-                        <span class="line"> &#125;</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">return</span> instance;</span>
-                        <br>
-                        <span class="line"> &#125;</span>
-                        <br>
-                        <span class="line">
-                          <span class="function">
-                            <span class="keyword">private</span>
-                            <span class="title">SingletonClass</span>
-                            <span class="params">()</span>
-                          </span>&#123;</span>
-                        <br>
-                        <span class="line"> &#125;</span>
-                        <br>
-                        <span class="line">&#125;</span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p>这种写法能够在多线程中很好的工作，而且看起来它也具备很好的lazy loading，但是，遗憾的是，效率很低，99%情况下不需要同步。</p>
-              <ul>
-                <li>2 饿汉式实现：</li>
-              </ul>
-              <figure class="highlight java">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                        <span class="line">7</span>
-                        <br>
-                        <span class="line">8</span>
-                        <br>
-                        <span class="line">9</span>
-                        <br>
-                        <span class="line">10</span>
-                        <br>
-                        <span class="line">11</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">
-                          <span class="keyword">public</span>
-                          <span class="keyword">static</span>
-                          <span class="class">
-                            <span class="keyword">class</span>
-                            <span class="title">Singleton</span>
-                          </span>&#123;</span>
-                        <br>
-                        <span class="line">
-                          <span class="comment">//在自己内部定义自己的一个实例，只供内部调用</span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">private</span>
-                          <span class="keyword">static</span>
-                          <span class="keyword">final</span> Singleton instance =
-                          <span class="keyword">new</span> Singleton();</span>
-                        <br>
-                        <span class="line">
-                          <span class="function">
-                            <span class="keyword">private</span>
-                            <span class="title">Singleton</span>
-                            <span class="params">()</span>
-                          </span>&#123;</span>
-                        <br>
-                        <span class="line">
-                          <span class="comment">//do something</span>
-                        </span>
-                        <br>
-                        <span class="line"> &#125;</span>
-                        <br>
-                        <span class="line">
-                          <span class="comment">//这里提供了一个供外部访问本class的静态方法，可以直接访问</span>
-                        </span>
-                        <br>
-                        <span class="line">
-                          <span class="function">
-                            <span class="keyword">public</span>
-                            <span class="keyword">static</span> Singleton
-                            <span class="title">getInstance</span>
-                            <span class="params">()</span>
-                          </span>&#123;</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">return</span> instance;</span>
-                        <br>
-                        <span class="line"> &#125;</span>
-                        <br>
-                        <span class="line">&#125;</span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p> 这种方式基于classloder机制避免了多线程的同步问题，不过，instance在类装载时就实例化，虽然导致类装载的原因有很多种，在单例模式中大多数都是调用getInstance方法，
-                但是也不能确定有其他的方式（或者其他的静态方法）导致类装载，这时候初始化instance显然没有达到lazy loading的效果。</p>
-              <ul>
-                <li>3 双重锁实现：</li>
-              </ul>
-              <figure class="highlight java">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                        <span class="line">7</span>
-                        <br>
-                        <span class="line">8</span>
-                        <br>
-                        <span class="line">9</span>
-                        <br>
-                        <span class="line">10</span>
-                        <br>
-                        <span class="line">11</span>
-                        <br>
-                        <span class="line">12</span>
-                        <br>
-                        <span class="line">13</span>
-                        <br>
-                        <span class="line">14</span>
-                        <br>
-                        <span class="line">15</span>
-                        <br>
-                        <span class="line">16</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">
-                          <span class="keyword">public</span>
-                          <span class="keyword">static</span>
-                          <span class="class">
-                            <span class="keyword">class</span>
-                            <span class="title">Singleton</span>
-                          </span>&#123;</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">private</span>
-                          <span class="keyword">static</span> Singleton instance =
-                          <span class="keyword">null</span>;</span>
-                        <br>
-                        <span class="line">
-                          <span class="function">
-                            <span class="keyword">private</span>
-                            <span class="title">Singleton</span>
-                            <span class="params">()</span>
-                          </span>&#123;</span>
-                        <br>
-                        <span class="line">
-                          <span class="comment">//do something</span>
-                        </span>
-                        <br>
-                        <span class="line"> &#125;</span>
-                        <br>
-                        <span class="line">
-                          <span class="function">
-                            <span class="keyword">public</span>
-                            <span class="keyword">static</span> Singleton
-                            <span class="title">getInstance</span>
-                            <span class="params">()</span>
-                          </span>&#123;</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">if</span>(instance ==
-                          <span class="keyword">null</span>) &#123;</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">synchronized</span>(Singleton.class) &#123;</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">if</span>(
-                          <span class="keyword">null</span> == instance) &#123;</span>
-                        <br>
-                        <span class="line"> instance =
-                          <span class="keyword">new</span> Singleton();</span>
-                        <br>
-                        <span class="line"> &#125;</span>
-                        <br>
-                        <span class="line"> &#125;</span>
-                        <br>
-                        <span class="line"> &#125;</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">return</span> instance;</span>
-                        <br>
-                        <span class="line"> &#125;</span>
-                        <br>
-                        <span class="line">&#125;</span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <ul>
-                <li>4 枚举实现：</li>
-              </ul>
-              <figure class="highlight java">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">
-                          <span class="keyword">public</span>
-                          <span class="keyword">enum</span> Singleton &#123;</span>
-                        <br>
-                        <span class="line"> INSTANCE;</span>
-                        <br>
-                        <span class="line">
-                          <span class="function">
-                            <span class="keyword">public</span>
-                            <span class="keyword">void</span>
-                            <span class="title">whateverMethod</span>
-                            <span class="params">()</span>
-                          </span>&#123;</span>
-                        <br>
-                        <span class="line"> &#125;</span>
-                        <br>
-                        <span class="line">&#125;</span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p> 这种方式是Effective Java作者Josh Bloch 提倡的方式，它不仅能避免多线程同步问题，而且还能防止反序列化重新创建新的对象，可谓是很坚强的壁垒啊，不过，个人认为由于1.5中才加入enum特性，用这种方式写不免让人感觉生疏，在实际工作中，我也很少看见有人这么写过。</p>
-              <ul>
-                <li>5 静态内部类实现：</li>
-              </ul>
-              <figure class="highlight java">
-                <table>
-                  <tr>
-                    <td class="gutter">
-                      <pre>
-                        <span class="line">1</span>
-                        <br>
-                        <span class="line">2</span>
-                        <br>
-                        <span class="line">3</span>
-                        <br>
-                        <span class="line">4</span>
-                        <br>
-                        <span class="line">5</span>
-                        <br>
-                        <span class="line">6</span>
-                        <br>
-                        <span class="line">7</span>
-                        <br>
-                        <span class="line">8</span>
-                        <br>
-                        <span class="line">9</span>
-                        <br>
-                      </pre>
-                    </td>
-                    <td class="code">
-                      <pre>
-                        <span class="line">
-                          <span class="keyword">public</span>
-                          <span class="class">
-                            <span class="keyword">class</span>
-                            <span class="title">Singleton</span>
-                          </span>&#123;</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">private</span>
-                          <span class="keyword">static</span>
-                          <span class="class">
-                            <span class="keyword">class</span>
-                            <span class="title">SingletonHolder</span>
-                          </span>&#123;</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">private</span>
-                          <span class="keyword">static</span>
-                          <span class="keyword">final</span> Singleton INSTANCE =
-                          <span class="keyword">new</span> Singleton();</span>
-                        <br>
-                        <span class="line"> &#125;</span>
-                        <br>
-                        <span class="line">
-                          <span class="function">
-                            <span class="keyword">private</span>
-                            <span class="title">Singleton</span>
-                            <span class="params">()</span>
-                          </span>&#123;&#125;</span>
-                        <br>
-                        <span class="line">
-                          <span class="function">
-                            <span class="keyword">public</span>
-                            <span class="keyword">static</span>
-                            <span class="keyword">final</span> Singleton
-                            <span class="title">getInstance</span>
-                            <span class="params">()</span>
-                          </span>&#123;</span>
-                        <br>
-                        <span class="line">
-                          <span class="keyword">return</span> SingletonHolder.INSTANCE;</span>
-                        <br>
-                        <span class="line"> &#125;</span>
-                        <br>
-                        <span class="line">&#125;</span>
-                        <br>
-                      </pre>
-                    </td>
-                  </tr>
-                </table>
-              </figure>
-              <p>这种方式同样利用了classloder的机制来保证初始化instance时只有一个线程。</p>
-              <h2 id="单例模式的优缺点">单例模式的优缺点</h2>
-              <h4 id="优点">优点</h4>
-              <ul>
-                <li>一、实例控制</li>
-              </ul>
-              <p>单例模式会阻止其他对象实例化其自己的单例对象的副本，从而确保所有对象都访问唯一实例。</p>
-              <ul>
-                <li>二、灵活性</li>
-              </ul>
-              <p>因为类控制了实例化过程，所以类可以灵活更改实例化过程。</p>
-              <h4 id="缺点">缺点</h4>
-              <ul>
-                <li>一、开销</li>
-              </ul>
-              <p>虽然数量很少，但如果每次对象请求引用时都要检查是否存在类的实例，将仍然需要一些开销。可以通过使用静态初始化解决此问题。</p>
-              <ul>
-                <li>二、可能的开发混淆</li>
-              </ul>
-              <p>使用单例对象（尤其在类库中定义的对象）时，开发人员必须记住自己不能使用new关键字实例化对象。因为可能无法访问库源代码，因此应用程序开发人员可能会意外发现自己无法直接实例化此类。</p>
-              <ul>
-                <li>三、对象生存期</li>
-              </ul>
-              <p>不能解决删除单个对象的问题。在提供内存管理的语言中，只有单例类能够导致实例被取消分配，因为它包含对该实例的私有引用。在某些语言中（如
-                C++），其他类可以删除对象实例，但这样会导致单例类中出现悬浮引用。</p>
-
-            </div>
-
-          </div>
-
-          <nav id="article-nav">
-
-            <a href="/2015/01/31/使用Volley自定义XML-Request请求/" id="article-nav-newer" class="article-nav-link-wrap">
-              <strong class="article-nav-caption">
-                <</strong>
-                  <div class="article-nav-title">
-
-                    使用Volley自定义XML Request请求
-
-                  </div>
-            </a>
-
-            <a href="/2015/01/06/Android-常用工具类库/" id="article-nav-older" class="article-nav-link-wrap">
-              <div class="article-nav-title">Android 常用工具类库</div>
-              <strong class="article-nav-caption">></strong>
-            </a>
-
-          </nav>
-
-        </article>
-
-        <div class="share">
-          <!-- JiaThis Button BEGIN -->
-          <div class="jiathis_style">
-            <span class="jiathis_txt">分享到：</span>
-            <a class="jiathis_button_tsina"></a>
-            <a class="jiathis_button_cqq"></a>
-            <a class="jiathis_button_douban"></a>
-            <a class="jiathis_button_weixin"></a>
-            <a class="jiathis_button_tumblr"></a>
-            <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis"
-            target="_blank"></a>
-          </div>
-          <script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953"
-          charset="utf-8"></script>
-          <!-- JiaThis Button END -->
-        </div>
-
-        <div class="duoshuo">
-          <!-- 多说评论框 start -->
-          <div class="ds-thread" data-thread-key="Java单例模式" data-title="Java中的单例模式" data-url="http://science09.github.io/2015/01/31/Java单例模式/"></div>
-          <!-- 多说评论框 end -->
-          <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-          <script type="text/javascript">
-            var duoshuoQuery = {
-              short_name: "true"
-            };
-            (function() {
-              var ds = document.createElement('script');
-              ds.type = 'text/javascript';
-              ds.async = true;
-              ds.src = (document.location.protocol == 'https:' ? 'https:' :
-                  'http:') +
-                '//static.duoshuo.com/embed.js';
-              ds.charset = 'UTF-8';
-              (document.getElementsByTagName('head')[0] || document.getElementsByTagName(
-                'body')[0]).appendChild(ds);
-            })();
-
-          </script>
-          <!-- 多说公共JS代码 end -->
-        </div>
-      </div>
-      <footer id="footer">
-        <div class="outer">
-          <div id="footer-info">
-            <div class="footer-left">
-              &copy; 2015 science09
-            </div>
-            <div class="footer-right">
-              <a href="http://hexo.io/" target="_blank">Hexo</a> Theme
-              <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
-            </div>
-          </div>
-        </div>
-      </footer>
-
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">science09</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://tp2.sinaimg.cn/2445097485/180/5736689505/1" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">science09</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">一分耕耘一分收获</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/science09" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://weibo.com/u/2445097485" title="weibo">weibo</a>
+			        
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+			        
+						<a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Java单例模式" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/01/31/Java单例模式/" class="article-date">
+  	<time datetime="2015-01-31T08:09:06.000Z" itemprop="datePublished">2015-01-31</time>
+</a>
     </div>
-    <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java中的单例模式
+    </h1>
+  
 
-    <script>
-      var yiliaConfig = {
-        fancybox: true,
-        mathjax: true,
-        animate: true,
-        isHome: false,
-        isPost: true,
-        isArchive: false,
-        isTag: false,
-        isCategory: false,
-        open_in_new: false
-      }
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/设计模式/">设计模式</a></li></ul>
+	</div>
 
-    </script>
-    <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
-    <script src="/js/main.js" type="text/javascript"></script>
-
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes:
-      true, skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      } }); MathJax.Hub.Queue(function() { var all = MathJax.Hub.getAllJax(), i;
-      for(i=0; i
-      < all.length; i +=1 ) { all[i].SourceElement().parentNode.className +=' has-jax'
-      ; } }); </script>
-
-        <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android/">Android</a>
+	</div>
 
 
-        </script>
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="什么是单例模式">什么是单例模式</h2><p>数学与逻辑学中，singleton定义为“有且仅有一个元素的集合”。单例模式最初的定义出现于《设计模式》（艾迪生维斯理, 1994）：“保证一个类仅有一个实例，并提供一个访问它的全局访问点。” Java中单例模式定义：“一个类有且仅有一个实例，并且自行实例化向整个系统提供。”<br><a id="more"></a><br>单例模式是设计模式中最简单的形式之一。这一模式的目的是使得类的一个对象成为系统中的唯一实例。要实现这一点，可以从客户端对其进行实例化开始。因此需要用一种只允许生成对象类的唯一实例的机制，“阻止”所有想要生成对象的访问。使用工厂方法来限制实例化过程。这个方法应该是静态方法（类方法），因为让类的实例去生成另一个唯一实例毫无意义。</p>
+<h2 id="案例">案例</h2><p>当一个类的实例可以有且只可以一个的时候就需要用到了。为什么只需要有一个呢？有人说是为了节约内存，但这只是单例模式带来的一个好处。只有一个实例确实减少内存占用，可是我认为这不是使用单例模式的理由。我认为使用单例模式的时机是当实例存在多个会引起程序逻辑错误的时候。比如类似有序的号码生成器这样的东西，怎么可以允许一个应用上存在多个呢？</p>
+<p>Singleton模式主要作用是保证在Java应用程序中，一个类Class只有一个实例存在。</p>
+<ul>
+<li>1 懒汉式实现(线程安全)：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonClass</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> SingletonClass instance=<span class="keyword">null</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> SingletonClass <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span>(SingletonClass.class) &#123;</span><br><span class="line">                <span class="keyword">if</span>(instance == <span class="keyword">null</span>)</span><br><span class="line">                    instance = <span class="keyword">new</span> SingletonClass();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">SingletonClass</span><span class="params">()</span></span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种写法能够在多线程中很好的工作，而且看起来它也具备很好的lazy loading，但是，遗憾的是，效率很低，99%情况下不需要同步。</p>
+<ul>
+<li>2 饿汉式实现：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span></span>&#123;</span><br><span class="line">    <span class="comment">//在自己内部定义自己的一个实例，只供内部调用</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton instance = <span class="keyword">new</span> Singleton();</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//do something</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//这里提供了一个供外部访问本class的静态方法，可以直接访问</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 这种方式基于classloder机制避免了多线程的同步问题，不过，instance在类装载时就实例化，虽然导致类装载的原因有很多种，在单例模式中大多数都是调用getInstance方法， 但是也不能确定有其他的方式（或者其他的静态方法）导致类装载，这时候初始化instance显然没有达到lazy loading的效果。</p>
+<ul>
+<li>3 双重锁实现：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Singleton instance = <span class="keyword">null</span>;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//do something</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span>(Singleton.class) &#123;</span><br><span class="line">                <span class="keyword">if</span>(<span class="keyword">null</span> == instance) &#123;</span><br><span class="line">                    instance = <span class="keyword">new</span> Singleton();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>4 枚举实现：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> Singleton &#123;</span><br><span class="line">    INSTANCE;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">whateverMethod</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 这种方式是Effective Java作者Josh Bloch 提倡的方式，它不仅能避免多线程同步问题，而且还能防止反序列化重新创建新的对象，可谓是很坚强的壁垒啊，不过，个人认为由于1.5中才加入enum特性，用这种方式写不免让人感觉生疏，在实际工作中，我也很少看见有人这么写过。</p>
+<ul>
+<li>5 静态内部类实现：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonHolder</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton INSTANCE = <span class="keyword">new</span> Singleton();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span> <span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SingletonHolder.INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种方式同样利用了classloder的机制来保证初始化instance时只有一个线程。</p>
+<h2 id="单例模式的优缺点">单例模式的优缺点</h2><h4 id="优点">优点</h4><ul>
+<li>一、实例控制</li>
+</ul>
+<p>单例模式会阻止其他对象实例化其自己的单例对象的副本，从而确保所有对象都访问唯一实例。</p>
+<ul>
+<li>二、灵活性</li>
+</ul>
+<p>因为类控制了实例化过程，所以类可以灵活更改实例化过程。</p>
+<h4 id="缺点">缺点</h4><ul>
+<li>一、开销</li>
+</ul>
+<p>虽然数量很少，但如果每次对象请求引用时都要检查是否存在类的实例，将仍然需要一些开销。可以通过使用静态初始化解决此问题。</p>
+<ul>
+<li>二、可能的开发混淆</li>
+</ul>
+<p>使用单例对象（尤其在类库中定义的对象）时，开发人员必须记住自己不能使用new关键字实例化对象。因为可能无法访问库源代码，因此应用程序开发人员可能会意外发现自己无法直接实例化此类。</p>
+<ul>
+<li>三、对象生存期</li>
+</ul>
+<p>不能解决删除单个对象的问题。在提供内存管理的语言中，只有单例类能够导致实例被取消分配，因为它包含对该实例的私有引用。在某些语言中（如 C++），其他类可以删除对象实例，但这样会导致单例类中出现悬浮引用。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/01/31/使用Volley自定义XML-Request请求/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          使用Volley自定义XML Request请求
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/01/06/Android-常用工具类库/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android 常用工具类库</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Java单例模式" data-title="Java中的单例模式" data-url="http://science09.github.io/2015/01/31/Java单例模式/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 science09
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
 
   </div>
 </body>
-
 </html>
