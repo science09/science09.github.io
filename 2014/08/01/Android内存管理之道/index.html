@@ -1,384 +1,423 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
-  
+
   <title>Android内存管理之道 | 彼岸-未来的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="相信一步步走过来的Android从业者，每个人都会遇到OOM的情况。如何避免和防范OOM的出现，对于每一个程序员来说确实是一门必不可少的能力。今天我们就谈谈在Android平台下内存的管理之道，开始今天的主题之前，先再次回顾两个概念。">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Android内存管理之道">
-<meta property="og:url" content="http://science09.github.io/2014/08/01/Android内存管理之道/index.html">
-<meta property="og:site_name" content="彼岸-未来的博客">
-<meta property="og:description" content="相信一步步走过来的Android从业者，每个人都会遇到OOM的情况。如何避免和防范OOM的出现，对于每一个程序员来说确实是一门必不可少的能力。今天我们就谈谈在Android平台下内存的管理之道，开始今天的主题之前，先再次回顾两个概念。">
-<meta property="og:updated_time" content="2015-09-10T13:24:22.000Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android内存管理之道">
-<meta name="twitter:description" content="相信一步步走过来的Android从业者，每个人都会遇到OOM的情况。如何避免和防范OOM的出现，对于每一个程序员来说确实是一门必不可少的能力。今天我们就谈谈在Android平台下内存的管理之道，开始今天的主题之前，先再次回顾两个概念。">
-  
-    <link rel="alternative" href="/atom.xml" title="彼岸-未来的博客" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.ico" type="image/x-ico">
-  
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Android内存管理之道">
+  <meta property="og:url" content="http://science09.github.io/2014/08/01/Android内存管理之道/index.html">
+  <meta property="og:site_name" content="彼岸-未来的博客">
+  <meta property="og:description" content="相信一步步走过来的Android从业者，每个人都会遇到OOM的情况。如何避免和防范OOM的出现，对于每一个程序员来说确实是一门必不可少的能力。今天我们就谈谈在Android平台下内存的管理之道，开始今天的主题之前，先再次回顾两个概念。">
+  <meta property="og:updated_time" content="2015-09-10T13:24:22.000Z">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Android内存管理之道">
+  <meta name="twitter:description" content="相信一步步走过来的Android从业者，每个人都会遇到OOM的情况。如何避免和防范OOM的出现，对于每一个程序员来说确实是一门必不可少的能力。今天我们就谈谈在Android平台下内存的管理之道，开始今天的主题之前，先再次回顾两个概念。">
+
+  <link rel="alternative" href="/atom.xml" title="彼岸-未来的博客" type="application/atom+xml">
+
+  <link rel="icon" href="/favicon.ico" type="image/x-ico">
+
   <link rel="stylesheet" href="/css/style.css" type="text/css">
   <script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "//hm.baidu.com/hm.js?ae9c0d06cbefcb5fa4d7988f4c49cb6c";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?ae9c0d06cbefcb5fa4d7988f4c49cb6c";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+
+  </script>
 </head>
+
 <body>
   <div id="container">
     <div class="left-col">
-    <div class="overlay"></div>
-<div class="intrude-less">
-	<header id="header" class="inner">
-		<a href="/" class="profilepic">
-			
-			<img lazy-src="http://tp2.sinaimg.cn/2445097485/180/5736689505/1" class="js-avatar">
-			
-		</a>
+      <div class="overlay"></div>
+      <div class="intrude-less">
+        <header id="header" class="inner">
+          <a href="/" class="profilepic">
 
-		<hgroup>
-		  <h1 class="header-author"><a href="/">science09</a></h1>
-		</hgroup>
+            <img lazy-src="http://tp2.sinaimg.cn/2445097485/180/5736689505/1" class="js-avatar">
 
-		
-		<p class="header-subtitle">一分耕耘一分收获</p>
-		
+          </a>
 
-		
-			<div class="switch-btn">
-				<div class="icon">
-					<div class="icon-ctn">
-						<div class="icon-wrap icon-house" data-idx="0">
-							<div class="birdhouse"></div>
-							<div class="birdhouse_holes"></div>
-						</div>
-						<div class="icon-wrap icon-ribbon hide" data-idx="1">
-							<div class="ribbon"></div>
-						</div>
-						
-						
-						<div class="icon-wrap icon-me hide" data-idx="3">
-							<div class="user"></div>
-							<div class="shoulder"></div>
-						</div>
-						
-					</div>
-					
-				</div>
-				<div class="tips-box hide">
-					<div class="tips-arrow"></div>
-					<ul class="tips-inner">
-						<li>菜单</li>
-						<li>标签</li>
-						
-						
-						<li>关于我</li>
-						
-					</ul>
-				</div>
-			</div>
-		
+          <hgroup>
+            <h1 class="header-author">
+              <a href="/">science09</a>
+            </h1>
+          </hgroup>
 
-		<div class="switch-area">
-			<div class="switch-wrap">
-				<section class="switch-part switch-part1">
-					<nav class="header-menu">
-						<ul>
-						
-							<li><a href="/">主页</a></li>
-				        
-							<li><a href="/archives">所有文章</a></li>
-				        
-						</ul>
-					</nav>
-					<nav class="header-nav">
-						<div class="social">
-							
-								<a class="github" target="_blank" href="https://github.com/science09" title="github">github</a>
-					        
-								<a class="weibo" target="_blank" href="http://weibo.com/u/2445097485" title="weibo">weibo</a>
-					        
-								<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
-					        
-								<a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
-					        
-						</div>
-					</nav>
-				</section>
-				
-				
-				<section class="switch-part switch-part2">
-					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/Android库/" style="font-size: 10px;">Android库</a> <a href="/tags/Android开发/" style="font-size: 10px;">Android开发</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Express/" style="font-size: 10px;">Express</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Intent/" style="font-size: 10px;">Intent</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Material/" style="font-size: 10px;">Material</a> <a href="/tags/MongoDB/" style="font-size: 10px;">MongoDB</a> <a href="/tags/Node-js/" style="font-size: 15px;">Node.js</a> <a href="/tags/Parcelable/" style="font-size: 10px;">Parcelable</a> <a href="/tags/Volley/" style="font-size: 10px;">Volley</a> <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a> <a href="/tags/XMLRequest/" style="font-size: 10px;">XMLRequest</a> <a href="/tags/XML解析/" style="font-size: 10px;">XML解析</a> <a href="/tags/app/" style="font-size: 10px;">app</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/ionic/" style="font-size: 10px;">ionic</a> <a href="/tags/java/" style="font-size: 10px;">java</a> <a href="/tags/swift/" style="font-size: 10px;">swift</a> <a href="/tags/webview/" style="font-size: 10px;">webview</a> <a href="/tags/免费域名/" style="font-size: 10px;">免费域名</a> <a href="/tags/内存泄露/" style="font-size: 10px;">内存泄露</a> <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a> <a href="/tags/前端框架/" style="font-size: 10px;">前端框架</a> <a href="/tags/博客/" style="font-size: 10px;">博客</a> <a href="/tags/反编译/" style="font-size: 10px;">反编译</a> <a href="/tags/开发/" style="font-size: 10px;">开发</a> <a href="/tags/性能优化/" style="font-size: 10px;">性能优化</a> <a href="/tags/攻击/" style="font-size: 10px;">攻击</a> <a href="/tags/缓冲区溢出/" style="font-size: 10px;">缓冲区溢出</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a> <a href="/tags/邮件/" style="font-size: 10px;">邮件</a> <a href="/tags/面试/" style="font-size: 15px;">面试</a>
-					</div>
-				</section>
-				
-				
-				
+          <p class="header-subtitle">一分耕耘一分收获</p>
 
-				
-				
-				<section class="switch-part switch-part3">
-				
-					<div id="js-aboutme">我就是我，不一样的烟火!</div>
-				</section>
-				
-			</div>
-		</div>
-	</header>				
-</div>
+          <div class="switch-btn">
+            <div class="icon">
+              <div class="icon-ctn">
+                <div class="icon-wrap icon-house" data-idx="0">
+                  <div class="birdhouse"></div>
+                  <div class="birdhouse_holes"></div>
+                </div>
+                <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                  <div class="ribbon"></div>
+                </div>
+
+                <div class="icon-wrap icon-me hide" data-idx="3">
+                  <div class="user"></div>
+                  <div class="shoulder"></div>
+                </div>
+
+              </div>
+
+            </div>
+            <div class="tips-box hide">
+              <div class="tips-arrow"></div>
+              <ul class="tips-inner">
+                <li>菜单</li>
+                <li>标签</li>
+
+                <li>关于我</li>
+
+              </ul>
+            </div>
+          </div>
+
+          <div class="switch-area">
+            <div class="switch-wrap">
+              <section class="switch-part switch-part1">
+                <nav class="header-menu">
+                  <ul>
+
+                    <li>
+                      <a href="/">主页</a>
+                    </li>
+
+                    <li>
+                      <a href="/archives">所有文章</a>
+                    </li>
+
+                  </ul>
+                </nav>
+                <nav class="header-nav">
+                  <div class="social">
+
+                    <a class="github" target="_blank" href="https://github.com/science09" title="github">github</a>
+
+                    <a class="weibo" target="_blank" href="http://weibo.com/u/2445097485" title="weibo">weibo</a>
+
+                    <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+
+                    <a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
+
+                  </div>
+                </nav>
+              </section>
+
+              <section class="switch-part switch-part2">
+                <div class="widget tagcloud" id="js-tagcloud">
+                  <a href="/tags/Android/" style="font-size: 20px;">Android</a>
+                  <a href="/tags/Android库/" style="font-size: 10px;">Android库</a>
+                  <a href="/tags/Android开发/" style="font-size: 10px;">Android开发</a>
+                  <a href="/tags/CSS/" style="font-size: 10px;">CSS</a>
+                  <a href="/tags/Express/" style="font-size: 10px;">Express</a>
+                  <a href="/tags/HTML/" style="font-size: 10px;">HTML</a>
+                  <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a>
+                  <a href="/tags/Intent/" style="font-size: 10px;">Intent</a>
+                  <a href="/tags/Java/" style="font-size: 15px;">Java</a>
+                  <a href="/tags/Linux/" style="font-size: 10px;">Linux</a>
+                  <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a>
+                  <a href="/tags/Material/" style="font-size: 10px;">Material</a>
+                  <a href="/tags/MongoDB/" style="font-size: 10px;">MongoDB</a>
+                  <a href="/tags/Node-js/" style="font-size: 15px;">Node.js</a>
+                  <a href="/tags/Parcelable/" style="font-size: 10px;">Parcelable</a>
+                  <a href="/tags/Volley/" style="font-size: 10px;">Volley</a>
+                  <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a>
+                  <a href="/tags/XMLRequest/" style="font-size: 10px;">XMLRequest</a>
+                  <a href="/tags/XML解析/" style="font-size: 10px;">XML解析</a>
+                  <a href="/tags/app/" style="font-size: 10px;">app</a>
+                  <a href="/tags/git/" style="font-size: 10px;">git</a>
+                  <a href="/tags/github/" style="font-size: 15px;">github</a>
+                  <a href="/tags/ionic/" style="font-size: 10px;">ionic</a>
+                  <a href="/tags/java/" style="font-size: 10px;">java</a>
+                  <a href="/tags/swift/" style="font-size: 10px;">swift</a>
+                  <a href="/tags/webview/" style="font-size: 10px;">webview</a>
+                  <a href="/tags/免费域名/" style="font-size: 10px;">免费域名</a>
+                  <a href="/tags/内存泄露/" style="font-size: 10px;">内存泄露</a>
+                  <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a>
+                  <a href="/tags/前端框架/" style="font-size: 10px;">前端框架</a>
+                  <a href="/tags/博客/" style="font-size: 10px;">博客</a>
+                  <a href="/tags/反编译/" style="font-size: 10px;">反编译</a>
+                  <a href="/tags/开发/" style="font-size: 10px;">开发</a>
+                  <a href="/tags/性能优化/" style="font-size: 10px;">性能优化</a>
+                  <a href="/tags/攻击/" style="font-size: 10px;">攻击</a>
+                  <a href="/tags/缓冲区溢出/" style="font-size: 10px;">缓冲区溢出</a>
+                  <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a>
+                  <a href="/tags/邮件/" style="font-size: 10px;">邮件</a>
+                  <a href="/tags/面试/" style="font-size: 15px;">面试</a>
+                </div>
+              </section>
+
+              <section class="switch-part switch-part3">
+
+                <div id="js-aboutme">我就是我，不一样的烟火!</div>
+              </section>
+
+            </div>
+          </div>
+        </header>
+      </div>
+
     </div>
     <div class="mid-col">
       <nav id="mobile-nav">
-  	<div class="overlay">
-  		<div class="slider-trigger"></div>
-  		<h1 class="header-author js-mobile-header hide">science09</h1>
-  	</div>
-	<div class="intrude-less">
-		<header id="header" class="inner">
-			<div class="profilepic">
-				<img lazy-src="http://tp2.sinaimg.cn/2445097485/180/5736689505/1" class="js-avatar">
-			</div>
-			<hgroup>
-			  <h1 class="header-author">science09</h1>
-			</hgroup>
-			
-			<p class="header-subtitle">一分耕耘一分收获</p>
-			
-			<nav class="header-menu">
-				<ul>
-				
-					<li><a href="/">主页</a></li>
-		        
-					<li><a href="/archives">所有文章</a></li>
-		        
-		        <div class="clearfix"></div>
-				</ul>
-			</nav>
-			<nav class="header-nav">
-				<div class="social">
-					
-						<a class="github" target="_blank" href="https://github.com/science09" title="github">github</a>
-			        
-						<a class="weibo" target="_blank" href="http://weibo.com/u/2445097485" title="weibo">weibo</a>
-			        
-						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
-			        
-						<a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
-			        
-				</div>
-			</nav>
-		</header>				
-	</div>
-</nav>
-      <div class="body-wrap"><article id="post-Android内存管理之道" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2014/08/01/Android内存管理之道/" class="article-date">
-  	<time datetime="2014-08-01T14:33:22.000Z" itemprop="datePublished">2014-08-01</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      Android内存管理之道
-    </h1>
-  
+        <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide">science09</h1>
+        </div>
+        <div class="intrude-less">
+          <header id="header" class="inner">
+            <div class="profilepic">
+              <img lazy-src="http://tp2.sinaimg.cn/2445097485/180/5736689505/1" class="js-avatar">
+            </div>
+            <hgroup>
+              <h1 class="header-author">science09</h1>
+            </hgroup>
 
-      </header>
-      
-      <div class="article-info article-info-post">
-        
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内存管理/">内存管理</a></li></ul>
-	</div>
+            <p class="header-subtitle">一分耕耘一分收获</p>
 
-        
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android/">Android</a>
-	</div>
+            <nav class="header-menu">
+              <ul>
 
+                <li>
+                  <a href="/">主页</a>
+                </li>
 
-        <div class="clearfix"></div>
+                <li>
+                  <a href="/archives">所有文章</a>
+                </li>
+
+                <div class="clearfix"></div>
+              </ul>
+            </nav>
+            <nav class="header-nav">
+              <div class="social">
+
+                <a class="github" target="_blank" href="https://github.com/science09" title="github">github</a>
+
+                <a class="weibo" target="_blank" href="http://weibo.com/u/2445097485" title="weibo">weibo</a>
+
+                <a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+
+                <a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
+
+              </div>
+            </nav>
+          </header>
+        </div>
+      </nav>
+
+      <div class="body-wrap">
+        <article id="post-Android内存管理之道" class="article article-type-post" itemscope
+        itemprop="blogPost">
+
+          <div class="article-meta">
+            <a href="/2014/08/01/Android内存管理之道/" class="article-date">
+              <time datetime="2014-08-01T14:33:22.000Z" itemprop="datePublished">2014-08-01</time>
+            </a>
+
+          </div>
+
+          <div class="article-inner">
+
+            <input type="hidden" class="isFancy" />
+
+            <header class="article-header">
+              <h1 class="article-title" itemprop="name">
+                Android内存管理之道
+              </h1>
+
+            </header>
+
+            <div class="article-info article-info-post">
+              <div class="article-tag tagcloud">
+                <ul class="article-tag-list">
+                  <li class="article-tag-list-item">
+                    <a class="article-tag-list-link" href="/tags/Android/">Android</a>
+                  </li>
+                  <li class="article-tag-list-item">
+                    <a class="article-tag-list-link" href="/tags/内存管理/">内存管理</a>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="article-category tagcloud">
+                <a class="article-category-link" href="/categories/Android/">Android</a>
+              </div>
+
+              <div class="clearfix"></div>
+            </div>
+
+            <div class="article-entry" itemprop="articleBody">
+
+              <p>相信一步步走过来的Android从业者，每个人都会遇到OOM的情况。如何避免和防范OOM的出现，对于每一个程序员来说确实是一门必不可少的能力。今天我们就谈谈在Android平台下内存的管理之道，开始今天的主题之前，先再次回顾两个概念。
+                <br>
+                <a id="more"></a>
+                <br>内存泄漏：对象在内存heap堆中中分配的空间，当不再使用或没有引用指向的情况下，仍不能被GC正常回收的情况。多数出现在不合理的编码情况下，比如在Activity中注册了一个广播接收器，但是在页面关闭的时候进行unRegister，就会出现内存溢出的现象。通常情况下，大量的内存泄漏会造成OOM。</p>
+              <p>OOM：即OutOfMemoery，顾名思义就是指内存溢出了。内存溢出是指APP向系统申请超过最大阀值的内存请求，系统不会再分配多余的空间，就会造成OOM
+                error。在我们Android平台下，多数情况是出现在图片不当处理加载的时候。
+              </p>
+              <p>内存管理之道嘛，无非就是先理解并找出内存泄漏的原因，再基于这些反式去合理的编码，去防范进而避免内存开销过大的情形。学习如何合理的管理内存，最好先了解内存分配的机制和原理。只有深层次的理解了内部的原理，才能真正避免OOM的发生。但是本文就不介绍Jvm/Davilk内存分配的机制了，如有兴趣，请查看历史消息，以前做过题为《JVM运行时数据区域分析》的分享。</p>
+              <p>Android APP的所能申请的最大内存大小是多少，有人说是16MB，有人又说是24MB。这种事情，还是亲自用自己的手机测试下比较靠谱。测试方式也比较简单，Java中有个Runtime类，主要用作APP与运行环境交互，APP并不会为我们创建Runtime的实例，但是Java为我们提供了单例获取的方式Runtime.getRuntime()。通过maxMemory()方法获取系统可为APP分配的最大内存，totalMemory()获取APP当前所分配的内存heap空间大小。我手上有两部手机，一部Oppo
+                find7，运行Color OS，实测最大内存分配为192MB；一部天语v9，运行小米系统，实测最大内存分配为100MB。这下看出点眉目了吧，由于Android是开源系统，不同的手机厂商其实是拥有修改这部分权限能力的，所以就造成了不同品牌和不同系统的手机，对于APP的内存支持也是不一样的，和IOS的恒久100MB是不同的。一般来说，手机内存的配置越高，厂商也会调大手机支持的内存最大阀值，尤其是现在旗舰机满天发布的情况下。但是开发者为了考虑开发出的APP的内存兼容性，无法保证APP运行在何种手机上，只能从编码角度来优化内存了。</p>
+              <p>下面我们逐条来分析Android内存优化的关键点。</p>
+              <p> 1、万恶的static</p>
+              <p>static是个好东西，声明赋值调用就是那么的简单方便，但是伴随而来的还有性能问题。由于static声明变量的生命周期其实是和APP的生命周期一样的，有点类似与Application。如果大量的使用的话，就会占据内存空间不释放，积少成多也会造成内存的不断开销，直至挂掉。static的合理使用一般用来修饰基本数据类型或者轻量级对象，尽量避免修复集合或者大对象，常用作修饰全局配置项、工具类方法、内部类。</p>
+              <p>2、无关引用</p>
+              <p>很多情况下，我们需求用到传递引用，但是我们无法确保引用传递出去后能否及时的回收。比如比较有代表性的Context泄漏，很多情况下当Activity
+                结束掉后，由于仍被其他的对象指向导致一直迟迟不能回收，这就造成了内存泄漏。这时可以考虑第三条建议。</p>
+              <p>3、善用SoftReference/WeakReference/LruCache</p>
+              <p>Java、Android中有没有这样一种机制呢，当内存吃紧或者GC扫过的情况下，就能及时把一些内存占用给释放掉，从而分配给需要分配的地方。答案是肯定的，java为我们提供了两个解决方案。如果对内存的开销比较关注的APP，可以考虑使用WeakReference，当GC回收扫过这块内存区域时就会回收；如果不是那么关注的话，可以使用SoftReference，它会在内存申请不足的情况下自动释放，同样也能解决OOM问题。同时Android自3.0以后也推出了LruCache类，使用LRU算法就释放内存，一样的能解决OOM，如果兼容3.0一下的版本，请导入v4包。关于第二条的无关引用的问题，我们传参可以考虑使用WeakReference包装一下。</p>
+              <p>4、谨慎handler</p>
+              <p>在处理异步操作的时候，handler + thread是个不错的选择。但是相信在使用handler的时候，大家都会遇到警告的情形，这个就是lint为开发者的提醒。handler运行于UI线程，不断处理来自MessageQueue的消息，如果handler还有消息需要处理但是Activity页面已经结束的情况下，Activity的引用其实并不会被回收，这就造成了内存泄漏。解决方案，一是在Activity的onDestroy方法中调用</p>
+              <p>handler.removeCallbacksAndMessages(null);取消所有的消息的处理，包括待处理的消息；二是声明handler的内部类为static。</p>
+              <p>5、Bitmap终极杀手</p>
+              <p>Bitmap的不当处理极可能造成OOM，绝大多数情况都是因这个原因出现的。Bitamp位图是Android中当之无愧的胖小子，所以在操作的时候当然是十分的小心了。由于Dalivk并不会主动的去回收，需要开发者在Bitmap不被使用的时候recycle掉。使用的过程中，及时释放是非常重要的。同时如果需求允许，也可以去BItmap进行一定的缩放，通过BitmapFactory.Options的inSampleSize属性进行控制。如果仅仅只想获得Bitmap的属性，其实并不需要根据BItmap的像素去分配内存，只需在解析读取Bmp的时候使用BitmapFactory.Options的inJustDecodeBounds属性。最后建议大家在加载网络图片的时候，使用软引用或者弱引用并进行本地缓存，推荐使用android-universal-imageloader或者xUtils，牛人出品，必属精品。前几天在讲《自定义控件（三）
+                继承控件》的时候，也整理一个，大家可以去Github下载看看。
+              </p>
+              <p>6、Cursor及时关闭</p>
+              <p>在查询SQLite数据库时，会返回一个Cursor，当查询完毕后，及时关闭，这样就可以把查询的结果集及时给回收掉。</p>
+              <p>7、页面背景和图片加载</p>
+              <p>在布局和代码中设置背景和图片的时候，如果是纯色，尽量使用color；如果是规则图形，尽量使用shape画图；如果稍微复杂点，可以使用9patch图；如果不能使用9patch的情况下，针对几种主流分辨率的机型进行切图。</p>
+              <p>8、ListView和GridView的item缓存</p>
+              <p>对于移动设备，尤其硬件参差不齐的android生态，页面的绘制其实是很耗时的，findViewById也是蛮慢的。所以不重用View，在有列表的时候就尤为显著了，经常会出现滑动很卡的现象。具体参照历史文章《说说ViewHolder的另一种写法》</p>
+              <p>9、BroadCastReceiver、Service</p>
+              <p>绑定广播和服务，一定要记得在不需要的时候给解绑。</p>
+              <p>10、I/O流</p>
+              <p>I/O流操作完毕，读写结束，记得关闭。</p>
+              <p>11、线程</p>
+              <p>线程不再需要继续执行的时候要记得及时关闭，开启线程数量不易过多，一般和自己机器内核数一样最好，推荐开启线程的时候，使用线程池。</p>
+              <p>12、String/StringBuffer</p>
+              <p>当有较多的字符创需要拼接的时候，推荐使用StringBuffer。</p>
+
+            </div>
+
+          </div>
+
+          <nav id="article-nav">
+
+            <a href="/2014/08/01/Linux下统计高速网络中的流量/" id="article-nav-newer" class="article-nav-link-wrap">
+              <strong class="article-nav-caption">
+                <</strong>
+                  <div class="article-nav-title">
+
+                    Linux下统计高速网络中的流量
+
+                  </div>
+            </a>
+
+            <a href="/2014/07/31/Android-WebView内存泄漏/" id="article-nav-older" class="article-nav-link-wrap">
+              <div class="article-nav-title">Android WebView内存泄漏</div>
+              <strong class="article-nav-caption">></strong>
+            </a>
+
+          </nav>
+
+        </article>
+
+        <div class="share">
+          <!-- JiaThis Button BEGIN -->
+          <div class="jiathis_style">
+            <span class="jiathis_txt">分享到：</span>
+            <a class="jiathis_button_tsina"></a>
+            <a class="jiathis_button_cqq"></a>
+            <a class="jiathis_button_douban"></a>
+            <a class="jiathis_button_weixin"></a>
+            <a class="jiathis_button_tumblr"></a>
+            <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis"
+            target="_blank"></a>
+          </div>
+          <script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953"
+          charset="utf-8"></script>
+          <!-- JiaThis Button END -->
+        </div>
+
+        <div class="duoshuo">
+          <!-- 多说评论框 start -->
+          <div class="ds-thread" data-thread-key="Android内存管理之道" data-title="Android内存管理之道"
+          data-url="http://science09.github.io/2014/08/01/Android内存管理之道/"></div>
+          <!-- 多说评论框 end -->
+          <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+          <script type="text/javascript">
+            var duoshuoQuery = {
+              short_name: "true"
+            };
+            (function() {
+              var ds = document.createElement('script');
+              ds.type = 'text/javascript';
+              ds.async = true;
+              ds.src = (document.location.protocol == 'https:' ? 'https:' :
+                  'http:') +
+                '//static.duoshuo.com/embed.js';
+              ds.charset = 'UTF-8';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName(
+                'body')[0]).appendChild(ds);
+            })();
+
+          </script>
+          <!-- 多说公共JS代码 end -->
+        </div>
       </div>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>相信一步步走过来的Android从业者，每个人都会遇到OOM的情况。如何避免和防范OOM的出现，对于每一个程序员来说确实是一门必不可少的能力。今天我们就谈谈在Android平台下内存的管理之道，开始今天的主题之前，先再次回顾两个概念。<br><a id="more"></a><br>内存泄漏：对象在内存heap堆中中分配的空间，当不再使用或没有引用指向的情况下，仍不能被GC正常回收的情况。多数出现在不合理的编码情况下，比如在Activity中注册了一个广播接收器，但是在页面关闭的时候进行unRegister，就会出现内存溢出的现象。通常情况下，大量的内存泄漏会造成OOM。</p>
-<p>OOM：即OutOfMemoery，顾名思义就是指内存溢出了。内存溢出是指APP向系统申请超过最大阀值的内存请求，系统不会再分配多余的空间，就会造成OOM error。在我们Android平台下，多数情况是出现在图片不当处理加载的时候。</p>
-<p>内存管理之道嘛，无非就是先理解并找出内存泄漏的原因，再基于这些反式去合理的编码，去防范进而避免内存开销过大的情形。学习如何合理的管理内存，最好先了解内存分配的机制和原理。只有深层次的理解了内部的原理，才能真正避免OOM的发生。但是本文就不介绍Jvm/Davilk内存分配的机制了，如有兴趣，请查看历史消息，以前做过题为《JVM运行时数据区域分析》的分享。</p>
-<p>Android APP的所能申请的最大内存大小是多少，有人说是16MB，有人又说是24MB。这种事情，还是亲自用自己的手机测试下比较靠谱。测试方式也比较简单，Java中有个Runtime类，主要用作APP与运行环境交互，APP并不会为我们创建Runtime的实例，但是Java为我们提供了单例获取的方式Runtime.getRuntime()。通过maxMemory()方法获取系统可为APP分配的最大内存，totalMemory()获取APP当前所分配的内存heap空间大小。我手上有两部手机，一部Oppo find7，运行Color OS，实测最大内存分配为192MB；一部天语v9，运行小米系统，实测最大内存分配为100MB。这下看出点眉目了吧，由于Android是开源系统，不同的手机厂商其实是拥有修改这部分权限能力的，所以就造成了不同品牌和不同系统的手机，对于APP的内存支持也是不一样的，和IOS的恒久100MB是不同的。一般来说，手机内存的配置越高，厂商也会调大手机支持的内存最大阀值，尤其是现在旗舰机满天发布的情况下。但是开发者为了考虑开发出的APP的内存兼容性，无法保证APP运行在何种手机上，只能从编码角度来优化内存了。</p>
-<p>下面我们逐条来分析Android内存优化的关键点。</p>
-<p> 1、万恶的static</p>
-<p>static是个好东西，声明赋值调用就是那么的简单方便，但是伴随而来的还有性能问题。由于static声明变量的生命周期其实是和APP的生命周期一样的，有点类似与Application。如果大量的使用的话，就会占据内存空间不释放，积少成多也会造成内存的不断开销，直至挂掉。static的合理使用一般用来修饰基本数据类型或者轻量级对象，尽量避免修复集合或者大对象，常用作修饰全局配置项、工具类方法、内部类。</p>
-<p>2、无关引用</p>
-<p>很多情况下，我们需求用到传递引用，但是我们无法确保引用传递出去后能否及时的回收。比如比较有代表性的Context泄漏，很多情况下当Activity 结束掉后，由于仍被其他的对象指向导致一直迟迟不能回收，这就造成了内存泄漏。这时可以考虑第三条建议。</p>
-<p>3、善用SoftReference/WeakReference/LruCache</p>
-<p>Java、Android中有没有这样一种机制呢，当内存吃紧或者GC扫过的情况下，就能及时把一些内存占用给释放掉，从而分配给需要分配的地方。答案是肯定的，java为我们提供了两个解决方案。如果对内存的开销比较关注的APP，可以考虑使用WeakReference，当GC回收扫过这块内存区域时就会回收；如果不是那么关注的话，可以使用SoftReference，它会在内存申请不足的情况下自动释放，同样也能解决OOM问题。同时Android自3.0以后也推出了LruCache类，使用LRU算法就释放内存，一样的能解决OOM，如果兼容3.0一下的版本，请导入v4包。关于第二条的无关引用的问题，我们传参可以考虑使用WeakReference包装一下。</p>
-<p>4、谨慎handler</p>
-<p>在处理异步操作的时候，handler + thread是个不错的选择。但是相信在使用handler的时候，大家都会遇到警告的情形，这个就是lint为开发者的提醒。handler运行于UI线程，不断处理来自MessageQueue的消息，如果handler还有消息需要处理但是Activity页面已经结束的情况下，Activity的引用其实并不会被回收，这就造成了内存泄漏。解决方案，一是在Activity的onDestroy方法中调用</p>
-<p>handler.removeCallbacksAndMessages(null);取消所有的消息的处理，包括待处理的消息；二是声明handler的内部类为static。</p>
-<p>5、Bitmap终极杀手</p>
-<p>Bitmap的不当处理极可能造成OOM，绝大多数情况都是因这个原因出现的。Bitamp位图是Android中当之无愧的胖小子，所以在操作的时候当然是十分的小心了。由于Dalivk并不会主动的去回收，需要开发者在Bitmap不被使用的时候recycle掉。使用的过程中，及时释放是非常重要的。同时如果需求允许，也可以去BItmap进行一定的缩放，通过BitmapFactory.Options的inSampleSize属性进行控制。如果仅仅只想获得Bitmap的属性，其实并不需要根据BItmap的像素去分配内存，只需在解析读取Bmp的时候使用BitmapFactory.Options的inJustDecodeBounds属性。最后建议大家在加载网络图片的时候，使用软引用或者弱引用并进行本地缓存，推荐使用android-universal-imageloader或者xUtils，牛人出品，必属精品。前几天在讲《自定义控件（三） 继承控件》的时候，也整理一个，大家可以去Github下载看看。</p>
-<p>6、Cursor及时关闭</p>
-<p>在查询SQLite数据库时，会返回一个Cursor，当查询完毕后，及时关闭，这样就可以把查询的结果集及时给回收掉。</p>
-<p>7、页面背景和图片加载</p>
-<p>在布局和代码中设置背景和图片的时候，如果是纯色，尽量使用color；如果是规则图形，尽量使用shape画图；如果稍微复杂点，可以使用9patch图；如果不能使用9patch的情况下，针对几种主流分辨率的机型进行切图。</p>
-<p>8、ListView和GridView的item缓存</p>
-<p>对于移动设备，尤其硬件参差不齐的android生态，页面的绘制其实是很耗时的，findViewById也是蛮慢的。所以不重用View，在有列表的时候就尤为显著了，经常会出现滑动很卡的现象。具体参照历史文章《说说ViewHolder的另一种写法》</p>
-<p>9、BroadCastReceiver、Service</p>
-<p>绑定广播和服务，一定要记得在不需要的时候给解绑。</p>
-<p>10、I/O流</p>
-<p>I/O流操作完毕，读写结束，记得关闭。</p>
-<p>11、线程</p>
-<p>线程不再需要继续执行的时候要记得及时关闭，开启线程数量不易过多，一般和自己机器内核数一样最好，推荐开启线程的时候，使用线程池。</p>
-<p>12、String/StringBuffer</p>
-<p>当有较多的字符创需要拼接的时候，推荐使用StringBuffer。</p>
-
-      
-    </div>
-    
-  </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/2014/08/01/Linux下统计高速网络中的流量/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          Linux下统计高速网络中的流量
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2014/07/31/Android-WebView内存泄漏/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Android WebView内存泄漏</div>
-      <strong class="article-nav-caption">></strong>
-    </a>
-  
-</nav>
-
-  
-</article>
-
-
-<div class="share">
-	<!-- JiaThis Button BEGIN -->
-	<div class="jiathis_style">
-		<span class="jiathis_txt">分享到：</span>
-		<a class="jiathis_button_tsina"></a>
-		<a class="jiathis_button_cqq"></a>
-		<a class="jiathis_button_douban"></a>
-		<a class="jiathis_button_weixin"></a>
-		<a class="jiathis_button_tumblr"></a>
-		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
-	</div>
-	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
-	<!-- JiaThis Button END -->
-</div>
-
-
-
-<div class="duoshuo">
-	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="Android内存管理之道" data-title="Android内存管理之道" data-url="http://science09.github.io/2014/08/01/Android内存管理之道/"></div>
-	<!-- 多说评论框 end -->
-	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-	<script type="text/javascript">
-	var duoshuoQuery = {short_name:"true"};
-	(function() {
-		var ds = document.createElement('script');
-		ds.type = 'text/javascript';ds.async = true;
-		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-		ds.charset = 'UTF-8';
-		(document.getElementsByTagName('head')[0] 
-		 || document.getElementsByTagName('body')[0]).appendChild(ds);
-	})();
-	</script>
-	<!-- 多说公共JS代码 end -->
-</div>
-
-
-
-
-</div>
       <footer id="footer">
-  <div class="outer">
-    <div id="footer-info">
-    	<div class="footer-left">
-    		&copy; 2015 science09
-    	</div>
-      	<div class="footer-right">
-      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
-      	</div>
+        <div class="outer">
+          <div id="footer-info">
+            <div class="footer-left">
+              &copy; 2015 science09
+            </div>
+            <div class="footer-right">
+              <a href="http://hexo.io/" target="_blank">Hexo</a> Theme
+              <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+            </div>
+          </div>
+        </div>
+      </footer>
+
     </div>
-  </div>
-</footer>
-    </div>
-    
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+    <script>
+      var yiliaConfig = {
+        fancybox: true,
+        mathjax: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        open_in_new: false
+      }
+
+    </script>
+    <script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="/js/main.js" type="text/javascript"></script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({ tex2jax: { inlineMath: [ ['$','$'], ["\\(","\\)"] ], processEscapes:
+      true, skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      } }); MathJax.Hub.Queue(function() { var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i
+      < all.length; i +=1 ) { all[i].SourceElement().parentNode.className +=' has-jax'
+      ; } }); </script>
+
+        <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 
 
-<script>
-	var yiliaConfig = {
-		fancybox: true,
-		mathjax: true,
-		animate: true,
-		isHome: false,
-		isPost: true,
-		isArchive: false,
-		isTag: false,
-		isCategory: false,
-		open_in_new: false
-	}
-</script>
-<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
-<script src="/js/main.js" type="text/javascript"></script>
-
-
-
-
-
-
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-    tex2jax: {
-        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-        processEscapes: true,
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-    }
-});
-
-MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-        all[i].SourceElement().parentNode.className += ' has-jax';                 
-    }       
-});
-</script>
-
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-
+        </script>
 
   </div>
 </body>
+
 </html>
