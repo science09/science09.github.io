@@ -4,7 +4,7 @@
   <subtitle><![CDATA[一分耕耘一分收获]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://science09.github.io/"/>
-  <updated>2015-09-10T14:16:37.000Z</updated>
+  <updated>2015-09-17T14:34:53.000Z</updated>
   <id>http://science09.github.io/</id>
   
   <author>
@@ -13,6 +13,57 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[python开发者需要知道的服务器知识]]></title>
+    <link href="http://science09.github.io/2015/09/17/python%E5%BC%80%E5%8F%91%E8%80%85%E9%9C%80%E8%A6%81%E7%9F%A5%E9%81%93%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9F%A5%E8%AF%86/"/>
+    <id>http://science09.github.io/2015/09/17/python开发者需要知道的服务器知识/</id>
+    <published>2015-09-17T14:06:23.000Z</published>
+    <updated>2015-09-17T14:34:53.000Z</updated>
+    <content type="html"><![CDATA[<h3 id="HTTP:_统治万维网的协议">HTTP: 统治万维网的协议</h3><p>HTTP(超文本传输协议)是一种通信协议，它被用来发送和接收因特网上的网页以及其他数据文件。它是一套规则和相关参数的集合，这些规则和参数控制着网页和其他数据文件在因特网上的传输。<br><a id="more"></a><br>浏览器是一个HTTP客户端，因为它会发送请求到一个HTTP服务器（网页服务器），HTTP服务器随后把响应发送回客户端。HTTP监听的标准（和默认）端口是80端口，尽管其实可以使用任何的端口。如果你想要钻研一下HTTP，请查看<a href="http://www.w3.org/Protocols/rfc2616/rfc2616.html" target="_blank" rel="external">HTTP 1.1 specs</a> ，它已经被多种请求注解（RFCs(7230-7237)）所替代。你可以在ietf搜索这些请求注解。</p>
+<h3 id="HTTP_服务器">HTTP 服务器</h3><p>因此，HTTP请求和响应有其特定的格式！当用户进入某个网站的时候，他们的浏览器与站点的网页服务器进行了连接（这个过程称之为请求）。服务器在文件系统中查询文件，并将其发送回用户的浏览器，浏览器会显示这些文件（这个过程称之为响应）。这便是HTTP协议的工作方式。看上去很简单？</p>
+<p>动态网站并不基于文件系统中的文件，取而代之的是，当有请求到达的时候，由一个网站服务器上面运行的程序来处理。该程序会生成内容并将其返回给用户。它们可以做很多有用的事，比如显示BBS上的帖子，显示你的电子邮件，配置软件或是显示当前的时间。</p>
+<p>不论客户端或者服务器是如何实现的，总有办法来生成有效的HTTP请求，让客户端正常工作，同样，服务器要能够理解发送给它的HTTP请求并且为所有到达的请求生成有效的HTTP响应。客户端和服务器都必须具有相互连接的能力（这种情况下会使用TCP进行可靠的连接），能够传输HTTP请求(客户端 -&gt; 服务器)和HTTP响应(服务器 -&gt; 客户端)。</p>
+<p>HTTP服务器（是一个程序）会接受这些请求，并且会让你的python获取HTTP请求方法以及URI。HTTP服务器会处理很多来自图片和静态资源的请求。 那么它又是如何生成动态urls的呢？</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="decorator">@app.route('displaynews_name_of_category',methods=['GET'])</span></span><br></pre></td></tr></table></figure>
+<p>在Flask中你可能使用过这个装饰器，<a href="http://flask.pocoo.org/" target="_blank" rel="external">Flask</a> 是一个python微型框架。Flask会把来自浏览器的请求和该路由进行模式匹配。但是flask是如何解析来自浏览器的http请求的呢？HTTP服务器会把动态生成的urls传递给应用服务器。哇哦！等等。。应用服务器又是什么东西呢？</p>
+<p>Apache的 HTTPD 和nginx是两个常用的python网站服务器。</p>
+<h3 id="应用服务器">应用服务器</h3><p>大多数的HTTP服务器是由C或C++写成的，所以它们不能直接执行Python脚本——在服务器和程序之间，需要一个桥梁。这个桥梁，或者说是接口，定义了程序应该如何和服务器进行交互。这就是应用服务器。动态生成的urls从网站服务器传递到应用服务器。应用服务器对url进行匹配并执行该路由对应的脚本。然后它（应用服务器）把响应返回给网站服务器，网站服务器生成一个HTTP响应，并将其返回给客户端。</p>
+<p>对于python来讲，有很多可以用的应用服务器。这个<a href="https://en.wikipedia.org/wiki/Comparison_of_application_servers#Python" target="_blank" rel="external">链接</a>列出了不同的应用服务器。起初，pyhton开发者们使用低层网关来进行部署。</p>
+<h3 id="通用网关接口(CGI)">通用网关接口(CGI)</h3><p>这个接口，通常被称之为“CGI”，是最古老的应用服务器，它几乎被任何网站服务器所天生支持，无需专门安装。使用CGI和网站服务器进行通信的程序，需要针对每一个请求单独开启。所以每一个请求都会启动一个全新的Python解释器——这还是需要花费一点时间的——因此让整个接口只能用在低负载的情况下。</p>
+<p>如果你想要学习如何编写一个CGI。请按照<a href="http://www.jmarshall.com/easy/cgi/" target="_blank" rel="external">JM Marshall的这篇教程</a> 去做。</p>
+<p><strong>mod_python</strong></p>
+<p><strong>mod_python</strong>是一个Apache HTTP 服务器模块，它在服务器上面集成了Python语言。在上世纪90年代和本世纪初期，大多数的Python web应用都运行在配置了 mod_python 的Apache 上。但是，mod_python并不是标准规范。在使用mod_python时会有一些问题 。Python web应用需要一种可持续的运作方式。</p>
+<p><a href="https://docs.python.org/2/howto/webservers.html#fastcgi-and-scgi" target="_blank" rel="external">FastCgi and SCGI</a>是另一种用来部署的低层网关。它们尝试解决CGI的性能问题。这些低层的网关接口不依赖特定语言。<br>WSGI的崛起</p>
+<p>一个Web服务器网关接口（WSGI）服务器为运行Python web应用实现了服务器端的WSGI接口。 WSGI适合各种规模并且可以在多线程或多进程环境下工作，我们同样可以使用WSGI编写中间件。中间件对于会话处理，授权和其他很多任务都非常有用。你可以在<a href="http://lucumr.pocoo.org/2007/5/21/getting-started-with-wsgi/" target="_blank" rel="external">Armin的博客</a>里面学到如何编写你自己的WSGI实现。<a href="https://www.digitalocean.com/community/tutorials/a-comparison-of-web-servers-for-python-based-web-applications" target="_blank" rel="external">这个链接</a>给出了不同WSGI实现的比较。</p>
+<p>Gunicorn and uWSGI Gunicorn 和 uWSGI</p>
+<p>Gunicorn 和 uWSGI 是两个不同的应用服务器。<a href="http://gunicorn-docs.readthedocs.org/en/latest/" target="_blank" rel="external">Gunicorn ‘Green Unicorn’</a>是一个为UNIX设计的Python WSGI HTTP服务器。配置非常简单，和多种web框架兼容，而且它足够的快。</p>
+<p><a href="https://www.digitalocean.com/community/tutorials/how-to-deploy-python-wsgi-apps-using-gunicorn-http-server-behind-nginx" target="_blank" rel="external">digitalocean的这篇文章</a>讲解了如何配置gunicorn和nginx。</p>
+<p>uWSGI 是另一种备选的应用服务器。uWSGI是一个高性能，强大的WSGI服务器。uWSGI有很多可配置选项， digitalocean的这篇文章 讲解了如何配置uWSGI和nginx。<br>Apache vs Nginx</p>
+<p><a href="https://anturis.com/blog/nginx-vs-apache/" target="_blank" rel="external">Anturis 在他的博客</a>上已经非常清晰的阐述了两者之间的不同。这篇文章解释了apache和nginx是如何工作的。</p>
+<p>总结一下：</p>
+<ol>
+<li>Apache 通过创建进程和线程来处理额外的连接。而Nginx被称为事件驱动，异步，并且非阻塞。</li>
+<li>Apache非常强大但是Nginx非常快。Nginx可以更快呈现静态内容。</li>
+<li>Nginx包含了先进的负载均衡以及缓存能力。</li>
+<li>Nginx比Apache轻量级的多。</li>
+</ol>
+<p>organic agency对Apache和nginx进行了基准测试。结果可以在<a href="http://www.theorganicagency.com/apache-vs-nginx-performance-comparison/" target="_blank" rel="external">这里看到</a>。</p>
+<h3 id="我用的是什么">我用的是什么</h3><p>我使用Nginx因为它很快、很轻巧，并且我发现配置它更容易。Gunicorn配置起来也很简单所以我用gunicorn。uWsgi也经常被用来替代gunicorn。</p>
+<p>原文链接：<a href="http://python.jobbole.com/82009/" target="_blank" rel="external">http://python.jobbole.com/82009/</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h3 id="HTTP:_统治万维网的协议">HTTP: 统治万维网的协议</h3><p>HTTP(超文本传输协议)是一种通信协议，它被用来发送和接收因特网上的网页以及其他数据文件。它是一套规则和相关参数的集合，这些规则和参数控制着网页和其他数据文件在因特网上的传输。<br>]]>
+    
+    </summary>
+    
+      <category term="python" scheme="http://science09.github.io/tags/python/"/>
+    
+      <category term="web" scheme="http://science09.github.io/tags/web/"/>
+    
+      <category term="技术" scheme="http://science09.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[9个目前流行的Material Design前端框架]]></title>
@@ -1157,68 +1208,6 @@
       <category term="缓冲区溢出" scheme="http://science09.github.io/tags/%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA/"/>
     
       <category term="技术" scheme="http://science09.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[如何成为一个偷懒又高效的Android开发人员 ]]></title>
-    <link href="http://science09.github.io/2014/06/14/%E5%A6%82%E4%BD%95%E6%88%90%E4%B8%BA%E4%B8%80%E4%B8%AA%E5%81%B7%E6%87%92%E5%8F%88%E9%AB%98%E6%95%88%E7%9A%84Android%E5%BC%80%E5%8F%91%E4%BA%BA%E5%91%98/"/>
-    <id>http://science09.github.io/2014/06/14/如何成为一个偷懒又高效的Android开发人员/</id>
-    <published>2014-06-14T15:22:49.000Z</published>
-    <updated>2015-09-10T13:57:05.000Z</updated>
-    <content type="html"><![CDATA[<p>Android程序员不情愿写 findViewById()、点击事件监听等重复率较高的代码。那我们如何才能缩短编写业务逻辑代码的时间，并且避免写那些重复的代码呢？所以让我们来成为一个能偷懒又有高效率的Android程序员。想知道怎么做吗？不用急，接下来我就会写到。<br><a id="more"></a><br>有许多第三方的库和框架是可供我们使用。出于种种原因，我们并不知道这些库或者知道但还没用过。有的开发者开发了自己定义的库或者并不想使用第三方的库。如果我们在应用程序开发的过程中使用一些第三方库，也许可以提高程序的可兼容性、漂亮的UI界面、让代码变得整洁等等。所以，我将研究更多像这样的第三方库来帮助初学者和有经验的开发人员。</p>
-<p>今天，让我们来讨论下“依赖注入函数库”。</p>
-<h4 id="什么是依赖注入?">什么是依赖注入?</h4><p>依赖注入是一种软件设计模式，无论是在运行时还是在编译时，允许删除、改变硬编码依赖性。[来自Wikipedia]（维基百科资源）：</p>
-<p>一些常用和普遍的依赖注入库有：</p>
-<p>   <img src="PicResource\android-injection-library1.png" alt="android-injection-library1.png"></p>
-<p>RoboGuice:<br>  <img src="PicResource\roboguice.png" alt="roboguice.png"><br>Roboguice是一个用于Android应用的依赖注入框架，使用Google官方的Guice库位极大地简化了Android的依赖注入。让你的Android应用开发之路更加平坦顺利，编程更加简单有趣。</p>
-<p>当你调用 getIntent()，getExtras()这些函数时你是否经常忘记检查是否为Null？RoboGuice可以帮助你。初始化TextView有必要调用findViewById()吗？不用，RoboGuice已经为你完成了。</p>
-<p>通过使用RoboGuice，你可以注入View视图控件、资源、系统服务或者其他任何对象。RoboGuice能帮你精简应用程序的代码。代码越少意味着出现问题或bug的次数也就越少，从而可以把更多的精力花在项目中那些需要编写或修改的部分，使得阅读代码更加容易。</p>
-<p>让我们来看看各种RoboGuice 库的使用方法。</p>
-<p>####使用RoboGuice库 ：</p>
-<ul>
-<li><strong>控件注入</strong>：用@InjectViews方法初始化控件，例如：@InjectView（R.id.textview1）TextView textView1。</li>
-<li><strong>资源注入</strong>：用@InjectResources方法初始化资源，例如：@InjectResource（R.string.app_name）String name。</li>
-<li><strong> 系统服务注入</strong>：用@Inject方法初始化并获取系统服务，例如：@Inject LayoutInflater inflater。</li>
-<li><strong>POJO对象注入</strong>：用@Inject方法注入并初始化POJO对象，例如：@Inject Foo foo。</li>
-</ul>
-<p>####安装</p>
-<p>要使用RoboGuice，你需要下载JAR文件并把他们添加到环境变量中：</p>
-<ul>
-<li><a href="http://repo1.maven.org/maven2/org/roboguice/roboguice/2.0/roboguice-2.0.jar" target="_blank" rel="external">http://repo1.maven.org/maven2/org/roboguice/roboguice/2.0/roboguice-2.0.jar</a></li>
-<li><a href="http://repo1.maven.org/maven2/com/google/inject/guice/3.0/guice-3.0-no_aop.jar" target="_blank" rel="external">http://repo1.maven.org/maven2/com/google/inject/guice/3.0/guice-3.0-no_aop.jar</a></li>
-<li><a href="http://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/1.3.9/jsr305-1.3.9.jar" target="_blank" rel="external">http://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/1.3.9/jsr305-1.3.9.jar</a></li>
-</ul>
-<p>我们来看看一个简单的一般事件代码：</p>
-<p>####实例</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    TextView textView1;</span><br><span class="line">    TextView textView2;</span><br><span class="line">    ImageView imageView1;</span><br><span class="line">    String name;</span><br><span class="line">    Drawable icLauncher;</span><br><span class="line">    LocationManager locManager;</span><br><span class="line">    LayoutInflater inflater;</span><br><span class="line">    NotificationManager notifyManager;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.layout_test);</span><br><span class="line">        textView1 = (TextView) findViewById(R.id.textView1);</span><br><span class="line">        textView2 = (TextView) findViewById(R.id.textView2);</span><br><span class="line">        imageView1 = (ImageView) findViewById(R.id.imageView1);</span><br><span class="line">        name = getString(R.string.app_name);</span><br><span class="line">        icLauncher = getResources().getDrawable(R.id.ic_launcher);</span><br><span class="line">        locManager = (LocationManager) getSystemService(Activity.LOCATION_SERVICE);</span><br><span class="line">        inflater = (LayoutInflater) getSystemService(Activity.LAYOUT_INFLATER_SERVICE);</span><br><span class="line">        notifyManager = (NotificationManager) getSystemService(Activity.NOTIFICATION_SERVICE);</span><br><span class="line">        textView1.setText(<span class="string">"Hello World! RoboGuice demo"</span>);</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>再看看使用RoboGuice精简代码后神奇之处。</p>
-<p>####使用RoboGuice</p>
-<p>你先要继承RoboActivity或者RoboFragment，才能使用RoboGuice的依赖注入功能。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestActivity</span> <span class="keyword">extends</span> <span class="title">RoboActivity</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@InjectView</span>(R.id.textView1) TextView textView1;</span><br><span class="line">    <span class="annotation">@InjectView</span>(R.id.textView2) TextView textView2;</span><br><span class="line">    <span class="annotation">@InjectView</span>(R.id.imageView1) ImageView imageView1;</span><br><span class="line">    <span class="annotation">@InjectResource</span>(R.string.app_name) String name;</span><br><span class="line">    <span class="annotation">@InjectResource</span>(R.drawable.ic_launcher) Drawable icLauncher;</span><br><span class="line">    <span class="annotation">@Inject</span> LocationManager locManager;</span><br><span class="line">    <span class="annotation">@Inject</span> LayoutInflater inflater;</span><br><span class="line">    <span class="annotation">@Inject</span> NotificationManager notifyManager;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.layout_test);</span><br><span class="line">        textView1.setText(name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这么一对比，我想你肯定明白了为什么要使用RoboGuice？再来看看有哪些好处：</p>
-<p>####使用RoboGuice的好处</p>
-<ul>
-<li>不需要初始化控件，如有需要就用@InjectViews。</li>
-<li>不需要初始化系统服务，如有需要就用@Inject。</li>
-<li>不需要初始化像Drawable，string以及其他的资源，如有需要就用@InjectResource。</li>
-<li>以上实践能帮助你精简代码。</li>
-<li>越少的代码，越少的问题和bugs。</li>
-<li>少量的代码让Android开发人员省力同时，也让他们能更专注于实际的业务逻辑。</li>
-</ul>
-<h4 id="RoboGuice和ActionBarSherlock">RoboGuice和ActionBarSherlock</h4><p>正如我前面提到的，你得在RoboActivity和RoboFragment中继承其中一个才能在Activity事件或Fragment中使用RoboGuice。但是如果你已经在项目中使用了ActionBarSherlock去编译呢？那问题就在于，你已经继承了SherlockActivity或SherlockFragmentActivity中的一个。现在问题是，你不能同时使用RoboGuice和ActionBarSherlock。</p>
-<p>解决方法是，为Activities和Fragments定义一个基类。然后你就能同时使用RoboGuice和ActionBarSherlock了。</p>
-<p>你可以在这里下载一些基类：<br><a href="https://github.com/rtyley/roboguice-sherlock" target="_blank" rel="external">https://github.com/rtyley/roboguice-sherlock</a> 或者下载JAR包也是一样：RoboGuice+Sherlock.jar，你可以任选一个添加到你的项目。</p>
-<p>在Android应用程序中，我想我已经做了所有关于RoboGuice用法及好处的研究。如过有什么遗漏，请联系我。在接下来的文章，我会研究其他的函数库好让你成为一个既能偷懒又高效的Android开发人员。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>Android程序员不情愿写 findViewById()、点击事件监听等重复率较高的代码。那我们如何才能缩短编写业务逻辑代码的时间，并且避免写那些重复的代码呢？所以让我们来成为一个能偷懒又有高效率的Android程序员。想知道怎么做吗？不用急，接下来我就会写到。<br>]]>
-    
-    </summary>
-    
-      <category term="Android开发" scheme="http://science09.github.io/tags/Android%E5%BC%80%E5%8F%91/"/>
-    
-      <category term="Android" scheme="http://science09.github.io/categories/Android/"/>
     
   </entry>
   
