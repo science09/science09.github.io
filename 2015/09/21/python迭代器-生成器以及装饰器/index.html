@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>python迭代器,生成器以及装饰器 | 彼岸-未来的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="迭代器在Python中，对于string、list、dict、tuple等这类容器对象，使用for循环遍历是很方便的。在后台for语句对容器对象调用iter()函数，iter()是python的内置函数。iter()会返回一个定义了next()方法的迭代器对象，它在容器中逐个访问容器内元素，next()也是python的内置函数。在没有后续元素时，next()会抛出一个StopIteration异">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python迭代器,生成器以及装饰器">
+<meta property="og:url" content="http://science09.github.io/2015/09/21/python迭代器-生成器以及装饰器/index.html">
+<meta property="og:site_name" content="彼岸-未来的博客">
+<meta property="og:description" content="迭代器在Python中，对于string、list、dict、tuple等这类容器对象，使用for循环遍历是很方便的。在后台for语句对容器对象调用iter()函数，iter()是python的内置函数。iter()会返回一个定义了next()方法的迭代器对象，它在容器中逐个访问容器内元素，next()也是python的内置函数。在没有后续元素时，next()会抛出一个StopIteration异">
+<meta property="og:updated_time" content="2015-09-21T14:59:47.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python迭代器,生成器以及装饰器">
+<meta name="twitter:description" content="迭代器在Python中，对于string、list、dict、tuple等这类容器对象，使用for循环遍历是很方便的。在后台for语句对容器对象调用iter()函数，iter()是python的内置函数。iter()会返回一个定义了next()方法的迭代器对象，它在容器中逐个访问容器内元素，next()也是python的内置函数。在没有后续元素时，next()会抛出一个StopIteration异">
+  
+    <link rel="alternative" href="/atom.xml" title="彼岸-未来的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico" type="image/x-ico">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+<script type="text/javascript">
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?ae9c0d06cbefcb5fa4d7988f4c49cb6c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://tp2.sinaimg.cn/2445097485/180/5736689505/1" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">science09</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">一分耕耘一分收获</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/science09" title="github">github</a>
+					        
+								<a class="weibo" target="_blank" href="http://weibo.com/u/2445097485" title="weibo">weibo</a>
+					        
+								<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+					        
+								<a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/Android库/" style="font-size: 10px;">Android库</a> <a href="/tags/Android开发/" style="font-size: 10px;">Android开发</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Express/" style="font-size: 10px;">Express</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/Intent/" style="font-size: 10px;">Intent</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Markdown/" style="font-size: 10px;">Markdown</a> <a href="/tags/Material/" style="font-size: 10px;">Material</a> <a href="/tags/MongoDB/" style="font-size: 10px;">MongoDB</a> <a href="/tags/Node-js/" style="font-size: 15px;">Node.js</a> <a href="/tags/Parcelable/" style="font-size: 10px;">Parcelable</a> <a href="/tags/Volley/" style="font-size: 10px;">Volley</a> <a href="/tags/WordPress/" style="font-size: 10px;">WordPress</a> <a href="/tags/XMLRequest/" style="font-size: 10px;">XMLRequest</a> <a href="/tags/XML解析/" style="font-size: 10px;">XML解析</a> <a href="/tags/app/" style="font-size: 10px;">app</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/ionic/" style="font-size: 10px;">ionic</a> <a href="/tags/java/" style="font-size: 10px;">java</a> <a href="/tags/python/" style="font-size: 15px;">python</a> <a href="/tags/swift/" style="font-size: 10px;">swift</a> <a href="/tags/web/" style="font-size: 10px;">web</a> <a href="/tags/webview/" style="font-size: 10px;">webview</a> <a href="/tags/免费域名/" style="font-size: 10px;">免费域名</a> <a href="/tags/内存泄露/" style="font-size: 10px;">内存泄露</a> <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a> <a href="/tags/前端框架/" style="font-size: 10px;">前端框架</a> <a href="/tags/博客/" style="font-size: 10px;">博客</a> <a href="/tags/反编译/" style="font-size: 10px;">反编译</a> <a href="/tags/开发/" style="font-size: 10px;">开发</a> <a href="/tags/性能优化/" style="font-size: 10px;">性能优化</a> <a href="/tags/攻击/" style="font-size: 10px;">攻击</a> <a href="/tags/缓冲区溢出/" style="font-size: 10px;">缓冲区溢出</a> <a href="/tags/设计模式/" style="font-size: 10px;">设计模式</a> <a href="/tags/邮件/" style="font-size: 10px;">邮件</a> <a href="/tags/面试/" style="font-size: 15px;">面试</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">我就是我，不一样的烟火!</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">science09</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://tp2.sinaimg.cn/2445097485/180/5736689505/1" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">science09</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">一分耕耘一分收获</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/science09" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://weibo.com/u/2445097485" title="weibo">weibo</a>
+			        
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+			        
+						<a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-python迭代器-生成器以及装饰器" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/21/python迭代器-生成器以及装饰器/" class="article-date">
+  	<time datetime="2015-09-21T14:55:41.000Z" itemprop="datePublished">2015-09-21</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      python迭代器,生成器以及装饰器
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/python/">python</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="迭代器">迭代器</h3><p>在Python中，对于string、list、dict、tuple等这类容器对象，使用for循环遍历是很方便的。在后台for语句对容器对象调用iter()函数，iter()是python的内置函数。iter()会返回一个定义了next()方法的迭代器对象，它在容器中逐个访问容器内元素，next()也是python的内置函数。在没有后续元素时，next()会抛出一个StopIteration异常，通知for语句循环结束。<br><a id="more"></a><br>例如：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="prompt">&gt;&gt;&gt; </span>s = <span class="string">'abc'</span></span><br><span class="line"><span class="prompt">&gt;&gt;&gt; </span>it = iter(s)</span><br><span class="line"><span class="prompt">&gt;&gt;&gt; </span>it</span><br><span class="line">&lt;iterator object at <span class="number">0x01B450B0</span>&gt;</span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line"><span class="prompt">&gt;&gt;&gt; </span>it.next()</span><br><span class="line"><span class="string">'a'</span></span><br><span class="line"><span class="prompt">&gt;&gt;&gt; </span>it.next()</span><br><span class="line"><span class="string">'b'</span></span><br><span class="line"><span class="prompt">&gt;&gt;&gt; </span>it.next()</span><br><span class="line"><span class="string">'c'</span></span><br><span class="line"><span class="prompt">&gt;&gt;&gt; </span>it.next()</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"&lt;stdin&gt;"</span>, line <span class="number">1</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">StopIteration</span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure></p>
+<p>那么，我们如何来实现一个迭代器呢？要在一个类中实现迭代器，只需实现一个<code>__iter__(self)</code>方法，使其返回一个带有<code>__next__(self)</code>方法的对象就可以了。如果你在一个类中刚好也定义了<code>__next__(self)</code>方法（一般使用迭代器都会定义），那在<code>__iter__</code>里只要返回<code>self</code>就可以。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Fib</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, max)</span>:</span></span><br><span class="line">        super(Fib, self).__init__()</span><br><span class="line">        self.max = max</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__iter__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.a = <span class="number">0</span></span><br><span class="line">        self.b = <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> self</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__next__</span><span class="params">(self)</span>:</span></span><br><span class="line">        fib = self.a</span><br><span class="line">        <span class="keyword">if</span> fib &gt; self.max:</span><br><span class="line">            <span class="keyword">raise</span> StopIteration</span><br><span class="line">        self.a, self.b = self.b, self.a + self.b</span><br><span class="line">        <span class="keyword">return</span> fib</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    fib = Fib(<span class="number">100</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> fib:</span><br><span class="line">        print(i)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<p>上述代码中，定义了一个Fib类，用于生成fibonacci序列。用for遍历时会逐个打印生成的fibonacci数，max是生成的fibonacci序列中数字大小的上限。</p>
+<p>在类的实现中，定义了一个<code>__iter__(self)</code>方法，这个方法是在遍历时被<code>iter()</code>调用，返回一个迭代器。因为在遍历的时候，是直接调用的python内置函数<code>iter()</code>，由<code>iter()</code>通过调用<code>__iter__(self)</code>获得对象的迭代器。有了迭代器，就可以逐个遍历元素了。而逐个遍历的时候，也是使用内置的<code>next()</code>函数通过调用对象的<code>__next__(self)</code>方法对迭代器对象进行遍历。所以要实现<code>__iter__(self)</code>和<code>__next__(self)</code>。而且因为实现了<code>__next__(self)</code>，所以在实现<code>__iter__(self)</code>的时候，直接返回<code>self</code>就可以。</p>
+<p>为了更好理解，我再简单重复下上面说的那一段：在循环遍历自定义容器对象时,会使用python内置函数<code>iter()</code>调用遍历对象的<code>__iter__(self)</code>获得一个迭代器,之后再循环对这个迭代器使用<code>next()</code>调用迭代器对象的<code>__next__(self)</code>。<code>__iter__</code>只会被调用一次,而<code>__next__</code>会被调用 n 次。</p>
+<h3 id="生成器">生成器</h3><p>生成器（Generator）是创建迭代器的简单而强大的工具。它们写起来就像是正规的函数，只是在需要返回数据的时候使用yield语句。每次next()被调用时，生成器会返回它脱离的位置（它记忆语句最后一次执行的位置和所有的数据值）。以下示例演示了生成器可以很简单的创建出来:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="prompt">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">reverse</span><span class="params">(data)</span>:</span></span><br><span class="line"><span class="prompt">... </span>    <span class="keyword">for</span> index <span class="keyword">in</span> range(len(data)-<span class="number">1</span>, -<span class="number">1</span>, -<span class="number">1</span>):</span><br><span class="line"><span class="prompt">... </span>        <span class="keyword">yield</span> data[index]</span><br><span class="line"><span class="prompt">... </span></span><br><span class="line"><span class="prompt">&gt;&gt;&gt; </span><span class="keyword">for</span> char <span class="keyword">in</span> reverse(<span class="string">'hello'</span>):</span><br><span class="line"><span class="prompt">... </span>    print(char)</span><br><span class="line"><span class="prompt">... </span></span><br><span class="line">o</span><br><span class="line">l</span><br><span class="line">l</span><br><span class="line">e</span><br><span class="line">h</span><br></pre></td></tr></table></figure></p>
+<p>关于迭代器和生成器的区别，生成器能做到迭代器能做的所有事,而且因为自动创建了<code>__iter__()</code>和 <code>next()</code>方法,生成器显得特别简洁,而且生成器也是高效的。除了创建和保存程序状态的自动方法,当发生器终结时,还会自动抛出<code>StopIteration</code>异常。一个带有yield的函数就是一个 生成器,它和普通函数不同,生成一个 generator 看起来像函数调用,但不会执行任何函数代码,直到对其调用<code>next()</code>(在 for 循环中会自动调用<code>next()</code>)才开始执行。虽然执行流程仍按函数的流程执行,但每执行到一个yield语句就会中断,并返回一个迭代值,下次执行时从yield的下一个语句继续执行。看起来就好像一个函数在正常执行的过程中被yield中断了数次,每次中断都会通过yield返回当前的迭代值（<code>yield</code>暂停一个函数，<code>next()</code>从其暂停处恢复其运行）。</p>
+<p>另外对于生成器，python还提供了一个生成器表达式：类似与一个yield值的匿名函数。表达式本身看起来像列表推到, 但不是用方括号而是用圆括号包围起来：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="prompt">&gt;&gt;&gt; </span>unique_characters = &#123;<span class="string">'E'</span>, <span class="string">'D'</span>, <span class="string">'M'</span>, <span class="string">'O'</span>, <span class="string">'N'</span>, <span class="string">'S'</span>, <span class="string">'R'</span>, <span class="string">'Y'</span>&#125;</span><br><span class="line"><span class="prompt">&gt;&gt;&gt; </span>gen = (ord(c) <span class="keyword">for</span> c <span class="keyword">in</span> unique_characters)</span><br><span class="line"><span class="prompt">&gt;&gt;&gt; </span>gen</span><br><span class="line">&lt;generator object &lt;genexpr&gt; at <span class="number">0x7f2be4668678</span>&gt;</span><br><span class="line"><span class="prompt">&gt;&gt;&gt; </span><span class="keyword">for</span> i <span class="keyword">in</span> gen:</span><br><span class="line"><span class="prompt">... </span>    print(i)</span><br><span class="line">...</span><br><span class="line"><span class="number">69</span></span><br><span class="line"><span class="number">79</span></span><br><span class="line"><span class="number">83</span></span><br><span class="line"><span class="number">77</span></span><br><span class="line"><span class="number">82</span></span><br><span class="line"><span class="number">78</span></span><br><span class="line"><span class="number">89</span></span><br><span class="line"><span class="number">68</span></span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
+<p>如果需要，可以将生成器表达式传给tuple、list或是set来迭代所有的值并且返回元组、列表或是集合。在这种情况下，不需要一对额外的括号 ———— 直接将生成器表达式 <code>ord(c) for c in unique_characters</code>传给<code>tuple()</code>等函数就可以了, Python 会推断出它是一个生成器表达式。</p>
+<p>为什么使用生成器，因为效率。使用生成器表达式取代列表解析可以同时节省 cpu 和 内存(ram)。如果你构造一个列表的目的仅仅是传递给别的函数,(比如 传递给<code>tuple()</code>或者<code>set()</code>), 那就用生成器表达式替代吧!</p>
+<h3 id="装饰器">装饰器</h3><p>装饰器的语法以@开头，接着是装饰器函数的名字、可选参数。紧跟装饰器声明的是被装饰的函数和被装饰的函数的可选参数，如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="decorator">@decorator(dec_opt_args)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func</span><span class="params">(func_args)</span>:</span></span><br><span class="line">  ....</span><br></pre></td></tr></table></figure>
+<p>装饰器是一个很著名的设计模式，经常被用于有切面需求的场景，较为经典的有插入日志、性能测试、事务处理等。装饰器是解决这类问题的绝佳设计，有了装饰器，我们就可以抽离出大量函数中与函数功能本身无关的雷同代码并继续重用。概括的讲，装饰器的作用就是为已经存在的对象添加额外的功能。</p>
+<p>先看一个简单的例子，定义一个求 <code>a</code> 和 <code>b</code> 平方和的例子，如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#求矩形的面积</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">area</span><span class="params">(a, b)</span>:</span></span><br><span class="line">    sum = a**<span class="number">2</span> + b**<span class="number">2</span></span><br><span class="line">	<span class="keyword">return</span> sum</span><br></pre></td></tr></table></figure></p>
+<p>为了测量这个函数的执行时间，我们可能在函数开始执行先插入一段计时代码，在函数结束前再插入一段代码，如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">area</span><span class="params">(a, b)</span>:</span></span><br><span class="line">    start = time.clock()</span><br><span class="line">    sum = a**<span class="number">2</span> + b**<span class="number">2</span></span><br><span class="line">    end = time.clock()</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'elapsed time:'</span>, end - start</span><br><span class="line">    <span class="keyword">return</span> sum</span><br></pre></td></tr></table></figure></p>
+<p>函数在Python中是一等公民，那么我们可以考虑重新定义一个函数timeit，将foo的引用传递给他，然后在timeit中调用foo并进行计时，这样，我们就达到了不改动foo定义的目的，而且，不论B君看了多少个函数，我们都不用去修改函数定义了！</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">area</span><span class="params">(a, b)</span>:</span></span><br><span class="line">    sum = a**<span class="number">2</span> + b**<span class="number">2</span></span><br><span class="line">    <span class="keyword">return</span> sum</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">timeie</span><span class="params">(func)</span>:</span></span><br><span class="line">    start = time.clock()</span><br><span class="line">    func()</span><br><span class="line">    end = time.clock()</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'elapsed time:'</span>, end - start</span><br><span class="line"></span><br><span class="line">timeit(area)</span><br></pre></td></tr></table></figure>
+<p>看起来逻辑上并没有问题，一切都很美好并且运作正常！……等等，我们似乎修改了调用部分的代码。原本我们是这样调用的：<code>foo()</code>，修改以后变成了：<code>timeit(foo)</code>。这样的话，如果foo在N处都被调用了，你就不得不去修改这N处的代码。或者更极端的，考虑其中某处调用的代码无法修改这个情况，比如：这个函数是你交给别人使用的。</p>
+<p>接下来，我们使用python支持的装饰器语法，来实现一个装饰器：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">timeit</span><span class="params">(func)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">()</span>:</span></span><br><span class="line">        start = time.clock()</span><br><span class="line">        func()</span><br><span class="line">        end = time.clock()</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'elapsed time:'</span>, end - start</span><br><span class="line">    <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line"><span class="decorator">@timeit</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">area</span><span class="params">(a, b)</span>:</span></span><br><span class="line">    sum = a**<span class="number">2</span> + b**<span class="number">2</span></span><br><span class="line">    <span class="keyword">return</span> sum</span><br><span class="line"></span><br><span class="line">area(<span class="number">3</span>, <span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+<p>重点关注@timeit，在定义上加上这一行与另外写foo = timeit(foo)完全等价，千万不要以为@有另外的魔力。除了字符输入少了一些，还有一个额外的好处：这样看上去更有装饰器的感觉。</p>
+<p><strong>内置的装饰器</strong></p>
+<p>内置的装饰器有三个，分别是<code>staticmethod</code>、<code>classmethod</code>和<code>property</code>，作用分别是把类中定义的实例方法变成静态方法、类方法和类属性。由于模块里可以定义函数，所以静态方法和类方法的用处并不是太多，除非你想要完全的面向对象编程。而属性也不是不可或缺的，Java没有属性也一样活得很滋润。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Rabbit</span><span class="params">(object)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, name)</span>:</span></span><br><span class="line">        self._name = name</span><br><span class="line"></span><br><span class="line"><span class="decorator">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">newRabbit</span><span class="params">(name)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> Rabbit(name)</span><br><span class="line"></span><br><span class="line"><span class="decorator">    @classmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">newRabbit2</span><span class="params">(cls)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> Rabbit(<span class="string">''</span>)</span><br><span class="line"></span><br><span class="line"><span class="decorator">    @property</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">name</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self._name</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/09/17/python开发者需要知道的服务器知识/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">python开发者需要知道的服务器知识</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="python迭代器-生成器以及装饰器" data-title="python迭代器,生成器以及装饰器" data-url="http://science09.github.io/2015/09/21/python迭代器-生成器以及装饰器/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 science09
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
