@@ -4,7 +4,7 @@
   <subtitle><![CDATA[一分耕耘一分收获]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://science09.github.io/"/>
-  <updated>2015-09-26T07:30:45.000Z</updated>
+  <updated>2015-09-26T07:30:46.000Z</updated>
   <id>http://science09.github.io/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://science09.github.io/2015/09/26/gevent%E6%8A%98%E8%85%BE%E8%AE%B0/"/>
     <id>http://science09.github.io/2015/09/26/gevent折腾记/</id>
     <published>2015-09-26T06:49:38.000Z</published>
-    <updated>2015-09-26T07:30:45.000Z</updated>
+    <updated>2015-09-26T07:30:46.000Z</updated>
     <content type="html"><![CDATA[<p>搜了一下gevent在windows上的安装，没法直接通过 <code>pip install gevent</code> 或 <code>easy_install</code> 的方式来安装，必须经过源代码的方式来安装。<br><a id="more"></a></p>
 <h3 id="1-_下载源码包">1. 下载源码包</h3><p>   可通过 <code>wget  http://pypi.python.org/packages/source/g/gevent/gevent-0.13.8.tar.gz</code>方式下载，也可以直接在浏览器地址栏输入 <code>http://pypi.python.org/packages/source/g/gevent/gevent-0.13.8.tar.gz</code> 即可。</p>
 <h3 id="2-_解压">2. 解压</h3><p>  如果有tar命令(安装了cygwin环境)，可以用 <code>tar zxvf gevent-0.13.8.tar.gz</code> 进行解压缩; 也可以直接用windows的解压缩工具解压。</p>
