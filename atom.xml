@@ -4,7 +4,7 @@
   <subtitle><![CDATA[一分耕耘一分收获]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://science09.github.io/"/>
-  <updated>2015-09-26T07:30:46.000Z</updated>
+  <updated>2016-03-27T09:07:47.545Z</updated>
   <id>http://science09.github.io/</id>
   
   <author>
@@ -15,11 +15,69 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[MacOS安装Docker工具箱指南]]></title>
+    <link href="http://science09.github.io/2016/03/27/MacOS%E5%AE%89%E8%A3%85Docker%E5%B7%A5%E5%85%B7%E7%AE%B1%E6%8C%87%E5%8D%97/"/>
+    <id>http://science09.github.io/2016/03/27/MacOS安装Docker工具箱指南/</id>
+    <published>2016-03-27T09:05:38.000Z</published>
+    <updated>2016-03-27T09:07:47.545Z</updated>
+    <content type="html"><![CDATA[<p>之前在MacOS上使用Docker是通过安装Boot2Docker，近期，Docker团队推出了Mac版和Windows版的Docker工具箱，该工具箱包含了以下内容：</p>
+<a id="more"></a>
+<ul>
+<li>Docker命令行客户端，通过运行Docker引擎来创建映像和容器；</li>
+<li>Docker Machine，使得可以从MacOS的终端来运行Docker引擎的命令</li>
+<li>Docker Compose，用来运行docker-compose命令；</li>
+<li>Kitematic, the Docker GUI</li>
+<li>一个预先配置好的Docker命令行环境的快速启动Shell；</li>
+<li>Oracle 的VirtualBox虚拟机；</li>
+</ul>
+<p>由于Docker 引擎的守护进程使用了一些Linux特有的内核特性，所以你并不能直接在本独OSX环境下直接运行Docker引擎。必须借助虚拟机，通过在本独创建一个Linxu虚拟机，通过Docker-machine的命令来连接Linux虚拟机。Linux虚拟机上运行Docker引擎来为你本地的Mac环境提供Docker服务。</p>
+<h3 id="1-检查环境">1.检查环境</h3><p>先确定下你的Mac环境，你的环境必须是OS X 10.8 “Mountain Lion”或者更高的版本方可运行Docker软件。</p>
+<ol>
+<li>你可以通过左上角的Mac图标-&gt; 关于本机 ，查看到当前的OS X版本信息：</li>
+</ol>
+<p><img src="http://7ktvvq.com1.z0.glb.clouddn.com/OSX_Version.png" alt="OS X版本信息"></p>
+<ol>
+<li>如果你的OS X版本符合要求，那么可以继续往下。如果你的版本过低，可以考虑先升级的操作系统版本； </li>
+</ol>
+<h3 id="2-安装Docker工具箱">2.安装Docker工具箱</h3><ol>
+<li><p>Docker工具箱下载<br>Docker工具箱的下载可以从Docker的<a href="https://www.docker.com/products/docker-toolbox#/overview" target="_blank" rel="external">官方网站</a>下载，从官网上下载Docker需要翻墙，请自备梯子。为了国内朋友下载方便，我把Docker工具箱上传到百度云，请<a href="https://pan.baidu.com/s/1o89urzG" target="_blank" rel="external">点击这里下载</a>。</p>
+</li>
+<li><p>安装过程比较简单，只要跟着提示一步一步往下走就可以了。通过双击刚下载下来的<code>DockerToolbox-1.10.3.pkg</code>软件包来进行安装。双击之后就会弹出对话框，<br><img src="http://7ktvvq.com1.z0.glb.clouddn.com/Docker_install_1.png" alt="Docker安装启动"></p>
+</li>
+</ol>
+<p>点击继续，<br><img src="http://7ktvvq.com1.z0.glb.clouddn.com/Docker_install_2.png" alt="Docker工具箱概览"><br>Docker工具箱所包含: Dokcer客户端，DockerMachine，DockerCompose，Kitmatic，快速启动终端，以及该软件将被安装到<code>/usr/local/bin</code>目录下，点击继续进行下一步，</p>
+<p><img src="http://7ktvvq.com1.z0.glb.clouddn.com/Docker_install_3.png" alt="安装类型"><br>这一步显示将占用的磁盘空间，可以点击<code>更改安装位置</code>进行自定义安装，如果默认点击安装即可。</p>
+<p><img src="http://7ktvvq.com1.z0.glb.clouddn.com/Docker_install_4.png" alt="输入密码提示"><br>点击安装之后就会提示输入密码，输入本机的密码后，点击 安装软件，</p>
+<p><img src="http://7ktvvq.com1.z0.glb.clouddn.com/Docker_install_5.png" alt="安装Docker工具箱"><br>点击安装软件后，开始进行安装，经过几分钟，安装结束后即弹出如下的QuickStart对话框；</p>
+<p><img src="http://7ktvvq.com1.z0.glb.clouddn.com/Docker_install_6.png" alt="快速启动工具选择"><br>你可以选择两个中的其中一个，也可以不选择，直接点击 继续；</p>
+<p><img src="http://7ktvvq.com1.z0.glb.clouddn.com/Docker_install_7.png" alt="安装完成"><br>安装成功，点击关闭即完成安装。</p>
+<h3 id="3-验证安装是否正确">3.验证安装是否正确</h3><p> 1.点击 <code>LaunchPad</code>，定位到Docker Quickstart Terminal的图标，<br><img src="http://7ktvvq.com1.z0.glb.clouddn.com/applications_folder.png" alt="此处输入图片的描述"></p>
+<p> 2.点击图标启动Docker 快速启动终端窗口。终端启动之后，会进行一系列的操作,包括创建虚拟机，启动Docker守护进程，进行一些初始化配置；<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">bash <span class="comment">--login '/Applications/Docker/Docker Quickstart Terminal.app/Contents/Resources/Scripts/start.sh'</span></span><br><span class="line">Last login: Thu Mar 17 20:34:33 on ttys003</span><br><span class="line">appledeiMac:~ apple$ bash <span class="comment">--login '/Applications/Docker/Docker Quickstart Terminal.app/Contents/Resources/Scripts/start.sh'</span></span><br><span class="line">Creating CA: /Users/apple/.docker/machine/certs/ca.pem</span><br><span class="line">Creating client certificate: /Users/apple/.docker/machine/certs/cert.pem</span><br><span class="line">Running pre-<span class="operator"><span class="keyword">create</span> checks...</span><br><span class="line">Creating machine...</span><br><span class="line">(<span class="keyword">default</span>) Copying /<span class="keyword">Users</span>/apple/.docker/machine/<span class="keyword">cache</span>/boot2docker.iso <span class="keyword">to</span> /<span class="keyword">Users</span>/apple/.docker/machine/machines/<span class="keyword">default</span>/boot2docker.iso...</span><br><span class="line">(<span class="keyword">default</span>) Creating VirtualBox VM...</span><br><span class="line">(<span class="keyword">default</span>) Creating SSH <span class="keyword">key</span>...</span><br><span class="line">(<span class="keyword">default</span>) <span class="keyword">Starting</span> the VM...</span><br><span class="line">(<span class="keyword">default</span>) <span class="keyword">Check</span> network <span class="keyword">to</span> re-<span class="keyword">create</span> <span class="keyword">if</span> needed...</span><br><span class="line">(<span class="keyword">default</span>) <span class="keyword">Found</span> a <span class="keyword">new</span> host-<span class="keyword">only</span> adapter: <span class="string">"vboxnet0"</span></span><br><span class="line">(<span class="keyword">default</span>) Waiting <span class="keyword">for</span> an IP...</span><br><span class="line">Waiting <span class="keyword">for</span> machine <span class="keyword">to</span> be running, this may take a few minutes...</span><br><span class="line">Detecting operating <span class="keyword">system</span> <span class="keyword">of</span> created <span class="keyword">instance</span>...</span><br><span class="line">Waiting <span class="keyword">for</span> SSH <span class="keyword">to</span> be available...</span><br><span class="line">Detecting the provisioner...</span><br><span class="line">Provisioning <span class="keyword">with</span> boot2docker...</span><br><span class="line">Copying certs <span class="keyword">to</span> the <span class="keyword">local</span> machine <span class="keyword">directory</span>...</span><br><span class="line">Copying certs <span class="keyword">to</span> the remote machine...</span><br><span class="line">Setting Docker configuration <span class="keyword">on</span> the remote daemon...</span><br><span class="line">Checking <span class="keyword">connection</span> <span class="keyword">to</span> Docker...</span><br><span class="line">Docker <span class="keyword">is</span> up <span class="keyword">and</span> running!</span><br><span class="line"><span class="keyword">To</span> see how <span class="keyword">to</span> <span class="keyword">connect</span> your Docker <span class="keyword">Client</span> <span class="keyword">to</span> the Docker <span class="keyword">Engine</span> running <span class="keyword">on</span> this <span class="keyword">virtual</span> machine, run: /usr/<span class="keyword">local</span>/<span class="keyword">bin</span>/docker-machine env <span class="keyword">default</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                        ##         .</span><br><span class="line">                  ## ## ##        ==</span><br><span class="line">               ## ## ## ## ##    ===</span><br><span class="line">           /<span class="string">"""""""""""""""""\___/ ===</span><br><span class="line">      ~~~ &#123;~~ ~~~~ ~~~ ~~~~ ~~~ ~ /  ===- ~~~</span><br><span class="line">           \______ o           __/</span><br><span class="line">             \    \         __/</span><br><span class="line">              \____\_______/</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">docker is configured to use the default machine with IP 192.168.99.100</span><br><span class="line">For help getting started, check out the docs at https://docs.docker.com</span></span></span><br></pre></td></tr></table></figure></p>
+<p>3.鼠标点击到Docker的快速启动窗口，在命令行中敲入<code>docker version</code>即可看到当前的Docker版本信息；<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">appledeiMac:~ apple$ docker version</span><br><span class="line">Client:</span><br><span class="line"> Version:      <span class="number">1.10</span><span class="number">.3</span></span><br><span class="line"> API version:  <span class="number">1.22</span></span><br><span class="line"> Go version:   go1<span class="number">.5</span><span class="number">.3</span></span><br><span class="line"> Git commit:   <span class="number">20f</span>81dd</span><br><span class="line"> Built:        Thu Mar <span class="number">10</span> <span class="number">21</span>:<span class="number">49</span>:<span class="number">11</span> <span class="number">2016</span></span><br><span class="line"> OS/Arch:      darwin/amd64</span><br><span class="line"></span><br><span class="line">Server:</span><br><span class="line"> Version:      <span class="number">1.10</span><span class="number">.3</span></span><br><span class="line"> API version:  <span class="number">1.22</span></span><br><span class="line"> Go version:   go1<span class="number">.5</span><span class="number">.3</span></span><br><span class="line"> Git commit:   <span class="number">20f</span>81dd</span><br><span class="line"> Built:        Thu Mar <span class="number">10</span> <span class="number">21</span>:<span class="number">49</span>:<span class="number">11</span> <span class="number">2016</span></span><br><span class="line"> OS/Arch:      linux/amd64</span><br></pre></td></tr></table></figure></p>
+<p>4.接着来运行官方的helloworld程序，在命令行中输入 <code>docker run hello-world</code>, 如果碰到网络问题，有可能会出现以下的情况：<br><figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">appledeiMac:~ apple$ docker run hello-world</span><br><span class="line">Unable <span class="built_in">to</span> find image <span class="string">'hello-world:latest'</span> locally</span><br><span class="line">docker: Error response <span class="built_in">from</span> daemon: Get <span class="keyword">https</span>://registry-<span class="number">1.</span>docker.io/v2/library/hello-world/manifests/latest: Get <span class="keyword">https</span>://auth.docker.io/<span class="keyword">token</span>?scope=repository%<span class="number">3</span>Alibrary%<span class="number">2</span>Fhello-world%<span class="number">3</span>Apull&amp;service=registry.docker.io: net/<span class="keyword">http</span>: request canceled <span class="keyword">while</span> waiting <span class="keyword">for</span> connection (Client.Timeout exceeded <span class="keyword">while</span> awaiting headers).</span><br></pre></td></tr></table></figure></p>
+<p>碰到上述的问题，有可能是网络不稳定导致的，多试几次，在我的网络环境下，试了三次才成功的从DockerHub上拉取到hello-world的image。</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">appledeiMac:~ apple$ docker run hello-world</span><br><span class="line">Unable <span class="built_in">to</span> find image <span class="string">'hello-world:latest'</span> locally</span><br><span class="line">latest: Pulling <span class="built_in">from</span> library/hello-world</span><br><span class="line"><span class="number">03</span>f4658f8b78: Pull complete </span><br><span class="line">a3ed95caeb02: Pull complete </span><br><span class="line">Digest: sha256:<span class="number">8</span>be990ef2aeb16dbcb9271ddfe2610fa6658d13f6dfb8bc72074cc1ca36966a7</span><br><span class="line">Status: Downloaded newer image <span class="keyword">for</span> hello-world:latest</span><br><span class="line"></span><br><span class="line">Hello <span class="built_in">from</span> Docker.</span><br><span class="line">This message shows that your installation appears <span class="built_in">to</span> be working correctly.</span><br><span class="line"></span><br><span class="line">To generate this message, Docker took <span class="operator">the</span> following steps:</span><br><span class="line"> <span class="number">1.</span> The Docker client contacted <span class="operator">the</span> Docker daemon.</span><br><span class="line"> <span class="number">2.</span> The Docker daemon pulled <span class="operator">the</span> <span class="string">"hello-world"</span> image <span class="built_in">from</span> <span class="operator">the</span> Docker Hub.</span><br><span class="line"> <span class="number">3.</span> The Docker daemon created <span class="operator">a</span> <span class="built_in">new</span> container <span class="built_in">from</span> that image which runs <span class="operator">the</span></span><br><span class="line">    executable that produces <span class="operator">the</span> output you are currently reading.</span><br><span class="line"> <span class="number">4.</span> The Docker daemon streamed that output <span class="built_in">to</span> <span class="operator">the</span> Docker client, which sent <span class="keyword">it</span></span><br><span class="line">    <span class="built_in">to</span> your terminal.</span><br><span class="line"></span><br><span class="line">To <span class="keyword">try</span> something more ambitious, you can run <span class="operator">an</span> Ubuntu container <span class="operator">with</span>:</span><br><span class="line"> $ docker run -<span class="keyword">it</span> ubuntu bash</span><br><span class="line"></span><br><span class="line">Share images, automate workflows, <span class="operator">and</span> more <span class="operator">with</span> <span class="operator">a</span> free Docker Hub account:</span><br><span class="line"> <span class="keyword">https</span>://hub.docker.com</span><br><span class="line"></span><br><span class="line">For more examples <span class="operator">and</span> ideas, visit:</span><br><span class="line"> <span class="keyword">https</span>://docs.docker.com/userguide/</span><br></pre></td></tr></table></figure>
+<p>到这一步，Docker的安装就算成功了，可以开启Docker的愉快之旅了，更多好玩的功能等你来探索！</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>之前在MacOS上使用Docker是通过安装Boot2Docker，近期，Docker团队推出了Mac版和Windows版的Docker工具箱，该工具箱包含了以下内容：</p>]]>
+    
+    </summary>
+    
+      <category term="Docker" scheme="http://science09.github.io/tags/Docker/"/>
+    
+      <category term="Mac" scheme="http://science09.github.io/tags/Mac/"/>
+    
+      <category term="Docker" scheme="http://science09.github.io/categories/Docker/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[gevent折腾记]]></title>
     <link href="http://science09.github.io/2015/09/26/gevent%E6%8A%98%E8%85%BE%E8%AE%B0/"/>
     <id>http://science09.github.io/2015/09/26/gevent折腾记/</id>
     <published>2015-09-26T06:49:38.000Z</published>
-    <updated>2015-09-26T07:30:46.000Z</updated>
+    <updated>2015-09-26T07:30:46.206Z</updated>
     <content type="html"><![CDATA[<p>搜了一下gevent在windows上的安装，没法直接通过 <code>pip install gevent</code> 或 <code>easy_install</code> 的方式来安装，必须经过源代码的方式来安装。<br><a id="more"></a></p>
 <h3 id="1-_下载源码包">1. 下载源码包</h3><p>   可通过 <code>wget  http://pypi.python.org/packages/source/g/gevent/gevent-0.13.8.tar.gz</code>方式下载，也可以直接在浏览器地址栏输入 <code>http://pypi.python.org/packages/source/g/gevent/gevent-0.13.8.tar.gz</code> 即可。</p>
 <h3 id="2-_解压">2. 解压</h3><p>  如果有tar命令(安装了cygwin环境)，可以用 <code>tar zxvf gevent-0.13.8.tar.gz</code> 进行解压缩; 也可以直接用windows的解压缩工具解压。</p>
@@ -49,7 +107,7 @@ ibevent-1.4.14b-stable.tar.gz</code> 这个路径下载的libvent，直接复制
     <link href="http://science09.github.io/2015/09/21/python%E8%BF%AD%E4%BB%A3%E5%99%A8-%E7%94%9F%E6%88%90%E5%99%A8%E4%BB%A5%E5%8F%8A%E8%A3%85%E9%A5%B0%E5%99%A8/"/>
     <id>http://science09.github.io/2015/09/21/python迭代器-生成器以及装饰器/</id>
     <published>2015-09-21T14:55:41.000Z</published>
-    <updated>2015-09-21T14:59:47.000Z</updated>
+    <updated>2015-09-21T14:59:47.763Z</updated>
     <content type="html"><![CDATA[<h3 id="迭代器">迭代器</h3><p>在Python中，对于string、list、dict、tuple等这类容器对象，使用for循环遍历是很方便的。在后台for语句对容器对象调用iter()函数，iter()是python的内置函数。iter()会返回一个定义了next()方法的迭代器对象，它在容器中逐个访问容器内元素，next()也是python的内置函数。在没有后续元素时，next()会抛出一个StopIteration异常，通知for语句循环结束。<br><a id="more"></a><br>例如：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="prompt">&gt;&gt;&gt; </span>s = <span class="string">'abc'</span></span><br><span class="line"><span class="prompt">&gt;&gt;&gt; </span>it = iter(s)</span><br><span class="line"><span class="prompt">&gt;&gt;&gt; </span>it</span><br><span class="line">&lt;iterator object at <span class="number">0x01B450B0</span>&gt;</span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line"><span class="prompt">&gt;&gt;&gt; </span>it.next()</span><br><span class="line"><span class="string">'a'</span></span><br><span class="line"><span class="prompt">&gt;&gt;&gt; </span>it.next()</span><br><span class="line"><span class="string">'b'</span></span><br><span class="line"><span class="prompt">&gt;&gt;&gt; </span>it.next()</span><br><span class="line"><span class="string">'c'</span></span><br><span class="line"><span class="prompt">&gt;&gt;&gt; </span>it.next()</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"&lt;stdin&gt;"</span>, line <span class="number">1</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">StopIteration</span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure></p>
 <p>那么，我们如何来实现一个迭代器呢？要在一个类中实现迭代器，只需实现一个<code>__iter__(self)</code>方法，使其返回一个带有<code>__next__(self)</code>方法的对象就可以了。如果你在一个类中刚好也定义了<code>__next__(self)</code>方法（一般使用迭代器都会定义），那在<code>__iter__</code>里只要返回<code>self</code>就可以。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Fib</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, max)</span>:</span></span><br><span class="line">        super(Fib, self).__init__()</span><br><span class="line">        self.max = max</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__iter__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.a = <span class="number">0</span></span><br><span class="line">        self.b = <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> self</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__next__</span><span class="params">(self)</span>:</span></span><br><span class="line">        fib = self.a</span><br><span class="line">        <span class="keyword">if</span> fib &gt; self.max:</span><br><span class="line">            <span class="keyword">raise</span> StopIteration</span><br><span class="line">        self.a, self.b = self.b, self.a + self.b</span><br><span class="line">        <span class="keyword">return</span> fib</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    fib = Fib(<span class="number">100</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> fib:</span><br><span class="line">        print(i)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
@@ -92,7 +150,7 @@ ibevent-1.4.14b-stable.tar.gz</code> 这个路径下载的libvent，直接复制
     <link href="http://science09.github.io/2015/09/17/python%E5%BC%80%E5%8F%91%E8%80%85%E9%9C%80%E8%A6%81%E7%9F%A5%E9%81%93%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9F%A5%E8%AF%86/"/>
     <id>http://science09.github.io/2015/09/17/python开发者需要知道的服务器知识/</id>
     <published>2015-09-17T14:06:23.000Z</published>
-    <updated>2015-09-17T14:34:53.000Z</updated>
+    <updated>2015-09-17T14:34:53.886Z</updated>
     <content type="html"><![CDATA[<h3 id="HTTP:_统治万维网的协议">HTTP: 统治万维网的协议</h3><p>HTTP(超文本传输协议)是一种通信协议，它被用来发送和接收因特网上的网页以及其他数据文件。它是一套规则和相关参数的集合，这些规则和参数控制着网页和其他数据文件在因特网上的传输。<br><a id="more"></a><br>浏览器是一个HTTP客户端，因为它会发送请求到一个HTTP服务器（网页服务器），HTTP服务器随后把响应发送回客户端。HTTP监听的标准（和默认）端口是80端口，尽管其实可以使用任何的端口。如果你想要钻研一下HTTP，请查看<a href="http://www.w3.org/Protocols/rfc2616/rfc2616.html" target="_blank" rel="external">HTTP 1.1 specs</a> ，它已经被多种请求注解（RFCs(7230-7237)）所替代。你可以在ietf搜索这些请求注解。</p>
 <h3 id="HTTP_服务器">HTTP 服务器</h3><p>因此，HTTP请求和响应有其特定的格式！当用户进入某个网站的时候，他们的浏览器与站点的网页服务器进行了连接（这个过程称之为请求）。服务器在文件系统中查询文件，并将其发送回用户的浏览器，浏览器会显示这些文件（这个过程称之为响应）。这便是HTTP协议的工作方式。看上去很简单？</p>
 <p>动态网站并不基于文件系统中的文件，取而代之的是，当有请求到达的时候，由一个网站服务器上面运行的程序来处理。该程序会生成内容并将其返回给用户。它们可以做很多有用的事，比如显示BBS上的帖子，显示你的电子邮件，配置软件或是显示当前的时间。</p>
@@ -143,7 +201,7 @@ ibevent-1.4.14b-stable.tar.gz</code> 这个路径下载的libvent，直接复制
     <link href="http://science09.github.io/2015/05/13/9%E4%B8%AA%E7%9B%AE%E5%89%8D%E6%B5%81%E8%A1%8C%E7%9A%84Material-Design%E5%89%8D%E7%AB%AF%E6%A1%86%E6%9E%B6/"/>
     <id>http://science09.github.io/2015/05/13/9个目前流行的Material-Design前端框架/</id>
     <published>2015-05-13T15:48:41.000Z</published>
-    <updated>2015-09-10T14:16:37.000Z</updated>
+    <updated>2015-09-10T14:16:37.497Z</updated>
     <content type="html"><![CDATA[<p>谷歌推出的Material Design风格已见有一些APP UI采用，视觉和交互体验都很棒，对于想尝试这个风格但又不懂实现一些效果的前端设计师们，可以试试今天设计达人网为大家分享的9个目前流行的Material Design前端框架。</p>
 <a id="more"></a>
 <p>这些前端框架的设计元素齐全，按钮、表单、布局及常用JS特效代码也有齐了，支持Responsive Design，还有的可以结合Bootstrap使用，相当不错，下面来看看介绍，并挑选一款你喜欢的Framework来制作你的新项目吧。</p>
@@ -193,7 +251,7 @@ ibevent-1.4.14b-stable.tar.gz</code> 这个路径下载的libvent，直接复制
     <link href="http://science09.github.io/2015/02/02/Android%E9%9D%A2%E8%AF%95%E9%A2%98/"/>
     <id>http://science09.github.io/2015/02/02/Android面试题/</id>
     <published>2015-02-02T15:56:56.000Z</published>
-    <updated>2015-09-10T14:10:23.000Z</updated>
+    <updated>2015-09-10T14:10:23.253Z</updated>
     <content type="html"><![CDATA[<h3 id="1-_Android_ListView的优化">1. Android ListView的优化</h3><p> 1、使用Adapter提供的convertView<br>convertView是Adapter提供的视图缓存机制，当第一次显示数据的时候，adapter会创建n个（n等于页面可见的item的数目）convertView，当下次需要显示新的item的时候，adapter会循环利用这些已经创建的convertView，减少再次创建convertView所带来的开销，从而达到性能的提升。<br><a id="more"></a><br>2、使用自定义的视图缓存类<br>就是自定义一个视图缓存类，在这个类中保存我们在item中使用到的视图的引用，通过convertView的setTag方法和getTag方法来存储这个视图缓存类引用和重新获取这个视图缓存类引用，其目的也是为了减少重复创建视图时的开销。</p>
 <p>3、减少不必要的视图更新<br>ListView在滚动时会请求重新获取item，来显示不同内容的item，而如果在获取item时比较耗时就会造成在滚动时出现卡顿的现象。那我们可以通过监听ListView的滚动事件来使ListView处于不同的滚动状态时做不同的事情，比如在ListView处于滚动过程中加载少量的显示数据，当ListView处于空闲的状态时再加载所有的数据，这样就可以减少ListView在滚动过程中的开销，从而提供ListView的滚动速度。</p>
 <h3 id="2-_Activity的生命周期">2. Activity的生命周期</h3><p><img src="" alt=""></p>
@@ -234,7 +292,7 @@ ibevent-1.4.14b-stable.tar.gz</code> 这个路径下载的libvent，直接复制
     <link href="http://science09.github.io/2015/02/02/Java%E9%9D%A2%E8%AF%95%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/"/>
     <id>http://science09.github.io/2015/02/02/Java面试常见问题/</id>
     <published>2015-02-02T14:32:16.000Z</published>
-    <updated>2015-09-10T14:16:00.000Z</updated>
+    <updated>2015-09-10T14:16:00.804Z</updated>
     <content type="html"><![CDATA[<h3 id="1-_final,finally,finalize的区别?">1. final,finally,finalize的区别?</h3><p>final—修饰符（关键字）如果一个类被声明为final，意味着它不能再派生出新的子类，不能作为父类被继承。因此一个类不能既被声明为 abstract的，又被声明为final的。将变量或方法声明为final，可以保证它们在使用中不被改变。被声明为final的变量必须在声明时给定初值，而在以后的引用中只能读取，不可修改。被声明为final的方法也同样只能使用，不能重载。<br><a id="more"></a><br>finally—在异常处理时提供 finally 块来执行任何清除操作。如果抛出一个异常，那么相匹配的 catch 子句就会执行，然后控制就会进入 finally 块（如果有的话）。</p>
 <p>finalize—方法名。Java 技术允许使用 finalize() 方法在垃圾收集器将对象从内存中清除出去之前做必要的清理工作。这个方法是由垃圾收集器在确定这个对象没有被引用时对这个对象调用的。它是在 Object 类中定义的，因此所有的类都继承了它。子类覆盖 finalize() 方法以整理系统资源或者执行其他清理工作。finalize() 方法是在垃圾收集器删除对象之前对这个对象调用的。</p>
 <h3 id="2-_什么情况下你会使用ArrayList？什么时候你会选择LinkedList？">2. 什么情况下你会使用ArrayList？什么时候你会选择LinkedList？</h3><p>这又是一个大多数面试者都会困惑的问题。多数情况下，当你遇到访问元素比插入或者是删除元素更加频繁的时候，你应该使用ArrayList。另外一方面，当你在某个特别的索引中，插入或者是删除元素更加频繁，或者你压根就不需要访问元素的时候，你会选择LinkedList。这里的主要原因是，在ArrayList中访问元素的最糟糕的时间复杂度是”1″，而在LinkedList中可能就是”n”了。在ArrayList中增加或者删除某个元素，通常会调用System.arraycopy方法，这是一种极为消耗资源的操作，因此，在频繁的插入或者是删除元素的情况下，LinkedList的性能会更加好一点。</p>
@@ -285,7 +343,7 @@ ibevent-1.4.14b-stable.tar.gz</code> 这个路径下载的libvent，直接复制
     <link href="http://science09.github.io/2015/01/31/Android%E8%A7%A3%E6%9E%90XML%E6%A0%BC%E5%BC%8F%E6%95%B0%E6%8D%AE/"/>
     <id>http://science09.github.io/2015/01/31/Android解析XML格式数据/</id>
     <published>2015-01-31T15:41:36.000Z</published>
-    <updated>2015-09-10T13:21:49.000Z</updated>
+    <updated>2015-09-10T13:21:49.599Z</updated>
     <content type="html"><![CDATA[<p>XML在各种开发中都广泛应用，Android也不例外。作为承载数据的一个重要角色，如何读写XML成为Android开发中一项重要的技能。今天就由我向大家介绍一下在Android平台下几种常见的XML解析和创建的方法。<br><a id="more"></a><br>在Android中，常见的XML解析器分别为SAX解析器、DOM解析器和PULL解析器，下面，我将一一向大家详细介绍。</p>
 <h3 id="SAX解析器：">SAX解析器：</h3><p>SAX(Simple API for XML)解析器是一种基于事件的解析器，它的核心是事件处理模式，主要是围绕着事件源以及事件处理器来工作的。当事件源产生事件后，调用事件处理器相应的处理方法，一个事件就可以得到处理。在事件源调用事件处理器中特定方法的时候，还要传递给事件处理器相应事件的状态信息，这样事件处理器才能够根据提供的事件信息来决定自己的行为。</p>
 <p>SAX解析器的优点是解析速度快，占用内存少。非常适合在Android移动设备中使用。</p>
@@ -312,7 +370,7 @@ ibevent-1.4.14b-stable.tar.gz</code> 这个路径下载的libvent，直接复制
     <link href="http://science09.github.io/2015/01/31/Android-App-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/"/>
     <id>http://science09.github.io/2015/01/31/Android-App-性能优化实践/</id>
     <published>2015-01-31T15:36:46.000Z</published>
-    <updated>2015-09-10T13:16:39.000Z</updated>
+    <updated>2015-09-10T13:16:39.777Z</updated>
     <content type="html"><![CDATA[<h2 id="工具">工具</h2><p>Hierarchy Viewer 是 Android SDK 自带的 Layout 嵌套检查工具，以可视化的布局角度直观获取 Layout 布局设计和各种属性信息，来帮助我们完成优化布局的设计。需要注意的是，出于安全考虑 Hierarchy Viewer 只能连接Android开发版手机(需要安装ViewServer)或是模拟器。<br><a id="more"></a><br><img src="D:\Study_Material\建站资料\博客文章\PicResource\performance-tuning-on-android-1.png" alt=""></p>
 <p>注意上图右半部分显示的时间</p>
 <ul>
@@ -383,7 +441,7 @@ ibevent-1.4.14b-stable.tar.gz</code> 这个路径下载的libvent，直接复制
     <link href="http://science09.github.io/2015/01/31/%E4%BD%BF%E7%94%A8Volley%E8%87%AA%E5%AE%9A%E4%B9%89XML-Request%E8%AF%B7%E6%B1%82/"/>
     <id>http://science09.github.io/2015/01/31/使用Volley自定义XML-Request请求/</id>
     <published>2015-01-31T14:11:10.000Z</published>
-    <updated>2015-09-10T14:11:01.000Z</updated>
+    <updated>2015-09-10T14:11:01.783Z</updated>
     <content type="html"><![CDATA[<p>谷歌官方提供的Volley包中，已经提供了多种Request，如StringRequest， JsonRequest，ImageRequest等。谷歌官方只提供了Json请求封装，用于请求一条JSON格式的数据。目前，网络上传输的数据通常有两种方式，JSON和XML。今天我们就来自定义自己的XML请求。<br><a id="more"></a></p>
 <h2 id="自定义XMLRequest">自定义XMLRequest</h2><p>自定义一个XMLRequest用于请求一条XML格式的网络数据。在自定义XMLRequest之前，可以先参考StringRequest类的实现，然后模仿StringRequest就可以写出XMLRequest。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StringRequest</span> <span class="keyword">extends</span> <span class="title">Request</span>&lt;<span class="title">String</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Listener&lt;String&gt; mListener;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * Creates a new request with the given method.</span><br><span class="line">     *</span><br><span class="line">     * <span class="doctag">@param</span> method the request &#123;<span class="doctag">@link</span> Method&#125; to use</span><br><span class="line">     * <span class="doctag">@param</span> url URL to fetch the string at</span><br><span class="line">     * <span class="doctag">@param</span> listener Listener to receive the String response</span><br><span class="line">     * <span class="doctag">@param</span> errorListener Error listener, or null to ignore errors</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StringRequest</span><span class="params">(<span class="keyword">int</span> method, String url, Listener&lt;String&gt; listener,</span><br><span class="line">            ErrorListener errorListener)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(method, url, errorListener);</span><br><span class="line">        mListener = listener;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * Creates a new GET request.</span><br><span class="line">     *</span><br><span class="line">     * <span class="doctag">@param</span> url URL to fetch the string at</span><br><span class="line">     * <span class="doctag">@param</span> listener Listener to receive the String response</span><br><span class="line">     * <span class="doctag">@param</span> errorListener Error listener, or null to ignore errors</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StringRequest</span><span class="params">(String url, Listener&lt;String&gt; listener, ErrorListener errorListener)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(Method.GET, url, listener, errorListener);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">deliverResponse</span><span class="params">(String response)</span> </span>&#123;</span><br><span class="line">        mListener.onResponse(response);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Response&lt;String&gt; <span class="title">parseNetworkResponse</span><span class="params">(NetworkResponse response)</span> </span>&#123;</span><br><span class="line">        String parsed;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            parsed = <span class="keyword">new</span> String(response.data, HttpHeaderParser.parseCharset(response.headers));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (UnsupportedEncodingException e) &#123;</span><br><span class="line">            parsed = <span class="keyword">new</span> String(response.data);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> Response.success(parsed, HttpHeaderParser.parseCacheHeaders(response));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -415,7 +473,7 @@ ibevent-1.4.14b-stable.tar.gz</code> 这个路径下载的libvent，直接复制
     <link href="http://science09.github.io/2015/01/31/Java%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
     <id>http://science09.github.io/2015/01/31/Java单例模式/</id>
     <published>2015-01-31T08:09:06.000Z</published>
-    <updated>2015-09-10T14:15:11.000Z</updated>
+    <updated>2015-09-10T14:15:11.076Z</updated>
     <content type="html"><![CDATA[<h2 id="什么是单例模式">什么是单例模式</h2><p>数学与逻辑学中，singleton定义为“有且仅有一个元素的集合”。单例模式最初的定义出现于《设计模式》（艾迪生维斯理, 1994）：“保证一个类仅有一个实例，并提供一个访问它的全局访问点。” Java中单例模式定义：“一个类有且仅有一个实例，并且自行实例化向整个系统提供。”<br><a id="more"></a><br>单例模式是设计模式中最简单的形式之一。这一模式的目的是使得类的一个对象成为系统中的唯一实例。要实现这一点，可以从客户端对其进行实例化开始。因此需要用一种只允许生成对象类的唯一实例的机制，“阻止”所有想要生成对象的访问。使用工厂方法来限制实例化过程。这个方法应该是静态方法（类方法），因为让类的实例去生成另一个唯一实例毫无意义。</p>
 <h2 id="案例">案例</h2><p>当一个类的实例可以有且只可以一个的时候就需要用到了。为什么只需要有一个呢？有人说是为了节约内存，但这只是单例模式带来的一个好处。只有一个实例确实减少内存占用，可是我认为这不是使用单例模式的理由。我认为使用单例模式的时机是当实例存在多个会引起程序逻辑错误的时候。比如类似有序的号码生成器这样的东西，怎么可以允许一个应用上存在多个呢？</p>
 <p>Singleton模式主要作用是保证在Java应用程序中，一个类Class只有一个实例存在。</p>
@@ -482,7 +540,7 @@ ibevent-1.4.14b-stable.tar.gz</code> 这个路径下载的libvent，直接复制
     <link href="http://science09.github.io/2015/01/06/Android-%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7%E7%B1%BB%E5%BA%93/"/>
     <id>http://science09.github.io/2015/01/06/Android-常用工具类库/</id>
     <published>2015-01-06T14:49:48.000Z</published>
-    <updated>2015-09-10T13:19:56.000Z</updated>
+    <updated>2015-09-10T13:19:56.984Z</updated>
     <content type="html"><![CDATA[<p>在Android开发中，经常用到的一些功能：</p>
 <ol>
 <li>下载，比如图片，文件。</li>
@@ -558,7 +616,7 @@ ibevent-1.4.14b-stable.tar.gz</code> 这个路径下载的libvent，直接复制
     <link href="http://science09.github.io/2014/12/13/Android%E4%B8%AD%E7%9A%84Parcelable%E6%8E%A5%E5%8F%A3%E6%B5%85%E8%B0%88/"/>
     <id>http://science09.github.io/2014/12/13/Android中的Parcelable接口浅谈/</id>
     <published>2014-12-13T11:59:36.000Z</published>
-    <updated>2015-09-10T13:29:32.000Z</updated>
+    <updated>2015-09-10T13:29:32.291Z</updated>
     <content type="html"><![CDATA[<h2 id="1-_什么是Parcelable接口">1. 什么是Parcelable接口</h2><p>序列化是将对象状态转换为可保持或传输的格式的过程。与序列化相对的是反序列化，它将流转换为对象。这两个过程结合起来，可以轻松地存储和传输数据。<br><a id="more"></a></p>
 <h2 id="2-为什么要序列化">2.为什么要序列化</h2><ul>
 <li>永久性保存对象，保存对象的字节序列到本地文件中；</li>
@@ -607,7 +665,7 @@ ibevent-1.4.14b-stable.tar.gz</code> 这个路径下载的libvent，直接复制
     <link href="http://science09.github.io/2014/10/29/%E4%BD%BF%E7%94%A8ionic%E6%A1%86%E6%9E%B6%E6%9E%84%E5%BB%BAAndroid-APP/"/>
     <id>http://science09.github.io/2014/10/29/使用ionic框架构建Android-APP/</id>
     <published>2014-10-29T14:46:43.000Z</published>
-    <updated>2015-09-10T14:04:06.000Z</updated>
+    <updated>2015-09-10T14:04:06.132Z</updated>
     <content type="html"><![CDATA[<h2 id="一、环境搭建">一、环境搭建</h2><ol>
 <li>在安装ionic框架之前，需要先安装nodejs环境，具体可参考本博客之前的文章；</li>
 <li>使用命令行安装最新版本的Cordova和Ionic <code>npm install -g cordova ionic</code></li>
@@ -651,7 +709,7 @@ ibevent-1.4.14b-stable.tar.gz</code> 这个路径下载的libvent，直接复制
     <link href="http://science09.github.io/2014/09/14/Android%E4%B9%8BIntent%E6%95%B0%E6%8D%AE/"/>
     <id>http://science09.github.io/2014/09/14/Android之Intent数据/</id>
     <published>2014-09-14T05:26:16.000Z</published>
-    <updated>2015-09-10T13:26:51.000Z</updated>
+    <updated>2015-09-10T13:26:51.778Z</updated>
     <content type="html"><![CDATA[<p>Intent（意图）主要是解决Android应用的各项组件之间的通讯。Intent负责对应用中一次操作的动作、动作涉及数据、附加数据进行描述，Android则根据此Intent的描述，负责找到对应的组件，将 Intent传递给调用的组件，并完成组件的调用。因此，Intent在这里起着一个媒体中介的作用，专门提供组件互相调用的相关信息，实现调用者与被调用者之间的解耦。<br><a id="more"></a><br>例如，在一个联系人维护的应用中，当我们在一个联系人列表屏幕(假设对应的Activity为listActivity)上，点击某个联系人后，希望能够跳出此联系人的详细信息屏幕(假设对应的Activity为detailActivity)</p>
 <p>为了实现这个目的，listActivity需要构造一个 Intent，这个Intent用于告诉系统，我们要做“查看”动作，此动作对应的查看对象是“某联系人”，然后调用startActivity (Intent intent)，将构造的Intent传入，系统会根据此Intent中的描述，到ManiFest中找到满足此Intent要求的Activity，系统会调用找到的 Activity，即为detailActivity，最终传入Intent，detailActivity则会根据此Intent中的描述，执行相应的操作。</p>
 <h2 id="Intent的使用">Intent的使用</h2><h4 id="1-_Activity的简单跳转">1. Activity的简单跳转</h4><p>Activity的切换一般是通过Intent来实现的，Intent是一个Activity到达另一个Activity的引路者，它描述了起点（当前Activity）和终点（目标Activity）。一个简单Intent实现如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Intent intent = <span class="keyword">new</span> Intent();                           <span class="comment">//创建一个Intent对象</span></span><br><span class="line">intent.setClass(activityA.<span class="keyword">this</span>, activityB.class);    <span class="comment">//描述起点和目标</span></span><br><span class="line">startActivity(intent);                                       <span class="comment">//开始跳转</span></span><br></pre></td></tr></table></figure></p>
@@ -693,7 +751,7 @@ ibevent-1.4.14b-stable.tar.gz</code> 这个路径下载的libvent，直接复制
     <link href="http://science09.github.io/2014/09/10/Markdown%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97/"/>
     <id>http://science09.github.io/2014/09/10/Markdown入门指南/</id>
     <published>2014-09-10T12:33:36.000Z</published>
-    <updated>2015-09-10T13:46:28.000Z</updated>
+    <updated>2015-09-10T13:46:28.690Z</updated>
     <content type="html"><![CDATA[<h2 id="导语：">导语：</h2><blockquote>
 <p>Markdown 是一种轻量级的「标记语言」，它的优点很多，目前也被越来越多的写作爱好者，撰稿者广泛使用。看到这里请不要被「标记」、「语言」所迷惑，Markdown 的语法十分简单。常用的标记符号也不超过十个，这种相对于更为复杂的HTML 标记语言来说，Markdown 可谓是十分轻量的，学习成本也不需要太多，且一旦熟悉这种语法规则，会有一劳永逸的效果。<br><a id="more"></a></p>
 </blockquote>
@@ -826,7 +884,7 @@ ibevent-1.4.14b-stable.tar.gz</code> 这个路径下载的libvent，直接复制
     <link href="http://science09.github.io/2014/09/03/%E4%BD%BF%E7%94%A8Node-js%EF%BC%8CExpress%EF%BC%8CMongoDB%E5%88%9B%E5%BB%BAREST-API/"/>
     <id>http://science09.github.io/2014/09/03/使用Node-js，Express，MongoDB创建REST-API/</id>
     <published>2014-09-03T13:34:37.000Z</published>
-    <updated>2015-09-10T14:05:51.000Z</updated>
+    <updated>2015-09-10T14:05:51.750Z</updated>
     <content type="html"><![CDATA[<p><img src="C:\Users\le\Downloads\nodemango1.jpg" alt="nodeMongo"><br><a id="more"></a><br>本文介绍如何使用Node.js，Express，MongoDB快速的创建REST ful API。</p>
 <h4 id="安装Node-js">安装Node.js</h4><p>到Node的官方网站<a href="http://nodejs.org" target="_blank" rel="external">http://nodejs.org</a>下载并安装；Windows上Node的安装可参考这篇文章: <a href="http://www.byte.tk/under-windows-platform-development-environment-to-build-node-js/" target="_blank" rel="external">Windows平台下Node.js开发环境搭建</a></p>
 <p>Nodejs安装完毕后，接下来创建一个WEB服务器。我们将使用Nodejs作为我们项目的一个出发点：通过REST ful API访问数据（retrieve, create, update, delete）wine数据库。</p>
@@ -1005,7 +1063,7 @@ ibevent-1.4.14b-stable.tar.gz</code> 这个路径下载的libvent，直接复制
     <link href="http://science09.github.io/2014/09/03/Windows%E5%B9%B3%E5%8F%B0%E4%B8%8BNode-js%E7%9A%84%E5%AE%89%E8%A3%85/"/>
     <id>http://science09.github.io/2014/09/03/Windows平台下Node-js的安装/</id>
     <published>2014-09-03T13:31:21.000Z</published>
-    <updated>2015-09-10T13:48:39.000Z</updated>
+    <updated>2015-09-10T13:48:39.057Z</updated>
     <content type="html"><![CDATA[<h4 id="1-Windows平台下Node-js的安装">1.Windows平台下Node.js的安装</h4><p>Node.js从V0.6.X的稳定版本后开始支持Windows平台上直接安装，不需要通过Cygwin或MinGW模拟Linux环境。直接到Node.js的官方网站上下载 <a href="http://www.nodejs.org/download/" target="_blank" rel="external">http://www.nodejs.org/download/</a> ,Windows平台上提供两种安装包格式： .msi 和 .exe 。这里我们选择 .msi安装包格式，下载下来后直接安装，无需其他配置，简单快速。<br><a id="more"></a><br>安装完毕后，可以在快速启动栏中找到 “Node.js command prompt” 命令行窗口，单击后调用该窗口，敲入以下命令：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br></pre></td></tr></table></figure></p>
 <p>命令行将打印出：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">v0<span class="number">.10</span><span class="number">.30</span></span><br></pre></td></tr></table></figure></p>
 <pre><code><span class="comment">PS：</span> <span class="comment">windows源码安装比价麻烦，如果你喜欢折腾，可以试一试。需要Python环境和VC</span><span class="literal">+</span><span class="literal">+</span><span class="comment">编译器。</span>
@@ -1052,7 +1110,7 @@ ibevent-1.4.14b-stable.tar.gz</code> 这个路径下载的libvent，直接复制
     <link href="http://science09.github.io/2014/08/11/%E4%BD%BF%E7%94%A8Hexo%E5%9C%A8GitHub%E4%B8%8A%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2/"/>
     <id>http://science09.github.io/2014/08/11/使用Hexo在GitHub上搭建自己的博客/</id>
     <published>2014-08-11T14:12:38.000Z</published>
-    <updated>2015-09-10T14:13:14.000Z</updated>
+    <updated>2015-09-10T14:13:14.656Z</updated>
     <content type="html"><![CDATA[<h3 id="Hexo模块安装">Hexo模块安装</h3><a id="more"></a>
 <figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">C:\<span class="title">Users</span>\<span class="title">le</span>&gt;<span class="title">node</span> -<span class="title">v</span></span><br><span class="line"><span class="title">v0</span>.10.30</span><br><span class="line"></span><br><span class="line"><span class="title">C</span>:\<span class="title">Users</span>\<span class="title">le</span>&gt;</span><br><span class="line"><span class="title">C</span>:\<span class="title">Users</span>\<span class="title">le</span>&gt;<span class="title">npm</span> -<span class="title">v</span></span><br><span class="line">1.4.23</span><br><span class="line"></span><br><span class="line"><span class="title">C</span>:\<span class="title">Users</span>\<span class="title">le</span>&gt;<span class="title">npm</span> <span class="title">install</span> -<span class="title">g</span> <span class="title">hexo</span></span><br><span class="line"><span class="title">npm</span> <span class="title">WARN</span> <span class="title">optional</span> <span class="title">dep</span> <span class="title">failed</span>, <span class="title">continuing</span> <span class="title">fsevents</span>@0.2.0</span><br><span class="line"><span class="title">D</span>:\<span class="title">Program</span> <span class="title">Files</span>\<span class="title">nodejs</span>\<span class="title">hexo</span> -&gt; <span class="title">D</span>:\<span class="title">Program</span> <span class="title">Files</span>\<span class="title">nodejs</span>\<span class="title">node_modules</span>\<span class="title">hexo</span>\<span class="title">bin</span>\<span class="title">he</span></span><br><span class="line"><span class="title">xo</span></span><br><span class="line"><span class="title">hexo</span>@2.8.2 <span class="title">D</span>:\<span class="title">Program</span> <span class="title">Files</span>\<span class="title">nodejs</span>\<span class="title">node_modules</span>\<span class="title">hexo</span></span><br><span class="line">├── <span class="title">hexo</span>-<span class="title">front</span>-<span class="title">matter</span>@0.0.4</span><br><span class="line">├── <span class="title">strip</span>-<span class="title">indent</span>@0.1.3</span><br><span class="line">├── <span class="title">sprintf</span>-<span class="title">js</span>@0.0.7</span><br><span class="line">├── <span class="title">graceful</span>-<span class="title">fs</span>@3.0.2</span><br><span class="line">├── <span class="title">colors</span>@0.6.2</span><br><span class="line">├── <span class="title">mime</span>@1.2.11</span><br><span class="line">├── <span class="title">async</span>@0.9.0</span><br><span class="line">├── <span class="title">minimist</span>@0.2.0</span><br><span class="line">├── <span class="title">lodash</span>@2.4.1</span><br><span class="line">├── <span class="title">highlight.js</span>@8.1.0</span><br><span class="line">├── <span class="title">warehouse</span>@0.2.2 (<span class="title">async</span>@0.7.0)</span><br><span class="line">├── <span class="title">moment</span>@2.8.1</span><br><span class="line">├── <span class="title">chokidar</span>@0.8.2 (<span class="title">recursive</span>-<span class="title">readdir</span>@0.0.2)</span><br><span class="line">├── <span class="title">morgan</span>@1.2.2 (<span class="title">basic</span>-<span class="title">auth</span>@1.0.0, <span class="title">bytes</span>@1.0.0, <span class="title">depd</span>@0.4.4, <span class="title">finished</span>@1.2.2)</span><br><span class="line">├── <span class="title">connect</span>@3.1.0 (<span class="title">parseurl</span>@1.2.0, <span class="title">utils</span>-<span class="title">merge</span>@1.0.0, <span class="title">finalhandler</span>@0.1.0, <span class="title">deb</span></span><br><span class="line"><span class="title">ug</span>@1.0.4)</span><br><span class="line">├── <span class="title">compression</span>@1.0.10 (<span class="title">vary</span>@0.1.0, <span class="title">bytes</span>@1.0.0, <span class="title">on</span>-<span class="title">headers</span>@0.0.0, <span class="title">compressib</span></span><br><span class="line"><span class="title">le</span>@1.1.1, <span class="title">accepts</span>@1.0.7, <span class="title">debug</span>@1.0.4)</span><br><span class="line">├── <span class="title">serve</span>-<span class="title">static</span>@1.5.1 (<span class="title">utils</span>-<span class="title">merge</span>@1.0.0, <span class="title">parseurl</span>@1.3.0, <span class="title">escape</span>-<span class="title">html</span>@1.0.1,</span><br><span class="line"> <span class="title">send</span>@0.8.1)</span><br><span class="line">├── <span class="title">cheerio</span>@0.17.0 (<span class="title">entities</span>@1.1.1, <span class="title">dom</span>-<span class="title">serializer</span>@0.0.1, <span class="title">CSSselect</span>@0.4.1, <span class="title">ht</span></span><br><span class="line"><span class="title">mlparser2</span>@3.7.3)</span><br><span class="line">├── <span class="title">swig</span>@1.4.1 (<span class="title">optimist</span>@0.6.1, <span class="title">uglify</span>-<span class="title">js</span>@2.4.15)</span><br><span class="line">└── <span class="title">js</span>-<span class="title">yaml</span>@3.1.0 (<span class="title">esprima</span>@1.0.4, <span class="title">argparse</span>@0.1.15)</span><br><span class="line"></span><br><span class="line"><span class="title">C</span>:\<span class="title">Users</span>\<span class="title">le</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>查看Hexo版本：<br><figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">C:\<span class="title">Users</span>\<span class="title">le</span>&gt;<span class="title">hexo</span> <span class="title">version</span></span><br><span class="line"><span class="title">hexo</span>: 2.8.2</span><br><span class="line"><span class="title">os</span>: <span class="title">Windows_NT</span> 6.1.7601 <span class="title">win32</span> <span class="title">ia32</span></span><br><span class="line"><span class="title">http_parser</span>: 1.0</span><br><span class="line"><span class="title">node</span>: 0.10.30</span><br><span class="line"><span class="title">v8</span>: 3.14.5.9</span><br><span class="line"><span class="title">ares</span>: 1.9.0-<span class="title">DEV</span></span><br><span class="line"><span class="title">uv</span>: 0.10.28</span><br><span class="line"><span class="title">zlib</span>: 1.2.3</span><br><span class="line"><span class="title">modules</span>: 11</span><br><span class="line"><span class="title">openssl</span>: 1.0.1<span class="title">h</span></span></span><br></pre></td></tr></table></figure></p>
@@ -1081,7 +1139,7 @@ ibevent-1.4.14b-stable.tar.gz</code> 这个路径下载的libvent，直接复制
     <link href="http://science09.github.io/2014/08/01/Linux%E4%B8%8B%E7%BB%9F%E8%AE%A1%E9%AB%98%E9%80%9F%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%B5%81%E9%87%8F/"/>
     <id>http://science09.github.io/2014/08/01/Linux下统计高速网络中的流量/</id>
     <published>2014-08-01T15:54:15.000Z</published>
-    <updated>2015-09-10T13:44:46.000Z</updated>
+    <updated>2015-09-10T13:44:46.155Z</updated>
     <content type="html"><![CDATA[<blockquote>
 <p>在Linux中有很多的流量监控工具，它们可以监控、分类网络流量，以花哨的图形用户界面提供实时流量分析报告。本文中我们介绍一种简单的Shell 脚本，它可以监控网络流量而且不依赖于缓慢的libpcap库。<br><a id="more"></a><br>在Linux中有很多的流量监控工具，它们可以监控、分类网络流量，以花哨的图形用户界面提供实时流量分析报告。大多数这些工具（例如：ntopng ,  iftop ）都是基于libpcap 库的 ，这个函数库是用来截取流经网卡的数据包的，可在用户空间用来监视分析网络流量。尽管这些工具功能齐全，然而基于libpcap库的流量监控工具无法处理高速（Gb以上）的网络接口，原因是由于在用户空间做数据包截取的系统开销过高所致。</p>
 </blockquote>
@@ -1113,56 +1171,6 @@ ibevent-1.4.14b-stable.tar.gz</code> 这个路径下载的libvent，直接复制
       <category term="Linux" scheme="http://science09.github.io/tags/Linux/"/>
     
       <category term="Linux" scheme="http://science09.github.io/categories/Linux/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Android内存管理之道]]></title>
-    <link href="http://science09.github.io/2014/08/01/Android%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E4%B9%8B%E9%81%93/"/>
-    <id>http://science09.github.io/2014/08/01/Android内存管理之道/</id>
-    <published>2014-08-01T14:33:22.000Z</published>
-    <updated>2015-09-10T13:24:22.000Z</updated>
-    <content type="html"><![CDATA[<p>相信一步步走过来的Android从业者，每个人都会遇到OOM的情况。如何避免和防范OOM的出现，对于每一个程序员来说确实是一门必不可少的能力。今天我们就谈谈在Android平台下内存的管理之道，开始今天的主题之前，先再次回顾两个概念。<br><a id="more"></a><br>内存泄漏：对象在内存heap堆中中分配的空间，当不再使用或没有引用指向的情况下，仍不能被GC正常回收的情况。多数出现在不合理的编码情况下，比如在Activity中注册了一个广播接收器，但是在页面关闭的时候进行unRegister，就会出现内存溢出的现象。通常情况下，大量的内存泄漏会造成OOM。</p>
-<p>OOM：即OutOfMemoery，顾名思义就是指内存溢出了。内存溢出是指APP向系统申请超过最大阀值的内存请求，系统不会再分配多余的空间，就会造成OOM error。在我们Android平台下，多数情况是出现在图片不当处理加载的时候。</p>
-<p>内存管理之道嘛，无非就是先理解并找出内存泄漏的原因，再基于这些反式去合理的编码，去防范进而避免内存开销过大的情形。学习如何合理的管理内存，最好先了解内存分配的机制和原理。只有深层次的理解了内部的原理，才能真正避免OOM的发生。但是本文就不介绍Jvm/Davilk内存分配的机制了，如有兴趣，请查看历史消息，以前做过题为《JVM运行时数据区域分析》的分享。</p>
-<p>Android APP的所能申请的最大内存大小是多少，有人说是16MB，有人又说是24MB。这种事情，还是亲自用自己的手机测试下比较靠谱。测试方式也比较简单，Java中有个Runtime类，主要用作APP与运行环境交互，APP并不会为我们创建Runtime的实例，但是Java为我们提供了单例获取的方式Runtime.getRuntime()。通过maxMemory()方法获取系统可为APP分配的最大内存，totalMemory()获取APP当前所分配的内存heap空间大小。我手上有两部手机，一部Oppo find7，运行Color OS，实测最大内存分配为192MB；一部天语v9，运行小米系统，实测最大内存分配为100MB。这下看出点眉目了吧，由于Android是开源系统，不同的手机厂商其实是拥有修改这部分权限能力的，所以就造成了不同品牌和不同系统的手机，对于APP的内存支持也是不一样的，和IOS的恒久100MB是不同的。一般来说，手机内存的配置越高，厂商也会调大手机支持的内存最大阀值，尤其是现在旗舰机满天发布的情况下。但是开发者为了考虑开发出的APP的内存兼容性，无法保证APP运行在何种手机上，只能从编码角度来优化内存了。</p>
-<p>下面我们逐条来分析Android内存优化的关键点。</p>
-<p> 1、万恶的static</p>
-<p>static是个好东西，声明赋值调用就是那么的简单方便，但是伴随而来的还有性能问题。由于static声明变量的生命周期其实是和APP的生命周期一样的，有点类似与Application。如果大量的使用的话，就会占据内存空间不释放，积少成多也会造成内存的不断开销，直至挂掉。static的合理使用一般用来修饰基本数据类型或者轻量级对象，尽量避免修复集合或者大对象，常用作修饰全局配置项、工具类方法、内部类。</p>
-<p>2、无关引用</p>
-<p>很多情况下，我们需求用到传递引用，但是我们无法确保引用传递出去后能否及时的回收。比如比较有代表性的Context泄漏，很多情况下当Activity 结束掉后，由于仍被其他的对象指向导致一直迟迟不能回收，这就造成了内存泄漏。这时可以考虑第三条建议。</p>
-<p>3、善用SoftReference/WeakReference/LruCache</p>
-<p>Java、Android中有没有这样一种机制呢，当内存吃紧或者GC扫过的情况下，就能及时把一些内存占用给释放掉，从而分配给需要分配的地方。答案是肯定的，java为我们提供了两个解决方案。如果对内存的开销比较关注的APP，可以考虑使用WeakReference，当GC回收扫过这块内存区域时就会回收；如果不是那么关注的话，可以使用SoftReference，它会在内存申请不足的情况下自动释放，同样也能解决OOM问题。同时Android自3.0以后也推出了LruCache类，使用LRU算法就释放内存，一样的能解决OOM，如果兼容3.0一下的版本，请导入v4包。关于第二条的无关引用的问题，我们传参可以考虑使用WeakReference包装一下。</p>
-<p>4、谨慎handler</p>
-<p>在处理异步操作的时候，handler + thread是个不错的选择。但是相信在使用handler的时候，大家都会遇到警告的情形，这个就是lint为开发者的提醒。handler运行于UI线程，不断处理来自MessageQueue的消息，如果handler还有消息需要处理但是Activity页面已经结束的情况下，Activity的引用其实并不会被回收，这就造成了内存泄漏。解决方案，一是在Activity的onDestroy方法中调用</p>
-<p>handler.removeCallbacksAndMessages(null);取消所有的消息的处理，包括待处理的消息；二是声明handler的内部类为static。</p>
-<p>5、Bitmap终极杀手</p>
-<p>Bitmap的不当处理极可能造成OOM，绝大多数情况都是因这个原因出现的。Bitamp位图是Android中当之无愧的胖小子，所以在操作的时候当然是十分的小心了。由于Dalivk并不会主动的去回收，需要开发者在Bitmap不被使用的时候recycle掉。使用的过程中，及时释放是非常重要的。同时如果需求允许，也可以去BItmap进行一定的缩放，通过BitmapFactory.Options的inSampleSize属性进行控制。如果仅仅只想获得Bitmap的属性，其实并不需要根据BItmap的像素去分配内存，只需在解析读取Bmp的时候使用BitmapFactory.Options的inJustDecodeBounds属性。最后建议大家在加载网络图片的时候，使用软引用或者弱引用并进行本地缓存，推荐使用android-universal-imageloader或者xUtils，牛人出品，必属精品。前几天在讲《自定义控件（三） 继承控件》的时候，也整理一个，大家可以去Github下载看看。</p>
-<p>6、Cursor及时关闭</p>
-<p>在查询SQLite数据库时，会返回一个Cursor，当查询完毕后，及时关闭，这样就可以把查询的结果集及时给回收掉。</p>
-<p>7、页面背景和图片加载</p>
-<p>在布局和代码中设置背景和图片的时候，如果是纯色，尽量使用color；如果是规则图形，尽量使用shape画图；如果稍微复杂点，可以使用9patch图；如果不能使用9patch的情况下，针对几种主流分辨率的机型进行切图。</p>
-<p>8、ListView和GridView的item缓存</p>
-<p>对于移动设备，尤其硬件参差不齐的android生态，页面的绘制其实是很耗时的，findViewById也是蛮慢的。所以不重用View，在有列表的时候就尤为显著了，经常会出现滑动很卡的现象。具体参照历史文章《说说ViewHolder的另一种写法》</p>
-<p>9、BroadCastReceiver、Service</p>
-<p>绑定广播和服务，一定要记得在不需要的时候给解绑。</p>
-<p>10、I/O流</p>
-<p>I/O流操作完毕，读写结束，记得关闭。</p>
-<p>11、线程</p>
-<p>线程不再需要继续执行的时候要记得及时关闭，开启线程数量不易过多，一般和自己机器内核数一样最好，推荐开启线程的时候，使用线程池。</p>
-<p>12、String/StringBuffer</p>
-<p>当有较多的字符创需要拼接的时候，推荐使用StringBuffer。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>相信一步步走过来的Android从业者，每个人都会遇到OOM的情况。如何避免和防范OOM的出现，对于每一个程序员来说确实是一门必不可少的能力。今天我们就谈谈在Android平台下内存的管理之道，开始今天的主题之前，先再次回顾两个概念。<br>]]>
-    
-    </summary>
-    
-      <category term="Android" scheme="http://science09.github.io/tags/Android/"/>
-    
-      <category term="内存管理" scheme="http://science09.github.io/tags/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/"/>
-    
-      <category term="Android" scheme="http://science09.github.io/categories/Android/"/>
     
   </entry>
   
