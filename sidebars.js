@@ -10,9 +10,11 @@ const sidebars = {
   notes: [
     'notes/notes-intro',
     {
-      label: '网络安全',
+      label: '公众号文章',
       type: 'category',
-      items: ['notes/whitehat/arpspoof', 'notes/whitehat/mdk4'],
+      items: [
+        'notes/wechat/distribute_id_generate', 
+        'notes/wechat/how_dose_linux_filesystem_work'],
       collapsed: false
     },
     {
