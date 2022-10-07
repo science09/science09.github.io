@@ -66,7 +66,7 @@ UUID 的优势是性能非常高，由于是本地生成，没有网络消耗。
 
 snowflake(雪花算法)是一个开源的分布式 ID 生成算法，结果是一个 long 型的 ID。snowflake 算法将 64bit 划分为多段，分开来标识机器、时间等信息，具体组成结构如下图所示：
 
-![Untitled.png](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/e997ccdc-3e00-419d-9053-b13019a58782/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221007%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221007T133909Z&X-Amz-Expires=3600&X-Amz-Signature=aacdae34d84ff05409f8ac5864414da3e16d3342c8afff434fae38f30e773e6c&X-Amz-SignedHeaders=host&x-id=GetObject)
+![Untitled.png](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/e997ccdc-3e00-419d-9053-b13019a58782/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221007%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221007T144238Z&X-Amz-Expires=3600&X-Amz-Signature=64b1563e725fae4b893e07ee9164cd0673ee8a58291cffbd4f9c2d9ddebfd94a&X-Amz-SignedHeaders=host&x-id=GetObject)
 
 snowflake 算法的核心思想是使用 41bit 作为毫秒数，10bit 作为机器的 ID（比如其中 5 个 bit 可作为数据中心，5 个 bit 作为机器 ID）,12bit 作为毫秒内的流水号（意味着每个节点在每毫秒可以产生 4096 个 ID），最后还有一个符号位，永远是 0。
 
@@ -86,13 +86,13 @@ Leaf-segment 号段模式是对直接用数据库自增 ID 充当分布式 ID �
 
 Leaf-server 采用了预分发的方式生成 ID，即可以在 DB 之上挂 N 个 Server，每个 Server 启动时，都会去 DB 拿固定长度的 ID List。这样就做到了完全基于分布式的架构，同时因为 ID 是由内存分发，所以也可以做到很高效。接下来是数据持久化问题，Leaf 每次去 DB 拿固定长度的 ID List，然后把最大的 ID 持久化下来，也就是并非每个 ID 都做持久化，仅仅持久化一批 ID 中最大的那一个。其流程如下图所示：
 
-![Untitled.png](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/28c45af0-646b-4dc2-99dd-ea80b94dbc6a/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221007%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221007T133909Z&X-Amz-Expires=3600&X-Amz-Signature=d687fae16773b5da9529cf2365e22c05c8926ee67c85523e36b3ef16ba570df9&X-Amz-SignedHeaders=host&x-id=GetObject)
+![Untitled.png](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/28c45af0-646b-4dc2-99dd-ea80b94dbc6a/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221007%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221007T144238Z&X-Amz-Expires=3600&X-Amz-Signature=473cc955c6b1684b5798bc4b94b228847f98a45c841a06cbfb8c2bc2b4389b9c&X-Amz-SignedHeaders=host&x-id=GetObject)
 
 Leaf-server 中缓存的号段耗尽之后再去数据库获取新的号段，可以大大地减轻数据库的压力。对 max_id 字段做一次 update 操作，update max_id = max_id + step，update 成功则说明新号段获取成功，新的号段范围为(max_id, max_id + step]。
 
 为了解决从数据库获取新的号段阻塞业务获取 ID 的流程的问题，Leaf-server 中采用了异步更新的策略，同时通过双 buffer 的方式，如下图所示。通过这样一种机制可以保证无论何时 DB 出现问题，都能有一个 buffer 的号段可以正常对外提供服务，只有 DB 在一个 buffer 的下发周期内恢复，都不会影响这个 Leaf 集群的可用性。
 
-![Untitled.png](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/2a5f6090-b79c-419e-929c-08d918543ece/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221007%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221007T133909Z&X-Amz-Expires=3600&X-Amz-Signature=43f7393265e976ce007c5db9810139e7f3c5156e7c1b66819e0e8318d7a742bd&X-Amz-SignedHeaders=host&x-id=GetObject)
+![Untitled.png](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/2a5f6090-b79c-419e-929c-08d918543ece/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221007%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221007T144238Z&X-Amz-Expires=3600&X-Amz-Signature=bf9b33834a43be475edda4342a534199de5775fc25f608a278df4461f3bf7888&X-Amz-SignedHeaders=host&x-id=GetObject)
 
 ### **滴滴 Tingid 方案**
 
@@ -100,7 +100,7 @@ Tinyid 方案是在 Leaf-segment 的算法基础上升级而来，不仅支持�
 
 Tinyid 会将可用号段加载到内存中，并在内存中生成 ID，可用号段在首次获取 ID 时加载，如当前号段使用达到一定比例时，系统会异步的去加载下一个可用号段，以此保证内存中始终有可用号段，以便在发号服务宕机后一段时间内还有可用 ID。实现原理如下所示：
 
-![Untitled.png](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/aaa8feb3-2ccf-4629-b014-f0c43554c8d9/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221007%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221007T133909Z&X-Amz-Expires=3600&X-Amz-Signature=ccc8de07a32ba644f3c4a10a217b551202a2b91e5eae98dc0f5a51eb275ad908&X-Amz-SignedHeaders=host&x-id=GetObject)
+![Untitled.png](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/aaa8feb3-2ccf-4629-b014-f0c43554c8d9/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221007%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221007T144238Z&X-Amz-Expires=3600&X-Amz-Signature=ef497cc84f0e63f6184bfb1ad3982b46663ae71ed9b546e9692f678436d517fe&X-Amz-SignedHeaders=host&x-id=GetObject)
 
 ### **微信序列号生成方案**
 
@@ -112,7 +112,7 @@ Tinyid 会将可用号段加载到内存中，并在内存中生成 ID，可用�
 
 微信序列号服务的系统架构图如下图所示：
 
-![Untitled.png](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/74a8e15f-eef2-4c2c-b5e8-6b9992876ec8/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221007%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221007T133909Z&X-Amz-Expires=3600&X-Amz-Signature=0174aee5c6fc901b64a778825742750ea16e303cc4b657bb579f982a525eb9c3&X-Amz-SignedHeaders=host&x-id=GetObject)
+![Untitled.png](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/74a8e15f-eef2-4c2c-b5e8-6b9992876ec8/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221007%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221007T144238Z&X-Amz-Expires=3600&X-Amz-Signature=5ceee35c40d26532416b87b20b2f7a03e2338c816cc9039a72af3c03bc243e59&X-Amz-SignedHeaders=host&x-id=GetObject)
 
 ### **雪花模式**
 
@@ -134,11 +134,11 @@ Tinyid 会将可用号段加载到内存中，并在内存中生成 ID，可用�
 
 Leaf-snowflake 方案沿用 snowflake 方案的 bit 位设计，即”1+41+10+12“的方式组装 ID 号（正数位（占 1 比特）+ 时间戳（占 41 比特）+ 机器 ID（占 5 比特）+ 机房 ID（占 5 比特）+ 自增值（占 12 比特）），如下图所示：
 
-![Untitled.png](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/46fe6b63-a502-42e3-800c-2b61be5a6354/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221007%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221007T133909Z&X-Amz-Expires=3600&X-Amz-Signature=c5a75abcbe753f09699288c665f185936975493c5e8fde72a5968b69eb749a5c&X-Amz-SignedHeaders=host&x-id=GetObject)
+![Untitled.png](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/46fe6b63-a502-42e3-800c-2b61be5a6354/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221007%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221007T144238Z&X-Amz-Expires=3600&X-Amz-Signature=57cb6e53567749f262706cf3007ac377945da391c57816158ddb39cb039a35ab&X-Amz-SignedHeaders=host&x-id=GetObject)
 
 对于 workerID 的分配，当服务集群较小时，通过配置即可；当服务集群较大时，基于 zookeeper 持久顺序节点的特性引入 zookeeper 组件配置 workerID。部署架构如下图所示：
 
-![Untitled.png](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/16a0f56c-0232-4e12-9c44-d9f682d4d403/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221007%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221007T133909Z&X-Amz-Expires=3600&X-Amz-Signature=340d04dcd92b4e6cf957a63d781349ea9ad5c83083d7364aa523a4b1a8c2e84f&X-Amz-SignedHeaders=host&x-id=GetObject)
+![Untitled.png](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/16a0f56c-0232-4e12-9c44-d9f682d4d403/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221007%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221007T144238Z&X-Amz-Expires=3600&X-Amz-Signature=60dc797aeef9d2257fca1675468d3f5872d8c03adbf9cb8170b9e24094ecb0d6&X-Amz-SignedHeaders=host&x-id=GetObject)
 
 Leaf-snowflake 方案在处理时钟回拨问题的策略如下所示：
 
@@ -164,7 +164,7 @@ Leaf-snowflake 方案在处理时钟回拨问题的策略如下所示：
 
 UidGenerator 方案是基于 snowflake 算法的唯一 ID 生成器。其对雪花算法的 bit 位的分配做了微调，如下图所示：
 
-![Untitled.png](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/60d7e132-d2ed-4eed-b249-5f7f1ff88428/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221007%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221007T133909Z&X-Amz-Expires=3600&X-Amz-Signature=43817d6b43c9800ff9c30280a0f2ab2873ef0c82c921a81c84273800319f4f7c&X-Amz-SignedHeaders=host&x-id=GetObject)
+![Untitled.png](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/60d7e132-d2ed-4eed-b249-5f7f1ff88428/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221007%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221007T144238Z&X-Amz-Expires=3600&X-Amz-Signature=de13b627336e75e15c2bcd0e64ebea46d31936ed1c4fc0f55022d8fd0b2262a6&X-Amz-SignedHeaders=host&x-id=GetObject)
 
 UidGenerator 方案包含以下两种实现方式：
 
@@ -194,7 +194,7 @@ CachedUidGenerator 的核心是利用 RingBuffer，本质上是一个数组，�
 
 基于多时间线改进的雪花算法在 snowflake 基础上增加了时间线部分（1~2 位），可同时支持 2~4 条时间线并行。其对雪花算法的 bit 位的分配做了微调，如下图所示：
 
-![Untitled.png](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/1ad51503-b479-41f4-bd34-b58d7eac0680/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221007%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221007T133909Z&X-Amz-Expires=3600&X-Amz-Signature=9ebbeb2c19698f2f4e72650255f0fa49c28731aae1262f4596cd2163864794dc&X-Amz-SignedHeaders=host&x-id=GetObject)
+![Untitled.png](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/1ad51503-b479-41f4-bd34-b58d7eac0680/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221007%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221007T144238Z&X-Amz-Expires=3600&X-Amz-Signature=9b0816eb0cd5de1f3d27464bd4e01c713210710479ed55d3cc57277d5ce972db&X-Amz-SignedHeaders=host&x-id=GetObject)
 
 基于多时间线改进的雪花算法生成 ID 过程如下所示：
 
