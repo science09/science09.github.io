@@ -8,7 +8,7 @@ slug: /mysql_MVCC_and_its_implementation_principle
 
 > MVCC 是 Copy On Write 的思想，MVCC 在无锁的情况下除了支持读和读并行，还支持读和写并行，写和读并行，但为了保证数据的一致性，写和写是无法并行的。
 
-![7e4934feb1674779a1eb3ffbe0690f2a~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0](9d8083792b332546.awebp)
+![7e4934feb1674779a1eb3ffbe0690f2a~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0](../../../static/paper/9d8083792b332546.awebp)
 
 在事务1开始写操作的时候会 copy 一个记录的副本，其他事务读操作会读取这个记录副本，因此不会影响其他事务对此记录的读取，实现写和读并行。
 
@@ -94,7 +94,7 @@ MVCC 的目的就是多版本并发控制，在数据库中的实现，就是为
 
 - 实际还有一个删除 flag 隐藏字段, 既记录被更新或删除并不代表真的删除，而是删除 flag 变了
 
-![4d93f688394d4cf8a95433bde0fcde51~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0](d68f1e37acb86e68.awebp)
+![4d93f688394d4cf8a95433bde0fcde51~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0](../../../static/paper/d68f1e37acb86e68.awebp)
 
 如上图，`DB_ROW_ID` 是数据库默认为该行记录生成的唯一隐式主键，`DB_TRX_ID`
 
@@ -128,7 +128,7 @@ undo log 主要分为两种：
 
 **一、**** 比如一个有个事务插入 persion 表插入了一条新记录，记录如下，**`**name**`** 为 Jerry , **`**age**`** 为 24 岁，**`**隐式主键**`**是 1，**`**事务 ID**`**和**`**回滚指针**`**，我们假设为 NULL**
 
-![4dbd0151b6c541198fd188d2aa79b92a~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0](4efaa8a694df1997.awebp)
+![4dbd0151b6c541198fd188d2aa79b92a~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0](../../../static/paper/4efaa8a694df1997.awebp)
 
 **二、**** 现在来了一个**`**事务 1**`**对该记录的 **`**name**`** 做出了修改，改为 Tom**
 
@@ -140,7 +140,7 @@ undo log 主要分为两种：
 
 - 事务提交后，释放锁
 
-	![ceeb7a9c547144258c31179b58404490~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0](9a1c5acdf2742d63.awebp)
+	![ceeb7a9c547144258c31179b58404490~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0../../../static/paper/9a1c5acdf2742d63.awebp)
 
 **三、**** 又来了个**`**事务 2**`**修改**`**person 表**`**的同一个记录，将**`**age**`**修改为 30 岁**
 
@@ -152,7 +152,7 @@ undo log 主要分为两种：
 
 - 事务提交，释放锁
 
-![6eda09c1d55f42de8dc5f216691a5d46~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0](f62782dc95d03a85.awebp)
+![6eda09c1d55f42de8dc5f216691a5d46~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0](../../../static/paper/f62782dc95d03a85.awebp)
 
 从上面，我们就可以看出，不同事务或者相同事务的对同一记录的修改，会导致该记录的`undo log`成为一条记录版本线性表，既链表，`undo log` 的链首就是最新的旧记录，链尾就是最早的旧记录（**当然就像之前说的该 undo log 的节点可能是会 purge 线程清除掉，向图中的第一条 insert undo log，其实在事务提交之后可能就被删除丢失了，不过这里为了演示，所以还放在这里**）
 
@@ -170,7 +170,7 @@ undo log 主要分为两种：
 
 **那么这个判断条件是什么呢？**
 
-![e5ac165372f1448caf56938408b2eb32~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0](b830e11fb5a33e38.awebp)
+![e5ac165372f1448caf56938408b2eb32~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0](../../../static/paper/b830e11fb5a33e38.awebp)
 
 我们这里盗窃
 
@@ -208,15 +208,15 @@ undo log 主要分为两种：
 
 - Read View 不仅仅会通过一个列表 `trx_list` 来维护`事务 2`执行`快照读`那刻系统正活跃的事务 ID 列表，还会有两个属性 `up_limit_id`（ **trx_list 列表中事务 ID 最小的 ID** ），`low_limit_id` ( **快照读时刻系统尚未分配的下一个事务 ID ，也就是目前已出现过的事务ID的最大值 + 1** [资料传送门 | 呵呵一笑百媚生的回答](https://link.juejin.cn/?target=https%3A%2F%2Fwww.zhihu.com%2Fquestion%2F66320138%2Fanswer%2F241418502) ) 。所以在这里例子中 `up_limit_id` 就是1，`low_limit_id` 就是 4 + 1 = 5，trx_list 集合的值是 1, 3，`Read View` 如下图
 
-![c69f16d8f3c04012b6e79d8b01030168~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0](3b5a5966023de5d4.awebp)
+![c69f16d8f3c04012b6e79d8b01030168~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0](../../../static/paper/3b5a5966023de5d4.awebp)
 
 - 我们的例子中，只有`事务 4` 修改过该行记录，并在`事务 2` 执行`快照读`前，就提交了事务，所以当前该行当前数据的 `undo log` 如下图所示；我们的事务 2 在快照读该行记录的时候，就会拿该行记录的 `DB_TRX_ID` 去跟 `up_limit_id` , `low_limit_id` 和`活跃事务 ID 列表( trx_list )`进行比较，判断当前`事务 2`能看到该记录的版本是哪个。
 
-![e552a8ad86424cb285a4bc02c7908bf4~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0](7325baf3ee1f506e.awebp)
+![e552a8ad86424cb285a4bc02c7908bf4~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0](../../../static/paper/7325baf3ee1f506e.awebp)
 
 - 所以先拿该记录 `DB_TRX_ID` 字段记录的事务 ID `4` 去跟 `Read View` 的 `up_limit_id` 比较，看 `4` 是否小于 `up_limit_id`( 1 )，所以不符合条件，继续判断 `4` 是否大于等于 `low_limit_id`( 5 )，也不符合条件，最后判断 `4` 是否处于 `trx_list` 中的活跃事务, 最后发现事务 ID 为 `4` 的事务不在当前活跃事务列表中, 符合可见性条件，所以`事务 4`修改后提交的最新结果对`事务 2` 快照读时是可见的，所以`事务 2` 能读到的最新数据记录是`事务4`所提交的版本，而事务4提交的版本也是全局角度上最新的版本
 
-![2c9aa0aaa9ce496f9510cd8c1d921ece~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0](f4329e9aff3905f4.awebp)
+![2c9aa0aaa9ce496f9510cd8c1d921ece~tplv-k3u1fbpfcp-zoom-in-crop-mark:3024:0:0:0](../../../static/paper/f4329e9aff3905f4.awebp)
 
 - 也正是 Read View 生成时机的不同，从而造成 RC , RR 级别下快照读的结果的不同
 
