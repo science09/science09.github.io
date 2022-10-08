@@ -14,7 +14,9 @@ const sidebars = {
       type: 'category',
       items: [
         'notes/wechat/distribute_id_generate', 
-        'notes/wechat/how_dose_linux_filesystem_work'],
+        'notes/wechat/how_dose_linux_filesystem_work',
+        'notes/wechat/mysql_MVCC_and_its_implementation_principle',
+      ],
       collapsed: false
     },
     {
