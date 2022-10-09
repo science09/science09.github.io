@@ -16,6 +16,7 @@ const sidebars = {
         'notes/wechat/distribute_id_generate', 
         'notes/wechat/how_dose_linux_filesystem_work',
         'notes/wechat/mysql_MVCC_and_its_implementation_principle',
+        'notes/wechat/从0.742秒到0.006秒，MySQL百万数据深分页优化实战'
       ],
       collapsed: false
     },
