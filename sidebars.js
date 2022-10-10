@@ -17,7 +17,8 @@ const sidebars = {
         'notes/wechat/how_dose_linux_filesystem_work',
         'notes/wechat/mysql_MVCC_and_its_implementation_principle',
         'notes/wechat/从0.742秒到0.006秒，MySQL百万数据深分页优化实战',
-        'notes/wechat/30条永不过时的SQL优化技巧'
+        'notes/wechat/30条永不过时的SQL优化技巧',
+        'notes/wechat/21个MySQL表设计的经验准则'
       ],
       collapsed: false
     },
