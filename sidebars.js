@@ -20,7 +20,8 @@ const sidebars = {
         'notes/wechat/30条永不过时的SQL优化技巧',
         'notes/wechat/21个MySQL表设计的经验准则',
         'notes/wechat/MySQL的普通索引和唯一索引到底什么区别？',
-        'notes/wechat/图文结合！Redis延迟队列golang高效实践'
+        'notes/wechat/图文结合！Redis延迟队列golang高效实践',
+        'notes/wechat/3种方式！Go Error处理最佳实践'
       ],
       collapsed: false
     },
