@@ -18,7 +18,9 @@ const sidebars = {
         'notes/wechat/mysql_MVCC_and_its_implementation_principle',
         'notes/wechat/从0.742秒到0.006秒，MySQL百万数据深分页优化实战',
         'notes/wechat/30条永不过时的SQL优化技巧',
-        'notes/wechat/21个MySQL表设计的经验准则'
+        'notes/wechat/21个MySQL表设计的经验准则',
+        'notes/wechat/MySQL的普通索引和唯一索引到底什么区别？',
+        'notes/wechat/图文结合！Redis延迟队列golang高效实践'
       ],
       collapsed: false
     },
