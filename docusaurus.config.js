@@ -109,7 +109,8 @@ const config = {
             ]
           }
         ],
-        copyright: `版权所有 © 2022  此网站使用 Docusaurus 构建。`,
+        copyright: `<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>  版权所有 © 2022  此网站使用 Docusaurus 构建。`,
       },
       prism: {
         theme: lightCodeTheme,
