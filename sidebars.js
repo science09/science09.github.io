@@ -24,7 +24,8 @@ const sidebars = {
         'notes/wechat/3种方式！Go Error处理最佳实践',
         'notes/wechat/推荐系统 embedding 技术实践总结',
         'notes/wechat/Go几个黑魔法技巧汇总',
-        'notes/wechat/Redis详细介绍一篇就够'
+        'notes/wechat/Redis详细介绍一篇就够',
+        'notes/wechat/快速实现一个分布式定时器'
       ],
       collapsed: false
     },
