@@ -25,7 +25,9 @@ const sidebars = {
         'notes/wechat/推荐系统 embedding 技术实践总结',
         'notes/wechat/Go几个黑魔法技巧汇总',
         'notes/wechat/Redis详细介绍一篇就够',
-        'notes/wechat/快速实现一个分布式定时器'
+        'notes/wechat/快速实现一个分布式定时器',
+        'notes/wechat/如何做架构设计和评审',
+        'notes/wechat/面试官：为什么说mysql数据库单表最大两千万？'
       ],
       collapsed: false
     },
