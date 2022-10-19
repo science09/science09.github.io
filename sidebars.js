@@ -28,7 +28,11 @@ const sidebars = {
         'notes/wechat/快速实现一个分布式定时器',
         'notes/wechat/如何做架构设计和评审',
         'notes/wechat/面试官：为什么说mysql数据库单表最大两千万？',
-        'notes/wechat/【系统设计】S3 对象存储'
+        'notes/wechat/【系统设计】S3 对象存储',
+        'notes/wechat/B站在全链路压测上的实践',
+        'notes/wechat/小红书KV存储架构：万亿级数据与跨云多活不在话下',
+        'notes/wechat/网易严选商品中心DDD实践',
+        'notes/wechat/社区点赞业务缓存设计优化探索 ｜ 得物技术'
       ],
       collapsed: false
     },
