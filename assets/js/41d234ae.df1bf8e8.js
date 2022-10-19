@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmeoo_space=self.webpackChunkmeoo_space||[]).push([[3771],{3941:e=>{e.exports=JSON.parse('{"label":"CoreDNS","permalink":"/blog/tags/core-dns","allTagsPath":"/blog/tags","count":1}')}}]);

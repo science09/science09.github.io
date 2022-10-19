@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmeoo_space=self.webpackChunkmeoo_space||[]).push([[1713],{3457:e=>{e.exports=JSON.parse('[{"label":"k8s","permalink":"/blog/tags/k-8-s","count":1},{"label":"CoreDNS","permalink":"/blog/tags/core-dns","count":1}]')}}]);

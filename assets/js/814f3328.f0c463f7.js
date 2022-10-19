@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmeoo_space=self.webpackChunkmeoo_space||[]).push([[2535],{5641:e=>{e.exports=JSON.parse('{"title":"\u5168\u90e8\u535a\u6587","items":[{"title":"Kubernetes\u4e2d\u7684DNS","permalink":"/blog/k8s-coredns"}]}')}}]);
