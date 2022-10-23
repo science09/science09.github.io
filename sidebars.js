@@ -32,7 +32,9 @@ const sidebars = {
         'notes/wechat/B站在全链路压测上的实践',
         'notes/wechat/小红书KV存储架构：万亿级数据与跨云多活不在话下',
         'notes/wechat/网易严选商品中心DDD实践',
-        'notes/wechat/社区点赞业务缓存设计优化探索 ｜ 得物技术'
+        'notes/wechat/社区点赞业务缓存设计优化探索 ｜ 得物技术',
+        'notes/wechat/缓存高频面试题：缓存穿透？缓存击穿？缓存雪崩？',
+        'notes/wechat/十几亿用户中心系统，ES+Redis+MySQL架构就轻松搞定！'
       ],
       collapsed: false
     },
