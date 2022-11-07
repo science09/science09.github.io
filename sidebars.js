@@ -34,7 +34,9 @@ const sidebars = {
         'notes/wechat/网易严选商品中心DDD实践',
         'notes/wechat/社区点赞业务缓存设计优化探索 ｜ 得物技术',
         'notes/wechat/缓存高频面试题：缓存穿透？缓存击穿？缓存雪崩？',
-        'notes/wechat/十几亿用户中心系统，ES+Redis+MySQL架构就轻松搞定！'
+        'notes/wechat/十几亿用户中心系统，ES+Redis+MySQL架构就轻松搞定！',
+        'notes/wechat/京东售后系统架构设计：专治多端并发、数据不一致的臭毛病',
+        'notes/wechat/2000万日订单背后，如何保障系统的高可用？'
       ],
       collapsed: false
     },
