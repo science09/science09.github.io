@@ -36,7 +36,8 @@ const sidebars = {
         'notes/wechat/缓存高频面试题：缓存穿透？缓存击穿？缓存雪崩？',
         'notes/wechat/十几亿用户中心系统，ES+Redis+MySQL架构就轻松搞定！',
         'notes/wechat/京东售后系统架构设计：专治多端并发、数据不一致的臭毛病',
-        'notes/wechat/2000万日订单背后，如何保障系统的高可用？'
+        'notes/wechat/2000万日订单背后，如何保障系统的高可用？',
+        'notes/wechat/Docker 网络4种模式详解'
       ],
       collapsed: false
     },
