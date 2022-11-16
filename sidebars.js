@@ -37,7 +37,10 @@ const sidebars = {
         'notes/wechat/十几亿用户中心系统，ES+Redis+MySQL架构就轻松搞定！',
         'notes/wechat/京东售后系统架构设计：专治多端并发、数据不一致的臭毛病',
         'notes/wechat/2000万日订单背后，如何保障系统的高可用？',
-        'notes/wechat/Docker 网络4种模式详解'
+        'notes/wechat/Docker 网络4种模式详解',
+        'notes/wechat/QPS降低80%，去哪儿网业务缓存体系的升级改造',
+        'notes/wechat/架构师技术路线图',
+        'notes/wechat/10年后，再审视Heroku发布的十二要素应用',
       ],
       collapsed: false
     },
