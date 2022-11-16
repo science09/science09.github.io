@@ -5,7 +5,7 @@
 <meta name="generator" content="Docusaurus v2.1.0">
 <title data-rh="true">快速实现一个分布式定时器 | 彼岸_未来</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://science09.github.io/docs/快速实现一个分布式定时器"><meta data-rh="true" name="docusaurus_locale" content="zh-Hans"><meta data-rh="true" name="docsearch:language" content="zh-Hans"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="快速实现一个分布式定时器 | 彼岸_未来"><meta data-rh="true" name="description" content="定时器（Timer）是一种在业务开发中常用的组件，主要用在执行延时通知任务上。本文以笔者在工作中的实践作为基础，介绍如何使用平时部门最常用的组件快速实现一个业务常用的分布式定时器服务。同时介绍了过程中遇到问题的一些解决方案，希望能够给类似场景提供一些解决思路。"><meta data-rh="true" property="og:description" content="定时器（Timer）是一种在业务开发中常用的组件，主要用在执行延时通知任务上。本文以笔者在工作中的实践作为基础，介绍如何使用平时部门最常用的组件快速实现一个业务常用的分布式定时器服务。同时介绍了过程中遇到问题的一些解决方案，希望能够给类似场景提供一些解决思路。"><link data-rh="true" rel="icon" href="/img/favicon.png"><link data-rh="true" rel="canonical" href="https://science09.github.io/docs/快速实现一个分布式定时器"><link data-rh="true" rel="alternate" href="https://science09.github.io/docs/快速实现一个分布式定时器" hreflang="zh-Hans"><link data-rh="true" rel="alternate" href="https://science09.github.io/docs/快速实现一个分布式定时器" hreflang="x-default"><link rel="alternate" type="application/rss+xml" href="/blog/rss.xml" title="彼岸_未来 RSS Feed">
 <link rel="alternate" type="application/atom+xml" href="/blog/atom.xml" title="彼岸_未来 Atom Feed"><link rel="stylesheet" href="/assets/css/styles.e07c85a0.css">
-<link rel="preload" href="/assets/js/runtime~main.44f2c2ee.js" as="script">
+<link rel="preload" href="/assets/js/runtime~main.b8772c3e.js" as="script">
 <link rel="preload" href="/assets/js/main.6900f799.js" as="script">
 </head>
 <body class="navigation-with-keyboard">
@@ -14,7 +14,7 @@
         
         <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
         <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>  版权所有 © 2022  此网站使用 Docusaurus 构建。</div></div></div></footer></div>
-<script src="/assets/js/runtime~main.44f2c2ee.js"></script>
+<script src="/assets/js/runtime~main.b8772c3e.js"></script>
 <script src="/assets/js/main.6900f799.js"></script>
 </body>
 </html>
