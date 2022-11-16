@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkmeoo_space=self.webpackChunkmeoo_space||[]).push([[4121],{8070:e=>{e.exports=JSON.parse('[{"label":"k8s","permalink":"/docs/tags/k-8-s","count":1},{"label":"docker","permalink":"/docs/tags/docker","count":1}]')}}]);
