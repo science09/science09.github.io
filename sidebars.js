@@ -41,6 +41,7 @@ const sidebars = {
         'notes/wechat/QPS降低80%，去哪儿网业务缓存体系的升级改造',
         'notes/wechat/架构师技术路线图',
         'notes/wechat/10年后，再审视Heroku发布的十二要素应用',
+        'notes/wechat/互联网公司常用分库分表方案汇总'
       ],
       collapsed: false
     },

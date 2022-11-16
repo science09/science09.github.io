@@ -10,7 +10,7 @@ date: 2022-11-04
 
 Heroku 的联合创始人 Adam Wiggins 有一篇著名文章， 12 因素应用方法，它总结了许多有用并且我确信使得构建 Heroku 更有趣和有益的想法。
 
-![640](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/da8f4976-a6f9-4ae4-8e90-c51d861d5fa1/640?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20221116%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20221116T012500Z&X-Amz-Expires=3600&X-Amz-Signature=bec2afdbd2c19cbdecdefcedff711f0f493c25acb27d39b849666f2f00c7eb42&X-Amz-SignedHeaders=host&x-id=GetObject)
+![Untitled](../../../static/paper/2022-11/679544ba17b33d21.png)
 
 在这篇文章中，我想回顾一下 Adam 所涵盖的 12 个因素中的每一个，它们是如何演变的，我们今天可以从它们身上学到什么，以及它们如何改变了过去的状态。
 
